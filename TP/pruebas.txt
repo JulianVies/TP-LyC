@@ -1,0 +1,46 @@
+
+//Implementación de ciclo WHILE
+//TODO 
+//Implementación de IF
+//TODO
+
+//ASIGNACIONES
+//Asignaciones simples 
+
+A:=B
+ 
+TIPO DE DATOS
+Constantes numéricas
+ 
+//▪ reales (32 bits)
+ 
+a = 99999.99
+a = 99.
+a = .9999
+
+//▪ enteras (16 bits)
+
+a = 99
+
+//Constantes string: Constantes de 30 caracteres alfanuméricos como máximo, limitada por comillas (“ “) ,de la forma “XXXX” Ejemplo:
+
+b = “@sdADaSjfla%dfg”
+b = “asldk fh sjf”
+
+//COMENTARIOS
+//Deberán estar delimitados por “*/” y “/*“ y podrán estar anidados en un solo nivel.
+
+		*/ Realizo una selección /* 
+        IF (a <= 30)
+				b = ”correcto” */ asignación string /*
+ENDIF
+
+//ENTRADA Y SALIDA
+//Las salidas y entradas por teclado se implementarán como se muestra en el siguiente ejemplo:
+  
+DISPLAY “ewr” */ donde “ewr” debe ser una cte string /* 
+
+GET base    */ donde base es una variable /*
+DISPLAY var1 */ donde var1 es una vble numérica definida previamente /*
+ 
+

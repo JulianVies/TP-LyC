@@ -4,15 +4,15 @@
 //Implementación de IF
 //TODO
 
-//ASIGNACIONES
-//Asignaciones simples 
+// ASIGNACIONES
+// Asignaciones simples 
 
 A:=B
  
 TIPO DE DATOS
 Constantes numéricas
  
-//▪ reales (32 bits)
+// reales (32 bits)
  
 a = 99999.99
 a = 99.

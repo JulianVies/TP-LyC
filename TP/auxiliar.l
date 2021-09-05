@@ -1,6 +1,3 @@
-%{
-	#include <string.h>
-%}
 
 DIGITO			[0-9]
 LETRA			[a-zA-Z]
@@ -66,17 +63,16 @@ COMENTARIO		\*\/.+\/\*
 					printf("Error lexico: Los string deben ser de menos de 30 caracteres!");
                     return 1;
 					}
-{CTEE_E}       //validar rango entero
-
-{COMENTARIO}    //validar longitud
+{CTE_E}         //validar rango entero
 
 {CTE_R}         //validar rango
+
+{COMENTARIO}    //validar longitud
 
 
 int yywrap(){}
 
-int main(int argc,char *argv[])
-{
+int main(int argc,char *argv[]){
     if((yyin = fopen(argv[1], "rt")) == NULL){
         
         printf("\nNo se puede abrir el archivo: %s\n", argv[1]);

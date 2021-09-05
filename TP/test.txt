@@ -1,0 +1,10 @@
+
+DIM i AS  integer 
+DIM r AS real
+DIM s AS string
+
+i := 12
+r := 10.10
+s := "prueba string"
+
+*/comentario/*

@@ -1,7 +1,8 @@
 %{
 	#include <string.h>
 
-
+	int entero;
+	float real;
 	//lista
 	
 	//
@@ -66,27 +67,61 @@ COMENTARIO		\*\/.+\/\*
 "string"		{printf("string\n");}
 "real"			{printf("real\n");}
 
-{CTE_S}	{if(strlen(yytext)<=30){
+{COMENTARIO}	{
+					if(strlen(yytext)<=200){
+						printf("COMENTARIO\n");
+						//aca no retorna token
+					}else{
+						printf("Error lexico: Los comentarios deben ser de menos de 50 caracteres!");
+						return 1;
+					}
+				}
+
+
+{CTE_S}			{
+					if(strlen(yytext)<=30){
 						printf("longitud OK!\n");
 						printf("CTE_S\n");
-						}
-						else{
-							printf("Error lexico: Los string deben ser de menos de 30 caracteres!");
-                    		return 1;
-						}
-
-
 					}
+						printf("Error lexico: Los string deben ser de menos de 30 caracteres!");
+						return 1;
+				}
 
 {CTE_E}			{
-					printf("CTE_E\n");
-					int entero = atoi(yytext);
-				}
-{CTE_R}			{printf("CTE_R\n");
-					int real = atof(yytext);}
+					if(atoll(yytext)<=2147483647){	 //convierto a long, comparo con el max de int
+							entero = atoi(yytext);
+							//return CTE_E;
+							printf("CTE_E\n");
+					}else{
+						printf("Error lexico: tam de entero excedido!");
+						return 1;
+					}
 
-{ID}			{printf("ID\n");}
-{COMENTARIO}	{printf("COMENTARIO\n");}
+				}
+{CTE_R}			{
+					if(atof(yytext)<=3.40282347e+38F){
+						real = atof(yytext);
+						printf("CTE_R\n");
+						//return CTE_R;
+
+					}else{
+						printf("Error lexico: tam de float excedido!");
+						return 1;
+					}
+
+				}
+
+{ID}			{
+						if(strlen(yytext)<=30){
+							printf("ID, %s\n", yytext);
+							//return ID;
+
+						}else{
+							printf("Error lexico: Los ID deben ser de menos de 30 caracteres!");
+							return 1;
+						}
+				}
+
 
 %%
 

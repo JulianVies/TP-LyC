@@ -287,14 +287,14 @@ static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
 static yyconst short int yy_accept[95] =
     {   0,
         0,    0,   42,   41,   41,   41,   41,   21,   22,   17,
-       15,   12,   16,   41,   18,   37,   14,   13,   27,   41,
-       28,   39,   39,   39,   39,   39,   39,   39,   39,   39,
-       19,   20,   39,   39,   39,   23,   41,   24,   29,    0,
-       36,    6,    0,   38,   38,   37,   11,   25,   30,   26,
-       39,   39,   32,   39,   39,   39,    4,   39,   10,   39,
-       39,   39,   39,    7,    0,   38,    9,   31,   39,   39,
-        1,    8,   39,   39,   39,   39,    0,   39,    5,   39,
-       39,   35,   39,   40,   39,    3,   39,   39,   39,   39,
+       15,   12,   16,   41,   18,   38,   14,   13,   27,   41,
+       28,   40,   40,   40,   40,   40,   40,   40,   40,   40,
+       19,   20,   40,   40,   40,   23,   41,   24,   29,    0,
+       37,    6,    0,   39,   39,   38,   11,   25,   30,   26,
+       40,   40,   32,   40,   40,   40,    4,   40,   10,   40,
+       40,   40,   40,    7,    0,   39,    9,   31,   40,   40,
+        1,    8,   40,   40,   40,   40,    0,   40,    5,   40,
+       40,   35,   40,   36,   40,    3,   40,   40,   40,   40,
        34,    2,   33,    0
 
     } ;
@@ -431,11 +431,12 @@ char *yytext;
 #line 2 "lexico.l"
 	#include <string.h>
 
-
+	int entero;
+	float real;
 	//lista
 	
 	//
-#line 439 "lex.yy.c"
+#line 440 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -586,10 +587,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 20 "lexico.l"
+#line 21 "lexico.l"
 
 
-#line 593 "lex.yy.c"
+#line 594 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -674,224 +675,255 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 22 "lexico.l"
+#line 23 "lexico.l"
 {printf("GET\n");}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 23 "lexico.l"
+#line 24 "lexico.l"
 {printf("DISPLAY\n");}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 25 "lexico.l"
+#line 26 "lexico.l"
 {printf("WHILE\n");}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 26 "lexico.l"
+#line 27 "lexico.l"
 {printf("IF\n");}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 27 "lexico.l"
+#line 28 "lexico.l"
 {printf("ELSE\n");}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 29 "lexico.l"
+#line 30 "lexico.l"
 {printf("&&\n");}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 30 "lexico.l"
+#line 31 "lexico.l"
 {printf("WHILE\n");}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 33 "lexico.l"
+#line 34 "lexico.l"
 {printf("NOT\n");}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 34 "lexico.l"
+#line 35 "lexico.l"
 {printf("AND\n");}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 35 "lexico.l"
+#line 36 "lexico.l"
 {printf("OR\n");}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 37 "lexico.l"
+#line 38 "lexico.l"
 {printf("ASIG\n");}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 38 "lexico.l"
+#line 39 "lexico.l"
 {printf("COMA\n");}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 39 "lexico.l"
+#line 40 "lexico.l"
 {printf("PYC\n");}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 40 "lexico.l"
+#line 41 "lexico.l"
 {printf("DOSPUNT\n");}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 41 "lexico.l"
+#line 42 "lexico.l"
 {printf("MAS\n");}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 42 "lexico.l"
+#line 43 "lexico.l"
 {printf("MENOS\n");}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 43 "lexico.l"
+#line 44 "lexico.l"
 {printf("MULT\n");}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 44 "lexico.l"
+#line 45 "lexico.l"
 {printf("DIV\n");}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 46 "lexico.l"
+#line 47 "lexico.l"
 {printf("BRAA\n");}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 47 "lexico.l"
+#line 48 "lexico.l"
 {printf("BRAC\n");}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 48 "lexico.l"
+#line 49 "lexico.l"
 {printf("PARA\n");}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 49 "lexico.l"
+#line 50 "lexico.l"
 {printf("PARC\n");}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 50 "lexico.l"
+#line 51 "lexico.l"
 {printf("CORA\n");}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 51 "lexico.l"
+#line 52 "lexico.l"
 {printf("CORC\n");}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 53 "lexico.l"
+#line 54 "lexico.l"
 {printf("MENOSIGUAL\n");}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 54 "lexico.l"
+#line 55 "lexico.l"
 {printf("MASIGUAL\n");}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 55 "lexico.l"
+#line 56 "lexico.l"
 {printf("MENOR\n");}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 56 "lexico.l"
+#line 57 "lexico.l"
 {printf("MAYOR\n");}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 57 "lexico.l"
+#line 58 "lexico.l"
 {printf("DIFF\n");}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 58 "lexico.l"
+#line 59 "lexico.l"
 {printf("IGUAL\n");}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 62 "lexico.l"
+#line 63 "lexico.l"
 {printf("DIM\n");}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 63 "lexico.l"
+#line 64 "lexico.l"
 {printf("AS\n");}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 65 "lexico.l"
+#line 66 "lexico.l"
 {printf("integer\n");}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 66 "lexico.l"
+#line 67 "lexico.l"
 {printf("string\n");}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 67 "lexico.l"
+#line 68 "lexico.l"
 {printf("real\n");}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 69 "lexico.l"
-{if(strlen(yytext)<=30){
-						printf("longitud OK!\n");
-						printf("CTE_S\n");
-						}
-						else{
-							printf("Error lexico: Los string deben ser de menos de 30 caracteres!");
-                    		return 1;
-						}
-
-
+#line 70 "lexico.l"
+{
+					if(strlen(yytext)<=200){
+						printf("COMENTARIO\n");
+						//aca no retorna token
+					}else{
+						printf("Error lexico: Los comentarios deben ser de menos de 50 caracteres!");
+						return 1;
 					}
+				}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 81 "lexico.l"
 {
-					printf("CTE_E\n");
-					int entero = atoi(yytext);
+					if(strlen(yytext)<=30){
+						printf("longitud OK!\n");
+						printf("CTE_S\n");
+					}
+						printf("Error lexico: Los string deben ser de menos de 30 caracteres!");
+						return 1;
 				}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 85 "lexico.l"
-{printf("CTE_R\n");
-					int real = atof(yytext);}
+#line 90 "lexico.l"
+{
+					if(atoll(yytext)<=2147483647){	 //convierto a long, comparo con el max de int
+							entero = atoi(yytext);
+							//return CTE_E;
+							printf("CTE_E\n");
+					}else{
+						printf("Error lexico: tam de entero excedido!");
+						return 1;
+					}
+
+				}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 88 "lexico.l"
-{printf("ID\n");}
+#line 101 "lexico.l"
+{
+					if(atof(yytext)<=3.40282347e+38F){
+						real = atof(yytext);
+						printf("CTE_R\n");
+						//return CTE_R;
+
+					}else{
+						printf("Error lexico: tam de float excedido!");
+						return 1;
+					}
+
+				}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 89 "lexico.l"
-{printf("COMENTARIO\n");}
+#line 115 "lexico.l"
+{
+						if(strlen(yytext)<=30){
+							printf("ID, %s\n", yytext);
+							//return ID;
+
+						}else{
+							printf("Error lexico: Los ID deben ser de menos de 30 caracteres!");
+							return 1;
+						}
+				}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 91 "lexico.l"
+#line 127 "lexico.l"
 ECHO;
 	YY_BREAK
-#line 895 "lex.yy.c"
+#line 927 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1777,7 +1809,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 91 "lexico.l"
+#line 127 "lexico.l"
 
 
 int yywrap(){}

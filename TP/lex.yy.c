@@ -434,9 +434,48 @@ char *yytext;
 	int entero;
 	float real;
 	//lista
-	
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <math.h>
+
+	#define TAM 35
+	#define DUPLICADO 2
+	#define SIN_MEMORIA 3
+	#define ID_EN_LISTA 4
+
+	typedef struct
+	{
+		char nombre[TAM];
+		char tipodato[TAM];
+		char valor[TAM];
+		int longitud;
+	} t_info;
+
+	typedef struct s_nodo
+	{
+		t_info info;
+		struct s_nodo *pSig;
+	} t_nodo;
+
+	typedef t_nodo *t_lista;
+
+	typedef int (*t_cmp)(const void *, const void *);
+	int compararPorNombre(const void *, const void *);
+
+	void crear_lista(t_lista *p);
+	int insertarEnListaEnOrdenSinDuplicados(t_lista *l_ts, t_info *d, t_cmp);
+	int BuscarEnLista(t_lista *pl, char *cadena);
+
+	void crear_ts(t_lista *l_ts);
+	int insertar_en_ts(t_lista *l_ts, t_info *d);
+
+	void grabar_lista(t_lista *);
+
+	t_lista lista_ts;
+	t_info dato;
+
 	//
-#line 440 "lex.yy.c"
+#line 479 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -587,10 +626,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 21 "lexico.l"
+#line 60 "lexico.l"
 
 
-#line 594 "lex.yy.c"
+#line 633 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -675,182 +714,182 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 23 "lexico.l"
+#line 62 "lexico.l"
 {printf("GET\n");}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 24 "lexico.l"
+#line 63 "lexico.l"
 {printf("DISPLAY\n");}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 26 "lexico.l"
+#line 65 "lexico.l"
 {printf("WHILE\n");}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 27 "lexico.l"
+#line 66 "lexico.l"
 {printf("IF\n");}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 28 "lexico.l"
+#line 67 "lexico.l"
 {printf("ELSE\n");}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 30 "lexico.l"
+#line 69 "lexico.l"
 {printf("&&\n");}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 31 "lexico.l"
+#line 70 "lexico.l"
 {printf("WHILE\n");}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 34 "lexico.l"
+#line 73 "lexico.l"
 {printf("NOT\n");}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 35 "lexico.l"
+#line 74 "lexico.l"
 {printf("AND\n");}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 36 "lexico.l"
+#line 75 "lexico.l"
 {printf("OR\n");}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 38 "lexico.l"
+#line 77 "lexico.l"
 {printf("ASIG\n");}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 39 "lexico.l"
+#line 78 "lexico.l"
 {printf("COMA\n");}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 40 "lexico.l"
+#line 79 "lexico.l"
 {printf("PYC\n");}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 41 "lexico.l"
+#line 80 "lexico.l"
 {printf("DOSPUNT\n");}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 42 "lexico.l"
+#line 81 "lexico.l"
 {printf("MAS\n");}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 43 "lexico.l"
+#line 82 "lexico.l"
 {printf("MENOS\n");}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 44 "lexico.l"
+#line 83 "lexico.l"
 {printf("MULT\n");}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 45 "lexico.l"
+#line 84 "lexico.l"
 {printf("DIV\n");}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 47 "lexico.l"
+#line 86 "lexico.l"
 {printf("BRAA\n");}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 48 "lexico.l"
+#line 87 "lexico.l"
 {printf("BRAC\n");}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 49 "lexico.l"
+#line 88 "lexico.l"
 {printf("PARA\n");}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 50 "lexico.l"
+#line 89 "lexico.l"
 {printf("PARC\n");}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 51 "lexico.l"
+#line 90 "lexico.l"
 {printf("CORA\n");}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 52 "lexico.l"
+#line 91 "lexico.l"
 {printf("CORC\n");}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 54 "lexico.l"
+#line 93 "lexico.l"
 {printf("MENOSIGUAL\n");}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 55 "lexico.l"
+#line 94 "lexico.l"
 {printf("MASIGUAL\n");}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 56 "lexico.l"
+#line 95 "lexico.l"
 {printf("MENOR\n");}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 57 "lexico.l"
+#line 96 "lexico.l"
 {printf("MAYOR\n");}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 58 "lexico.l"
+#line 97 "lexico.l"
 {printf("DIFF\n");}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 59 "lexico.l"
+#line 98 "lexico.l"
 {printf("IGUAL\n");}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 63 "lexico.l"
+#line 102 "lexico.l"
 {printf("DIM\n");}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 64 "lexico.l"
+#line 103 "lexico.l"
 {printf("AS\n");}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 66 "lexico.l"
+#line 105 "lexico.l"
 {printf("integer\n");}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 67 "lexico.l"
+#line 106 "lexico.l"
 {printf("string\n");}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 68 "lexico.l"
+#line 107 "lexico.l"
 {printf("real\n");}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 70 "lexico.l"
+#line 109 "lexico.l"
 {
 					if(strlen(yytext)<=200){
 						printf("COMENTARIO\n");
@@ -863,11 +902,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 81 "lexico.l"
+#line 120 "lexico.l"
 {
 					if(strlen(yytext)<=30){
 						printf("longitud OK!\n");
 						printf("CTE_S\n");
+
+						//lista
+						strcpy(dato.nombre, yytext);
+						strcpy(dato.valor, " ");
+						strcpy(dato.tipodato, "STRING"); //TODO: revisar si es necesario el tipo de dato en el lexico
+						dato.longitud = strlen(yytext);
+						insertar_en_ts(&lista_ts, &dato);
+
+
 					}
 						printf("Error lexico: Los string deben ser de menos de 30 caracteres!");
 						return 1;
@@ -875,12 +923,18 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 90 "lexico.l"
+#line 138 "lexico.l"
 {
 					if(atoll(yytext)<=2147483647){	 //convierto a long, comparo con el max de int
 							entero = atoi(yytext);
 							//return CTE_E;
 							printf("CTE_E\n");
+
+							//lista
+							strcpy(dato.nombre, yytext);
+							strcpy(dato.valor, yytext);
+							strcpy(dato.tipodato, "CTE_E");
+							insertar_en_ts(&lista_ts, &dato);
 					}else{
 						printf("Error lexico: tam de entero excedido!");
 						return 1;
@@ -890,12 +944,18 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 101 "lexico.l"
+#line 155 "lexico.l"
 {
 					if(atof(yytext)<=3.40282347e+38F){
 						real = atof(yytext);
 						printf("CTE_R\n");
 						//return CTE_R;
+
+						//lista
+						strcpy(dato.nombre, yytext);
+						strcpy(dato.valor, yytext);
+						strcpy(dato.tipodato, "CTE_R");
+						insertar_en_ts(&lista_ts, &dato);
 
 					}else{
 						printf("Error lexico: tam de float excedido!");
@@ -906,7 +966,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 115 "lexico.l"
+#line 174 "lexico.l"
 {
 						if(strlen(yytext)<=30){
 							printf("ID, %s\n", yytext);
@@ -920,10 +980,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 127 "lexico.l"
+#line 186 "lexico.l"
 ECHO;
 	YY_BREAK
-#line 927 "lex.yy.c"
+#line 987 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1809,18 +1869,107 @@ int main()
 	return 0;
 	}
 #endif
-#line 127 "lexico.l"
+#line 186 "lexico.l"
 
 
 int yywrap(){}
 int main(int argc,char *argv[])
 {
+
+    crear_ts(&lista_ts);
+
     if ((yyin = fopen(argv[1], "rt")) == NULL){
         
         printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
     }
     else{
        yylex(); 
+
+       grabar_lista(&lista_ts);
+
     }
     fclose(yyin);
+}
+
+
+void crear_ts(t_lista *l_ts)
+{
+    crear_lista(l_ts);
+
+    printf("\n");
+    printf("Creando tabla de simbolos...\n");
+    printf("Tabla de simbolos creada\n");
+}
+
+int insertar_en_ts(t_lista *l_ts, t_info *d)
+{
+    insertarEnListaEnOrdenSinDuplicados(l_ts, d, compararPorNombre);
+
+    // Un reinicio de la estructura dato para que vuelva a ser reutilizada sin problemas (quizas no hace falta) .
+    strcpy(d->nombre, "\0");
+    strcpy(d->tipodato, "\0");
+    strcpy(d->valor, "\0");
+    d->longitud = 0;
+}
+
+void crear_lista(t_lista *p)
+{
+    *p = NULL;
+}
+
+int insertarEnListaEnOrdenSinDuplicados(t_lista *pl, t_info *d, t_cmp comparar)
+{
+    int cmp;
+    t_nodo *nuevo;
+    while (*pl && (cmp = comparar(d, &(*pl)->info)) != 0)
+        pl = &(*pl)->pSig;
+    if (*pl && cmp == 0)
+        return DUPLICADO;
+    nuevo = (t_nodo *)malloc(sizeof(t_nodo));
+    if (!nuevo)
+        return SIN_MEMORIA;
+    nuevo->info = *d;
+    nuevo->pSig = *pl;
+    *pl = nuevo;
+    return 1;
+}
+
+int BuscarEnLista(t_lista *pl, char *cadena)
+{
+    int cmp;
+
+    while (*pl && (cmp = strcmp(cadena, (*pl)->info.nombre)) != 0)
+        pl = &(*pl)->pSig;
+    if (cmp == 0)
+    {
+        return ID_EN_LISTA;
+    }
+    printf("\nVariable sin declarar: %s \n", cadena);
+    exit(1);
+}
+
+int compararPorNombre(const void *d1, const void *d2)
+{
+    t_info *dato1 = (t_info *)d1;
+    t_info *dato2 = (t_info *)d2;
+
+    return strcmp(dato1->nombre, dato2->nombre);
+}
+
+void grabar_lista(t_lista *pl)
+{
+    FILE *pf;
+
+    pf = fopen("ts.txt", "wt");
+
+    // Nombres columnas de la tabla
+    fprintf(pf, "%-35s %-16s %-35s %-35s", "NOMBRE", "TIPO DE DATO", "VALOR", "LONGITUD");
+    // Datos
+    while (*pl)
+    {
+        fprintf(pf, "\n%-35s %-16s %-35s %-35d", (*pl)->info.nombre, (*pl)->info.tipodato, (*pl)->info.valor, (*pl)->info.longitud);
+        pl = &(*pl)->pSig;
+    }
+
+    fclose(pf);
 }

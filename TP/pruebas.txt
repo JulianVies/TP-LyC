@@ -1,46 +1,21 @@
 
-//Implementación de ciclo WHILE
-//TODO 
-//Implementación de IF
-//TODO
+DIM i AS  integer 
+DIM r AS real
+DIM s AS string
 
-// ASIGNACIONES
-// Asignaciones simples 
+i := 12
+r := 10.10
+s := "as"
+*/comentario/*
 
-A:=B
- 
-TIPO DE DATOS
-Constantes numéricas
- 
-// reales (32 bits)
- 
-a = 99999.99
-a = 99.
-a = .9999
+*/string de tam excedido/*
+*/s := "asdff"/*
 
-//▪ enteras (16 bits)
+*/ID de tam excedido/*
+*/sasddddddddddddddddddddddddddddd := "s"/*
 
-a = 99
+*/float de tam excedido/*
+*/r := 1000000000000000000000000000000000000000000000000000000000000000000000000000000000.10/*
 
-//Constantes string: Constantes de 30 caracteres alfanuméricos como máximo, limitada por comillas (“ “) ,de la forma “XXXX” Ejemplo:
-
-b = “@sdADaSjfla%dfg”
-b = “asldk fh sjf”
-
-//COMENTARIOS
-//Deberán estar delimitados por “*/” y “/*“ y podrán estar anidados en un solo nivel.
-
-		*/ Realizo una selección /* 
-        IF (a <= 30)
-				b = ”correcto” */ asignación string /*
-ENDIF
-
-//ENTRADA Y SALIDA
-//Las salidas y entradas por teclado se implementarán como se muestra en el siguiente ejemplo:
-  
-DISPLAY “ewr” */ donde “ewr” debe ser una cte string /* 
-
-GET base    */ donde base es una variable /*
-DISPLAY var1 */ donde var1 es una vble numérica definida previamente /*
- 
-
+*/int de tam excedido/*
+*/i := 120000000000000000000000/*

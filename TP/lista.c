@@ -35,8 +35,6 @@ void crear_ts(t_lista *l_ts);
 int insertar_en_ts(t_lista *l_ts, t_info *d);
 
 void grabar_lista(t_lista *);
-void reemplazar_blancos_por_guiones_y_quitar_comillas(char *);
-void quitar_comillas(char *);
 
 t_lista lista_ts;
 t_info dato;
@@ -139,9 +137,9 @@ void grabar_lista(t_lista *pl)
 {
     FILE *pf;
 
-    pf = fopen("test.txt", "wt");
+    pf = fopen("ts.txt", "wt");
 
-    // Cabecera de la tabla
+    // Nombres columnas de la tabla
     fprintf(pf, "%-35s %-16s %-35s %-35s", "NOMBRE", "TIPO DE DATO", "VALOR", "LONGITUD");
     // Datos
     while (*pl)
@@ -151,42 +149,4 @@ void grabar_lista(t_lista *pl)
     }
 
     fclose(pf);
-}
-
-void reemplazar_blancos_por_guiones_y_quitar_comillas(char *pc)
-{
-
-    quitar_comillas(pc);
-
-    char *aux = pc;
-
-    while (*aux != '\0')
-    {
-        if (*aux == ' ')
-        {
-            *aux = '_';
-        }
-        aux++;
-    }
-}
-
-void quitar_comillas(char *pc)
-{
-
-    // Cadena del tipo "" (sin nada)
-    if (strlen(pc) == 2)
-    {
-        *pc = '\0';
-    }
-    else
-    {
-        *pc = *(pc + 1);
-        pc++;
-        while (*(pc + 1) != '"')
-        {
-            *pc = *(pc + 1);
-            pc++;
-        }
-        *pc = '\0';
-    }
 }

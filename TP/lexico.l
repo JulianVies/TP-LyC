@@ -40,6 +40,7 @@
 	int insertar_en_ts(t_lista *l_ts, t_info *d);
 
 	void grabar_lista(t_lista *);
+	void agregarGuion(char *pc, char* result);
 
 	t_lista lista_ts;
 	t_info dato;
@@ -158,8 +159,11 @@ COMENTARIO		\*\/.+\/\*
 						printf("CTE_R\n");
 						//return CTE_R;
 
+						char realConGuion[100];
+						agregarGuion(yytext,realConGuion);
 						//lista
-						strcpy(dato.nombre, yytext);
+
+						strcpy(dato.nombre,realConGuion);
 						strcpy(dato.valor, yytext);
 						strcpy(dato.tipodato, "CTE_R");
 						insertar_en_ts(&lista_ts, &dato);
@@ -285,4 +289,11 @@ void grabar_lista(t_lista *pl)
     }
 
     fclose(pf);
+}
+
+void agregarGuion(char *pc, char* result){
+    const char *middle = pc;
+    result[0] = '\0';
+    strcat(result, "_");
+    strcat(result, middle);
 }

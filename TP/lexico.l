@@ -309,7 +309,7 @@ void agregarGuion(char *pc, char* result){
 
 void sacarComillas(char *pc){
 
-	// Cadena del tipo "" (sin nada)
+	// Cadena ""
 	if(strlen(pc) == 2){
 		*pc='\0';
 	}

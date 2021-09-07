@@ -42,7 +42,7 @@
 	void grabar_lista(t_lista *);
 	void agregarGuion(char *pc, char* result);
 	void sacarComillas(char *pc);
-	
+	void yyerror();
 	t_lista lista_ts;
 	t_info dato;
 
@@ -63,6 +63,10 @@ COMENTARIO		\*\/.+\/\*
 
 "GET"			{printf("GET\n");}
 "DISPLAY"		{printf("DISPLAY\n");}
+
+"EQUMAX"		{printf("DISPLAY\n");}
+"EQUMIN"		{printf("EQUMIN\n");}
+
 
 "WHILE"			{printf("WHILE\n");}
 "IF"			{printf("IF\n");}
@@ -137,9 +141,10 @@ COMENTARIO		\*\/.+\/\*
 						insertar_en_ts(&lista_ts, &dato);
 
 
-					}
+					}else{
 						printf("Error lexico: Los string deben ser de menos de 30 caracteres!");
 						return 1;
+					}
 				}
 
 {CTE_E}			{
@@ -195,6 +200,8 @@ COMENTARIO		\*\/.+\/\*
 						}
 				}
 
+.				{yyerror();}
+
 
 %%
 
@@ -217,6 +224,9 @@ int main(int argc,char *argv[])
     fclose(yyin);
 }
 
+void yyerror(){
+
+}
 
 void crear_ts(t_lista *l_ts)
 {

@@ -41,7 +41,8 @@
 
 	void grabar_lista(t_lista *);
 	void agregarGuion(char *pc, char* result);
-
+	void sacarComillas(char *pc);
+	
 	t_lista lista_ts;
 	t_info dato;
 
@@ -123,8 +124,13 @@ COMENTARIO		\*\/.+\/\*
 						printf("longitud OK!\n");
 						printf("CTE_S\n");
 
+						sacarComillas(yytext);
+						
+						char stringConGuion[100];
+						agregarGuion(yytext,stringConGuion);
+						
 						//lista
-						strcpy(dato.nombre, yytext);
+						strcpy(dato.nombre, stringConGuion);
 						strcpy(dato.valor, " ");
 						strcpy(dato.tipodato, "STRING"); //TODO: revisar si es necesario el tipo de dato en el lexico
 						dato.longitud = strlen(yytext);
@@ -142,8 +148,11 @@ COMENTARIO		\*\/.+\/\*
 							//return CTE_E;
 							printf("CTE_E\n");
 
+							char enteroConGuion[100];
+							agregarGuion(yytext,enteroConGuion);
+	
 							//lista
-							strcpy(dato.nombre, yytext);
+							strcpy(dato.nombre, enteroConGuion);
 							strcpy(dato.valor, yytext);
 							strcpy(dato.tipodato, "CTE_E");
 							insertar_en_ts(&lista_ts, &dato);
@@ -296,4 +305,21 @@ void agregarGuion(char *pc, char* result){
     result[0] = '\0';
     strcat(result, "_");
     strcat(result, middle);
+}
+
+void sacarComillas(char *pc){
+
+	// Cadena del tipo "" (sin nada)
+	if(strlen(pc) == 2){
+		*pc='\0';
+	}
+	else{
+		*pc = *(pc+1);
+		pc++;
+		while(*(pc+1) != '"'){
+			*pc = *(pc+1);		
+			pc++;
+		}
+		*pc='\0';
+	}	
 }

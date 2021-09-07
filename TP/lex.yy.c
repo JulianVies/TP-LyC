@@ -471,12 +471,13 @@ char *yytext;
 
 	void grabar_lista(t_lista *);
 	void agregarGuion(char *pc, char* result);
-
+	void sacarComillas(char *pc);
+	
 	t_lista lista_ts;
 	t_info dato;
 
 	//
-#line 480 "lex.yy.c"
+#line 481 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -627,10 +628,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 61 "lexico.l"
+#line 62 "lexico.l"
 
 
-#line 634 "lex.yy.c"
+#line 635 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -715,182 +716,182 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 63 "lexico.l"
+#line 64 "lexico.l"
 {printf("GET\n");}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 64 "lexico.l"
+#line 65 "lexico.l"
 {printf("DISPLAY\n");}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 66 "lexico.l"
+#line 67 "lexico.l"
 {printf("WHILE\n");}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 67 "lexico.l"
+#line 68 "lexico.l"
 {printf("IF\n");}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 68 "lexico.l"
+#line 69 "lexico.l"
 {printf("ELSE\n");}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 70 "lexico.l"
+#line 71 "lexico.l"
 {printf("&&\n");}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 71 "lexico.l"
+#line 72 "lexico.l"
 {printf("WHILE\n");}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 74 "lexico.l"
+#line 75 "lexico.l"
 {printf("NOT\n");}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 75 "lexico.l"
+#line 76 "lexico.l"
 {printf("AND\n");}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 76 "lexico.l"
+#line 77 "lexico.l"
 {printf("OR\n");}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 78 "lexico.l"
+#line 79 "lexico.l"
 {printf("ASIG\n");}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 79 "lexico.l"
+#line 80 "lexico.l"
 {printf("COMA\n");}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 80 "lexico.l"
+#line 81 "lexico.l"
 {printf("PYC\n");}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 81 "lexico.l"
+#line 82 "lexico.l"
 {printf("DOSPUNT\n");}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 82 "lexico.l"
+#line 83 "lexico.l"
 {printf("MAS\n");}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 83 "lexico.l"
+#line 84 "lexico.l"
 {printf("MENOS\n");}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 84 "lexico.l"
+#line 85 "lexico.l"
 {printf("MULT\n");}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 85 "lexico.l"
+#line 86 "lexico.l"
 {printf("DIV\n");}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 87 "lexico.l"
+#line 88 "lexico.l"
 {printf("BRAA\n");}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 88 "lexico.l"
+#line 89 "lexico.l"
 {printf("BRAC\n");}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 89 "lexico.l"
+#line 90 "lexico.l"
 {printf("PARA\n");}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 90 "lexico.l"
+#line 91 "lexico.l"
 {printf("PARC\n");}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 91 "lexico.l"
+#line 92 "lexico.l"
 {printf("CORA\n");}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 92 "lexico.l"
+#line 93 "lexico.l"
 {printf("CORC\n");}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 94 "lexico.l"
+#line 95 "lexico.l"
 {printf("MENOSIGUAL\n");}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 95 "lexico.l"
+#line 96 "lexico.l"
 {printf("MASIGUAL\n");}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 96 "lexico.l"
+#line 97 "lexico.l"
 {printf("MENOR\n");}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 97 "lexico.l"
+#line 98 "lexico.l"
 {printf("MAYOR\n");}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 98 "lexico.l"
+#line 99 "lexico.l"
 {printf("DIFF\n");}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 99 "lexico.l"
+#line 100 "lexico.l"
 {printf("IGUAL\n");}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 103 "lexico.l"
+#line 104 "lexico.l"
 {printf("DIM\n");}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 104 "lexico.l"
+#line 105 "lexico.l"
 {printf("AS\n");}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 106 "lexico.l"
+#line 107 "lexico.l"
 {printf("integer\n");}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 107 "lexico.l"
+#line 108 "lexico.l"
 {printf("string\n");}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 108 "lexico.l"
+#line 109 "lexico.l"
 {printf("real\n");}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 110 "lexico.l"
+#line 111 "lexico.l"
 {
 					if(strlen(yytext)<=200){
 						printf("COMENTARIO\n");
@@ -903,14 +904,19 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 121 "lexico.l"
+#line 122 "lexico.l"
 {
 					if(strlen(yytext)<=30){
 						printf("longitud OK!\n");
 						printf("CTE_S\n");
 
+						//TODO: sacar comillas
+						sacarComillas(yytext);
+						
+						char stringConGuion[100];
+						agregarGuion(yytext,stringConGuion);
 						//lista
-						strcpy(dato.nombre, yytext);
+						strcpy(dato.nombre, stringConGuion);
 						strcpy(dato.valor, " ");
 						strcpy(dato.tipodato, "STRING"); //TODO: revisar si es necesario el tipo de dato en el lexico
 						dato.longitud = strlen(yytext);
@@ -924,15 +930,18 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 139 "lexico.l"
+#line 145 "lexico.l"
 {
 					if(atoll(yytext)<=2147483647){	 //convierto a long, comparo con el max de int
 							entero = atoi(yytext);
 							//return CTE_E;
 							printf("CTE_E\n");
 
+							char enteroConGuion[100];
+							agregarGuion(yytext,enteroConGuion);
+	
 							//lista
-							strcpy(dato.nombre, yytext);
+							strcpy(dato.nombre, enteroConGuion);
 							strcpy(dato.valor, yytext);
 							strcpy(dato.tipodato, "CTE_E");
 							insertar_en_ts(&lista_ts, &dato);
@@ -945,7 +954,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 156 "lexico.l"
+#line 165 "lexico.l"
 {
 					if(atof(yytext)<=3.40282347e+38F){
 						real = atof(yytext);
@@ -970,7 +979,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 178 "lexico.l"
+#line 187 "lexico.l"
 {
 						if(strlen(yytext)<=30){
 							printf("ID, %s\n", yytext);
@@ -984,10 +993,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 190 "lexico.l"
+#line 199 "lexico.l"
 ECHO;
 	YY_BREAK
-#line 991 "lex.yy.c"
+#line 1000 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1873,7 +1882,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 190 "lexico.l"
+#line 199 "lexico.l"
 
 
 int yywrap(){}
@@ -1983,4 +1992,21 @@ void agregarGuion(char *pc, char* result){
     result[0] = '\0';
     strcat(result, "_");
     strcat(result, middle);
+}
+
+void sacarComillas(char *pc){
+
+	// Cadena del tipo "" (sin nada)
+	if(strlen(pc) == 2){
+		*pc='\0';
+	}
+	else{
+		*pc = *(pc+1);
+		pc++;
+		while(*(pc+1) != '"'){
+			*pc = *(pc+1);		
+			pc++;
+		}
+		*pc='\0';
+	}	
 }

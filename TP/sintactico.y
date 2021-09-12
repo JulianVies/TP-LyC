@@ -113,6 +113,8 @@ sentencia: asignacion
         | iteracion
         | seleccion 
 		| declaracion
+		| display
+		| get
 		;
 
 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaVarType CORCHC {printf("declaracion regla");} ;
@@ -170,11 +172,12 @@ comparador: MENOR_IGUAL
  			| DIFF		
 			| IGUAL
 			;
-        
+			
+display: DISPLAY factor;
 
+get:GET	factor;
 
 %%
-
 int main(int argc,char *argv[])
 {
   if ((yyin = fopen(argv[1], "rt")) == NULL)

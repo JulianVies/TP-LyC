@@ -32,7 +32,7 @@ s := "as"
 */comentario/*
 
 */string de tam excedido/*
-*/s := "asdff"/*
+*/s := "cadena"/*
 
 */ID de tam excedido/*
 */sasddddddddddddddddddddddddddddd := "s"/*

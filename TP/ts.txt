@@ -1,4 +1,8 @@
 NOMBRE                              TIPO DE DATO     VALOR                               LONGITUD                           
+i                                   -                -                                   0                                  
+r                                   -                -                                   0                                  
+s                                   -                -                                   0                                  
 _12                                 CTE_E            12                                  0                                  
 _10.10                              CTE_R            10.10                               0                                  
-_as                                 STRING                                               2                                  
+ss_hola                             -                -                                   0                                  
+_cadena cadena                      STRING           cadena cadena                       13                                 

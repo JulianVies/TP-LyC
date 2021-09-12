@@ -1,0 +1,4 @@
+NOMBRE                              TIPO DE DATO     VALOR                               LONGITUD                           
+_12                                 CTE_E            12                                  0                                  
+_10.10                              CTE_R            10.10                               0                                  
+_as                                 STRING                                               2                                  

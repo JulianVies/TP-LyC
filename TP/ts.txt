@@ -1,8 +1,4 @@
 NOMBRE                              TIPO DE DATO     VALOR                               LONGITUD                           
-i                                   -                -                                   0                                  
-r                                   -                -                                   0                                  
-s                                   -                -                                   0                                  
-_12                                 CTE_E            12                                  0                                  
-_10.10                              CTE_R            10.10                               0                                  
-ss_hola                             -                -                                   0                                  
-_cadena cadena                      STRING           cadena cadena                       13                                 
+_12345678912345678912345678912      STRING           12345678912345678912345678912       29                                 
+_25                                 CTE_E            25                                  0                                  
+_25.5                               CTE_R            25.5                                0                                  

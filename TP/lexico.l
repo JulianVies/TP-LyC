@@ -80,8 +80,10 @@ COMENTARIO		\*\/.+\/\*
 				}
 
 
-{CTE_S}			{
-					if(strlen(yytext)<=30){
+{CTE_S}			{	
+					// se cambia 30 por 31 por que cuenta las comillas que valen por 2 caracteres 
+					// ( y 30 no es valido).
+					if(strlen(yytext)<=31){
 						return CTE_S;
 
 						// sacarComillas(yytext);

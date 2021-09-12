@@ -1,15 +1,3 @@
-idPrueba := (2) + 3
-idPrueba2 := 2 - 3
-idPrueba3 := 2
-DIM [ c ] AS [ real]
-DIM [ a, b, beta ] AS [ integer, real, string]
-IF a == b THEN asignacionDeSeleccion := 123 ELSE asignacionDeSelecciosn := 123213 
-IF a == b THEN asignacionDeSeleccion := 123 
-
-DIM [numero1,numero2,numero3,numero4] AS [integer,integer,integer,integer]
-numero1 := 10
-numero2 := 10
-
-WHILE a == b THEN numero := 2
-
-WHILE a == b AND numero == numero_comparacion THEN numero := 3
+idPrueba := "12345678912345678912345678912"
+idPrueba := 25
+idPrueba := 25.5

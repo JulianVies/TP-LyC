@@ -47,6 +47,7 @@
 	void grabar_lista(t_lista *);
 	void reemplazar_blancos_por_guiones_y_quitar_comillas(char *);
 	void quitar_comillas(char *);
+	void agregarGuion(char *pc, char* result);
 
 	t_lista lista_ts;
 	t_info dato;
@@ -148,9 +149,35 @@ termino: factor
 
 factor: PARA expresion PARC
 		| ID
-		| CTE_E 
-		| CTE_R
-		| CTE_S
+		| CTE_E {
+			char enteroConGuion[100];
+			agregarGuion(yytext,enteroConGuion);
+			//lista
+			strcpy(dato.nombre, enteroConGuion);
+			strcpy(dato.valor, yytext);
+			strcpy(dato.tipodato, "CTE_E");
+			insertar_en_ts(&lista_ts, &dato);
+		}
+		| CTE_R {
+			char realConGuion[100];
+			agregarGuion(yytext,realConGuion);
+			//lista
+			strcpy(dato.nombre,realConGuion);
+			strcpy(dato.valor, yytext);
+			strcpy(dato.tipodato, "CTE_R");
+			insertar_en_ts(&lista_ts, &dato);
+		}
+		| CTE_S {
+			quitar_comillas(yytext);
+			char stringConGuion[100];
+			agregarGuion(yytext,stringConGuion);
+			//lista
+			strcpy(dato.nombre, stringConGuion);
+			strcpy(dato.valor, yytext);
+			strcpy(dato.tipodato, "STRING"); //TODO: revisar si es necesario el tipo de dato en el lexico
+			dato.longitud = strlen(yytext);
+			insertar_en_ts(&lista_ts, &dato);
+		}
 		;
 
 iteracion: WHILE condicion THEN programa ;
@@ -187,7 +214,7 @@ int main(int argc,char *argv[])
   else
   {
 	yyparse();
-	// grabar_lista(&lista_ts);
+	grabar_lista(&lista_ts);
 
   	fclose(yyin);
   }
@@ -201,6 +228,31 @@ int yyerror(char* mensaje)
 	system ("Pause");
 	exit (1);
  }
+
+ void agregarGuion(char *pc, char* result)
+{
+    const char *middle = pc;
+    result[0] = '\0';
+    strcat(result, "_");
+    strcat(result, middle);
+}
+
+void quitar_comillas(char *pc){
+
+	// Cadena del tipo "" (sin nada)
+	if(strlen(pc) == 2){
+		*pc='\0';
+	}
+	else{
+		*pc = *(pc+1);
+		pc++;
+		while(*(pc+1) != '"'){
+			*pc = *(pc+1);		
+			pc++;
+		}
+		*pc='\0';
+	}	
+}
 void crear_ts(t_lista *l_ts) {
 	crear_lista(l_ts);
 
@@ -290,21 +342,4 @@ void reemplazar_blancos_por_guiones_y_quitar_comillas(char *pc){
 		}
 		aux++;
 	}
-}
-
-void quitar_comillas(char *pc){
-
-	// Cadena del tipo "" (sin nada)
-	if(strlen(pc) == 2){
-		*pc='\0';
-	}
-	else{
-		*pc = *(pc+1);
-		pc++;
-		while(*(pc+1) != '"'){
-			*pc = *(pc+1);		
-			pc++;
-		}
-		*pc='\0';
-	}	
 }

@@ -3,9 +3,32 @@ DIM i AS  integer
 DIM r AS real
 DIM s AS string
 
+*/ No toma los _ esta bien? a chequear/* 
+DIM casoprueba_1 AS string
+casoprueba_1 := "No toma el _"
+
+*/ con un ID de 30 caracteres justo /*
+DIM estonollegaa30caracteresseguro AS string
+estonollegaa30caracteresseguro := "No se rompe!"
+
+*/No la asigne nunca y sin embargo me lo toma como una constante_s, esta bien? /*
+hola := "No deberia existir"
+
+*/ Me lo tomo como entero, cuando se lo asgine como string  ** ID, estoesunstring ASIG CTE_E** /*
+DIM estoesunstring AS string
+estoesunstring := 12345
+
+*/ con una asignacion super archi larga ¨no va a superar los 30 caract. /*
+DIM estoesunstringv2 AS string
+estoesunstringv2 := "laquetal?comoestasyobienyvos"
+*/toma las comillas como caracter, y desp lo guarda con 28 caract, deberia tomarlas? /*
+
+
 i := 12
 r := 10.10
-ss_hola := "cadena cadena"
+s := "as"
+
+
 */comentario/*
 
 */string de tam excedido/*
@@ -19,3 +42,15 @@ ss_hola := "cadena cadena"
 
 */int de tam excedido/*
 */i := 120000000000000000000000/*
+
+
+*/Esta bien esto? x ahi yo lo flashie /*
+*/ 
+esto 
+es 
+un 
+comentario 
+con 
+muchos 
+enters
+/*

@@ -52,7 +52,7 @@
 DIGITO			[0-9]
 LETRA			[a-zA-Z]
 
-ID				{LETRA}({LETRA}|{DIGITO})*
+ID				{LETRA}({LETRA}|{DIGITO}|_)*
 CTE_E		    {DIGITO}+
 CTE_R		    {DIGITO}+"."{DIGITO}*|{DIGITO}*"."{DIGITO}+
 CTE_S		    \"[^\"]*\"
@@ -135,7 +135,7 @@ COMENTARIO		\*\/.+\/\*
 						
 						//lista
 						strcpy(dato.nombre, stringConGuion);
-						strcpy(dato.valor, " ");
+						strcpy(dato.valor, yytext);
 						strcpy(dato.tipodato, "STRING"); //TODO: revisar si es necesario el tipo de dato en el lexico
 						dato.longitud = strlen(yytext);
 						insertar_en_ts(&lista_ts, &dato);
@@ -191,9 +191,13 @@ COMENTARIO		\*\/.+\/\*
 
 {ID}			{
 						if(strlen(yytext)<=30){
-							printf("ID, %s\n", yytext);
+							printf("ID: %s\n", yytext);
 							//return ID;
 
+							strcpy(dato.nombre, yytext);
+							strcpy(dato.valor, "-");
+							strcpy(dato.tipodato, "-");
+							insertar_en_ts(&lista_ts, &dato);
 						}else{
 							printf("Error lexico: Los ID deben ser de menos de 30 caracteres!");
 							return 1;

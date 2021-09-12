@@ -5,11 +5,11 @@ DIM s AS string
 
 i := 12
 r := 10.10
-s := "as"
+ss_hola := "cadena cadena"
 */comentario/*
 
 */string de tam excedido/*
-*/s := "asdff"/*
+*/s := "cadena"/*
 
 */ID de tam excedido/*
 */sasddddddddddddddddddddddddddddd := "s"/*

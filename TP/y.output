@@ -1,16 +1,13 @@
 Terminals unused in grammar
 
-   EQUMAX
-   EQUMIN
    NOT
-   PYC
    LLAVEA
    LLAVEC
 
 
-Estado 58 conflictos: 6 desplazamiento(s)/reducción(ones)
-Estado 61 conflictos: 7 desplazamiento(s)/reducción(ones)
-Estado 67 conflictos: 6 desplazamiento(s)/reducción(ones)
+Estado 64 conflictos: 6 desplazamiento(s)/reducción(ones)
+Estado 74 conflictos: 7 desplazamiento(s)/reducción(ones)
+Estado 92 conflictos: 6 desplazamiento(s)/reducción(ones)
 
 
 Gramática
@@ -28,101 +25,124 @@ Gramática
     7          | declaracion
     8          | display
     9          | get
+   10          | equmax
+   11          | equmin
 
-   10 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaVarType CORCHC
+   12 $@1: /* vacío */
 
-   11 listaVarDec: ID
-   12            | listaVarDec COMA ID
+   13 equmax: IF EQUMAX PARA expresionEqu PYC CORCHA $@1 listaEqu CORCHC PARC
 
-   13 listaVarType: TYPE
-   14             | listaVarType COMA TYPE
+   14 equmin: IF EQUMIN PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC
 
-   15 TYPE: INTEGER
-   16     | STRING
-   17     | REAL
+   15 listaEqu: factorEqu
+   16         | listaEqu COMA factorEqu
 
-   18 asignacion: ID OP_ASIG expresion
+   17 expresionEqu: terminoEqu
+   18             | expresionEqu OP_SUM terminoEqu
+   19             | expresionEqu OP_RESTA terminoEqu
 
-   19 expresion: termino
-   20          | expresion OP_SUM termino
-   21          | expresion OP_RESTA termino
+   20 terminoEqu: factorEqu
+   21           | terminoEqu OP_MULT factorEqu
+   22           | terminoEqu OP_DIV factorEqu
 
-   22 termino: factor
-   23        | termino OP_MULT factor
-   24        | termino OP_DIV factor
+   23 factorEqu: ID
+   24          | CTE_E
+   25          | CTE_R
 
-   25 factor: PARA expresion PARC
-   26       | ID
-   27       | CTE_E
-   28       | CTE_R
-   29       | CTE_S
+   26 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaVarType CORCHC
 
-   30 iteracion: WHILE condicion THEN programa
+   27 listaVarDec: ID
+   28            | listaVarDec COMA ID
 
-   31 seleccion: IF condicion THEN programa
-   32          | IF condicion THEN programa ELSE programa
+   29 listaVarType: TYPE
+   30             | listaVarType COMA TYPE
 
-   33 condicion: comparacion
-   34          | condicion AND comparacion
-   35          | condicion OR comparacion
+   31 TYPE: INTEGER
+   32     | STRING
+   33     | REAL
 
-   36 comparacion: expresion comparador expresion
+   34 asignacion: ID OP_ASIG expresion
 
-   37 comparador: MENOR_IGUAL
-   38           | MAYOR_IGUAL
-   39           | MENOR
-   40           | MAYOR
-   41           | DIFF
-   42           | IGUAL
+   35 expresion: termino
+   36          | expresion OP_SUM termino
+   37          | expresion OP_RESTA termino
 
-   43 display: DISPLAY factor
+   38 termino: factor
+   39        | termino OP_MULT factor
+   40        | termino OP_DIV factor
 
-   44 get: GET factor
+   41 factor: PARA expresion PARC
+   42       | ID
+   43       | CTE_E
+   44       | CTE_R
+   45       | CTE_S
+
+   46 iteracion: WHILE condicion THEN programa
+
+   47 seleccion: IF condicion THEN programa
+   48          | IF condicion THEN programa ELSE programa
+
+   49 condicion: comparacion
+   50          | condicion AND comparacion
+   51          | condicion OR comparacion
+
+   52 comparacion: expresion comparador expresion
+
+   53 comparador: MENOR_IGUAL
+   54           | MAYOR_IGUAL
+   55           | MENOR
+   56           | MAYOR
+   57           | DIFF
+   58           | IGUAL
+
+   59 display: DISPLAY factor
+
+   60 get: GET factor
 
 
 Terminales con las reglas donde aparecen
 
 $end (0) 0
 error (256)
-ID (258) 11 12 18 26
-CTE_S (259) 29
-CTE_E (260) 27
-CTE_R (261) 28
-GET (262) 44
-DISPLAY (263) 43
-EQUMAX (264)
-EQUMIN (265)
-WHILE (266) 30
-THEN (267) 30 31 32
-IF (268) 31 32
-ELSE (269) 32
+ID (258) 23 27 28 34 42
+CTE_S (259) 45
+CTE_E (260) 24 43
+CTE_R (261) 25 44
+GET (262) 60
+DISPLAY (263) 59
+EQUMAX (264) 13
+EQUMIN (265) 14
+WHILE (266) 46
+THEN (267) 46 47 48
+IF (268) 13 14 47 48
+ELSE (269) 48
 NOT (270)
-AND (271) 34
-OR (272) 35
-OP_ASIG (273) 18
-COMA (274) 12 14
-PYC (275)
-OP_SUM (276) 20
-OP_RESTA (277) 21
-OP_MULT (278) 23
-OP_DIV (279) 24
-CORCHA (280) 10
-CORCHC (281) 10
-PARA (282) 25
-PARC (283) 25
+AND (271) 50
+OR (272) 51
+OP_ASIG (273) 34
+COMA (274) 16 28 30
+PYC (275) 13 14
+OP_SUM (276) 18 36
+OP_RESTA (277) 19 37
+OP_MULT (278) 21 39
+OP_DIV (279) 22 40
+CORCHA (280) 13 14 26
+CORCHC (281) 13 14 26
+PARA (282) 13 14 41
+PARC (283) 13 14 41
 LLAVEA (284)
 LLAVEC (285)
-MENOR_IGUAL (286) 37
-MAYOR_IGUAL (287) 38
-MENOR (288) 39
-MAYOR (289) 40
-DIFF (290) 41
-IGUAL (291) 42
-DIM (292) 10
-AS (293) 10
-INTEGER (294) 15
-STRING (295) 16
-REAL (296) 17
+MENOR_IGUAL (286) 53
+MAYOR_IGUAL (287) 54
+MENOR (288) 55
+MAYOR (289) 56
+DIFF (290) 57
+IGUAL (291) 58
+DIM (292) 26
+AS (293) 26
+INTEGER (294) 31
+STRING (295) 32
+REAL (296) 33
 
 
 No terminales con las reglas donde aparecen
@@ -132,39 +152,53 @@ $accept (42)
 inicio (43)
     en la izquierda: 1, en la derecha: 0
 programa (44)
-    en la izquierda: 2 3, en la derecha: 1 3 30 31 32
+    en la izquierda: 2 3, en la derecha: 1 3 46 47 48
 sentencia (45)
-    en la izquierda: 4 5 6 7 8 9, en la derecha: 2 3
-declaracion (46)
-    en la izquierda: 10, en la derecha: 7
-listaVarDec (47)
-    en la izquierda: 11 12, en la derecha: 10 12
-listaVarType (48)
-    en la izquierda: 13 14, en la derecha: 10 14
-TYPE (49)
-    en la izquierda: 15 16 17, en la derecha: 13 14
-asignacion (50)
-    en la izquierda: 18, en la derecha: 4
-expresion (51)
-    en la izquierda: 19 20 21, en la derecha: 18 20 21 25 36
-termino (52)
-    en la izquierda: 22 23 24, en la derecha: 19 20 21 23 24
-factor (53)
-    en la izquierda: 25 26 27 28 29, en la derecha: 22 23 24 43 44
-iteracion (54)
-    en la izquierda: 30, en la derecha: 5
-seleccion (55)
-    en la izquierda: 31 32, en la derecha: 6
-condicion (56)
-    en la izquierda: 33 34 35, en la derecha: 30 31 32 34 35
-comparacion (57)
-    en la izquierda: 36, en la derecha: 33 34 35
-comparador (58)
-    en la izquierda: 37 38 39 40 41 42, en la derecha: 36
-display (59)
-    en la izquierda: 43, en la derecha: 8
-get (60)
-    en la izquierda: 44, en la derecha: 9
+    en la izquierda: 4 5 6 7 8 9 10 11, en la derecha: 2 3
+equmax (46)
+    en la izquierda: 13, en la derecha: 10
+$@1 (47)
+    en la izquierda: 12, en la derecha: 13
+equmin (48)
+    en la izquierda: 14, en la derecha: 11
+listaEqu (49)
+    en la izquierda: 15 16, en la derecha: 13 14 16
+expresionEqu (50)
+    en la izquierda: 17 18 19, en la derecha: 13 14 18 19
+terminoEqu (51)
+    en la izquierda: 20 21 22, en la derecha: 17 18 19 21 22
+factorEqu (52)
+    en la izquierda: 23 24 25, en la derecha: 15 16 20 21 22
+declaracion (53)
+    en la izquierda: 26, en la derecha: 7
+listaVarDec (54)
+    en la izquierda: 27 28, en la derecha: 26 28
+listaVarType (55)
+    en la izquierda: 29 30, en la derecha: 26 30
+TYPE (56)
+    en la izquierda: 31 32 33, en la derecha: 29 30
+asignacion (57)
+    en la izquierda: 34, en la derecha: 4
+expresion (58)
+    en la izquierda: 35 36 37, en la derecha: 34 36 37 41 52
+termino (59)
+    en la izquierda: 38 39 40, en la derecha: 35 36 37 39 40
+factor (60)
+    en la izquierda: 41 42 43 44 45, en la derecha: 38 39 40 59 60
+iteracion (61)
+    en la izquierda: 46, en la derecha: 5
+seleccion (62)
+    en la izquierda: 47 48, en la derecha: 6
+condicion (63)
+    en la izquierda: 49 50 51, en la derecha: 46 47 48 50 51
+comparacion (64)
+    en la izquierda: 52, en la derecha: 49 50 51
+comparador (65)
+    en la izquierda: 53 54 55 56 57 58, en la derecha: 52
+display (66)
+    en la izquierda: 59, en la derecha: 8
+get (67)
+    en la izquierda: 60, en la derecha: 9
 
 
 estado 0
@@ -181,94 +215,100 @@ estado 0
     inicio       ir al estado 7
     programa     ir al estado 8
     sentencia    ir al estado 9
-    declaracion  ir al estado 10
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    seleccion    ir al estado 13
-    display      ir al estado 14
-    get          ir al estado 15
+    equmax       ir al estado 10
+    equmin       ir al estado 11
+    declaracion  ir al estado 12
+    asignacion   ir al estado 13
+    iteracion    ir al estado 14
+    seleccion    ir al estado 15
+    display      ir al estado 16
+    get          ir al estado 17
 
 
 estado 1
 
-   18 asignacion: ID . OP_ASIG expresion
+   34 asignacion: ID . OP_ASIG expresion
 
-    OP_ASIG  desplazar e ir al estado 16
+    OP_ASIG  desplazar e ir al estado 18
 
 
 estado 2
 
-   44 get: GET . factor
+   60 get: GET . factor
 
-    ID     desplazar e ir al estado 17
-    CTE_S  desplazar e ir al estado 18
-    CTE_E  desplazar e ir al estado 19
-    CTE_R  desplazar e ir al estado 20
-    PARA   desplazar e ir al estado 21
+    ID     desplazar e ir al estado 19
+    CTE_S  desplazar e ir al estado 20
+    CTE_E  desplazar e ir al estado 21
+    CTE_R  desplazar e ir al estado 22
+    PARA   desplazar e ir al estado 23
 
-    factor  ir al estado 22
+    factor  ir al estado 24
 
 
 estado 3
 
-   43 display: DISPLAY . factor
+   59 display: DISPLAY . factor
 
-    ID     desplazar e ir al estado 17
-    CTE_S  desplazar e ir al estado 18
-    CTE_E  desplazar e ir al estado 19
-    CTE_R  desplazar e ir al estado 20
-    PARA   desplazar e ir al estado 21
+    ID     desplazar e ir al estado 19
+    CTE_S  desplazar e ir al estado 20
+    CTE_E  desplazar e ir al estado 21
+    CTE_R  desplazar e ir al estado 22
+    PARA   desplazar e ir al estado 23
 
-    factor  ir al estado 23
+    factor  ir al estado 25
 
 
 estado 4
 
-   30 iteracion: WHILE . condicion THEN programa
+   46 iteracion: WHILE . condicion THEN programa
 
-    ID     desplazar e ir al estado 17
-    CTE_S  desplazar e ir al estado 18
-    CTE_E  desplazar e ir al estado 19
-    CTE_R  desplazar e ir al estado 20
-    PARA   desplazar e ir al estado 21
+    ID     desplazar e ir al estado 19
+    CTE_S  desplazar e ir al estado 20
+    CTE_E  desplazar e ir al estado 21
+    CTE_R  desplazar e ir al estado 22
+    PARA   desplazar e ir al estado 23
 
-    expresion    ir al estado 24
-    termino      ir al estado 25
-    factor       ir al estado 26
-    condicion    ir al estado 27
-    comparacion  ir al estado 28
+    expresion    ir al estado 26
+    termino      ir al estado 27
+    factor       ir al estado 28
+    condicion    ir al estado 29
+    comparacion  ir al estado 30
 
 
 estado 5
 
-   31 seleccion: IF . condicion THEN programa
-   32          | IF . condicion THEN programa ELSE programa
+   13 equmax: IF . EQUMAX PARA expresionEqu PYC CORCHA $@1 listaEqu CORCHC PARC
+   14 equmin: IF . EQUMIN PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC
+   47 seleccion: IF . condicion THEN programa
+   48          | IF . condicion THEN programa ELSE programa
 
-    ID     desplazar e ir al estado 17
-    CTE_S  desplazar e ir al estado 18
-    CTE_E  desplazar e ir al estado 19
-    CTE_R  desplazar e ir al estado 20
-    PARA   desplazar e ir al estado 21
+    ID      desplazar e ir al estado 19
+    CTE_S   desplazar e ir al estado 20
+    CTE_E   desplazar e ir al estado 21
+    CTE_R   desplazar e ir al estado 22
+    EQUMAX  desplazar e ir al estado 31
+    EQUMIN  desplazar e ir al estado 32
+    PARA    desplazar e ir al estado 23
 
-    expresion    ir al estado 24
-    termino      ir al estado 25
-    factor       ir al estado 26
-    condicion    ir al estado 29
-    comparacion  ir al estado 28
+    expresion    ir al estado 26
+    termino      ir al estado 27
+    factor       ir al estado 28
+    condicion    ir al estado 33
+    comparacion  ir al estado 30
 
 
 estado 6
 
-   10 declaracion: DIM . CORCHA listaVarDec CORCHC AS CORCHA listaVarType CORCHC
+   26 declaracion: DIM . CORCHA listaVarDec CORCHC AS CORCHA listaVarType CORCHC
 
-    CORCHA  desplazar e ir al estado 30
+    CORCHA  desplazar e ir al estado 34
 
 
 estado 7
 
     0 $accept: inicio . $end
 
-    $end  desplazar e ir al estado 31
+    $end  desplazar e ir al estado 35
 
 
 estado 8
@@ -285,13 +325,15 @@ estado 8
 
     $default  reduce usando la regla 1 (inicio)
 
-    sentencia    ir al estado 32
-    declaracion  ir al estado 10
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    seleccion    ir al estado 13
-    display      ir al estado 14
-    get          ir al estado 15
+    sentencia    ir al estado 36
+    equmax       ir al estado 10
+    equmin       ir al estado 11
+    declaracion  ir al estado 12
+    asignacion   ir al estado 13
+    iteracion    ir al estado 14
+    seleccion    ir al estado 15
+    display      ir al estado 16
+    get          ir al estado 17
 
 
 estado 9
@@ -303,582 +345,552 @@ estado 9
 
 estado 10
 
+   10 sentencia: equmax .
+
+    $default  reduce usando la regla 10 (sentencia)
+
+
+estado 11
+
+   11 sentencia: equmin .
+
+    $default  reduce usando la regla 11 (sentencia)
+
+
+estado 12
+
     7 sentencia: declaracion .
 
     $default  reduce usando la regla 7 (sentencia)
 
 
-estado 11
+estado 13
 
     4 sentencia: asignacion .
 
     $default  reduce usando la regla 4 (sentencia)
 
 
-estado 12
+estado 14
 
     5 sentencia: iteracion .
 
     $default  reduce usando la regla 5 (sentencia)
 
 
-estado 13
+estado 15
 
     6 sentencia: seleccion .
 
     $default  reduce usando la regla 6 (sentencia)
 
 
-estado 14
+estado 16
 
     8 sentencia: display .
 
     $default  reduce usando la regla 8 (sentencia)
 
 
-estado 15
+estado 17
 
     9 sentencia: get .
 
     $default  reduce usando la regla 9 (sentencia)
 
 
-estado 16
-
-   18 asignacion: ID OP_ASIG . expresion
-
-    ID     desplazar e ir al estado 17
-    CTE_S  desplazar e ir al estado 18
-    CTE_E  desplazar e ir al estado 19
-    CTE_R  desplazar e ir al estado 20
-    PARA   desplazar e ir al estado 21
-
-    expresion  ir al estado 33
-    termino    ir al estado 25
-    factor     ir al estado 26
-
-
-estado 17
-
-   26 factor: ID .
-
-    $default  reduce usando la regla 26 (factor)
-
-
 estado 18
 
-   29 factor: CTE_S .
+   34 asignacion: ID OP_ASIG . expresion
 
-    $default  reduce usando la regla 29 (factor)
+    ID     desplazar e ir al estado 19
+    CTE_S  desplazar e ir al estado 20
+    CTE_E  desplazar e ir al estado 21
+    CTE_R  desplazar e ir al estado 22
+    PARA   desplazar e ir al estado 23
+
+    expresion  ir al estado 37
+    termino    ir al estado 27
+    factor     ir al estado 28
 
 
 estado 19
 
-   27 factor: CTE_E .
+   42 factor: ID .
 
-    $default  reduce usando la regla 27 (factor)
+    $default  reduce usando la regla 42 (factor)
 
 
 estado 20
 
-   28 factor: CTE_R .
+   45 factor: CTE_S .
 
-    $default  reduce usando la regla 28 (factor)
+    $default  reduce usando la regla 45 (factor)
 
 
 estado 21
 
-   25 factor: PARA . expresion PARC
+   43 factor: CTE_E .
 
-    ID     desplazar e ir al estado 17
-    CTE_S  desplazar e ir al estado 18
-    CTE_E  desplazar e ir al estado 19
-    CTE_R  desplazar e ir al estado 20
-    PARA   desplazar e ir al estado 21
-
-    expresion  ir al estado 34
-    termino    ir al estado 25
-    factor     ir al estado 26
+    $default  reduce usando la regla 43 (factor)
 
 
 estado 22
 
-   44 get: GET factor .
+   44 factor: CTE_R .
 
-    $default  reduce usando la regla 44 (get)
+    $default  reduce usando la regla 44 (factor)
 
 
 estado 23
 
-   43 display: DISPLAY factor .
+   41 factor: PARA . expresion PARC
 
-    $default  reduce usando la regla 43 (display)
+    ID     desplazar e ir al estado 19
+    CTE_S  desplazar e ir al estado 20
+    CTE_E  desplazar e ir al estado 21
+    CTE_R  desplazar e ir al estado 22
+    PARA   desplazar e ir al estado 23
+
+    expresion  ir al estado 38
+    termino    ir al estado 27
+    factor     ir al estado 28
 
 
 estado 24
 
-   20 expresion: expresion . OP_SUM termino
-   21          | expresion . OP_RESTA termino
-   36 comparacion: expresion . comparador expresion
+   60 get: GET factor .
 
-    OP_SUM       desplazar e ir al estado 35
-    OP_RESTA     desplazar e ir al estado 36
-    MENOR_IGUAL  desplazar e ir al estado 37
-    MAYOR_IGUAL  desplazar e ir al estado 38
-    MENOR        desplazar e ir al estado 39
-    MAYOR        desplazar e ir al estado 40
-    DIFF         desplazar e ir al estado 41
-    IGUAL        desplazar e ir al estado 42
-
-    comparador  ir al estado 43
+    $default  reduce usando la regla 60 (get)
 
 
 estado 25
 
-   19 expresion: termino .
-   23 termino: termino . OP_MULT factor
-   24        | termino . OP_DIV factor
+   59 display: DISPLAY factor .
 
-    OP_MULT  desplazar e ir al estado 44
-    OP_DIV   desplazar e ir al estado 45
-
-    $default  reduce usando la regla 19 (expresion)
+    $default  reduce usando la regla 59 (display)
 
 
 estado 26
 
-   22 termino: factor .
+   36 expresion: expresion . OP_SUM termino
+   37          | expresion . OP_RESTA termino
+   52 comparacion: expresion . comparador expresion
 
-    $default  reduce usando la regla 22 (termino)
+    OP_SUM       desplazar e ir al estado 39
+    OP_RESTA     desplazar e ir al estado 40
+    MENOR_IGUAL  desplazar e ir al estado 41
+    MAYOR_IGUAL  desplazar e ir al estado 42
+    MENOR        desplazar e ir al estado 43
+    MAYOR        desplazar e ir al estado 44
+    DIFF         desplazar e ir al estado 45
+    IGUAL        desplazar e ir al estado 46
+
+    comparador  ir al estado 47
 
 
 estado 27
 
-   30 iteracion: WHILE condicion . THEN programa
-   34 condicion: condicion . AND comparacion
-   35          | condicion . OR comparacion
+   35 expresion: termino .
+   39 termino: termino . OP_MULT factor
+   40        | termino . OP_DIV factor
 
-    THEN  desplazar e ir al estado 46
-    AND   desplazar e ir al estado 47
-    OR    desplazar e ir al estado 48
+    OP_MULT  desplazar e ir al estado 48
+    OP_DIV   desplazar e ir al estado 49
+
+    $default  reduce usando la regla 35 (expresion)
 
 
 estado 28
 
-   33 condicion: comparacion .
+   38 termino: factor .
 
-    $default  reduce usando la regla 33 (condicion)
+    $default  reduce usando la regla 38 (termino)
 
 
 estado 29
 
-   31 seleccion: IF condicion . THEN programa
-   32          | IF condicion . THEN programa ELSE programa
-   34 condicion: condicion . AND comparacion
-   35          | condicion . OR comparacion
+   46 iteracion: WHILE condicion . THEN programa
+   50 condicion: condicion . AND comparacion
+   51          | condicion . OR comparacion
 
-    THEN  desplazar e ir al estado 49
-    AND   desplazar e ir al estado 47
-    OR    desplazar e ir al estado 48
+    THEN  desplazar e ir al estado 50
+    AND   desplazar e ir al estado 51
+    OR    desplazar e ir al estado 52
 
 
 estado 30
 
-   10 declaracion: DIM CORCHA . listaVarDec CORCHC AS CORCHA listaVarType CORCHC
+   49 condicion: comparacion .
 
-    ID  desplazar e ir al estado 50
-
-    listaVarDec  ir al estado 51
+    $default  reduce usando la regla 49 (condicion)
 
 
 estado 31
+
+   13 equmax: IF EQUMAX . PARA expresionEqu PYC CORCHA $@1 listaEqu CORCHC PARC
+
+    PARA  desplazar e ir al estado 53
+
+
+estado 32
+
+   14 equmin: IF EQUMIN . PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC
+
+    PARA  desplazar e ir al estado 54
+
+
+estado 33
+
+   47 seleccion: IF condicion . THEN programa
+   48          | IF condicion . THEN programa ELSE programa
+   50 condicion: condicion . AND comparacion
+   51          | condicion . OR comparacion
+
+    THEN  desplazar e ir al estado 55
+    AND   desplazar e ir al estado 51
+    OR    desplazar e ir al estado 52
+
+
+estado 34
+
+   26 declaracion: DIM CORCHA . listaVarDec CORCHC AS CORCHA listaVarType CORCHC
+
+    ID  desplazar e ir al estado 56
+
+    listaVarDec  ir al estado 57
+
+
+estado 35
 
     0 $accept: inicio $end .
 
     $default  aceptar
 
 
-estado 32
+estado 36
 
     3 programa: programa sentencia .
 
     $default  reduce usando la regla 3 (programa)
 
 
-estado 33
-
-   18 asignacion: ID OP_ASIG expresion .
-   20 expresion: expresion . OP_SUM termino
-   21          | expresion . OP_RESTA termino
-
-    OP_SUM    desplazar e ir al estado 35
-    OP_RESTA  desplazar e ir al estado 36
-
-    $default  reduce usando la regla 18 (asignacion)
-
-
-estado 34
-
-   20 expresion: expresion . OP_SUM termino
-   21          | expresion . OP_RESTA termino
-   25 factor: PARA expresion . PARC
-
-    OP_SUM    desplazar e ir al estado 35
-    OP_RESTA  desplazar e ir al estado 36
-    PARC      desplazar e ir al estado 52
-
-
-estado 35
-
-   20 expresion: expresion OP_SUM . termino
-
-    ID     desplazar e ir al estado 17
-    CTE_S  desplazar e ir al estado 18
-    CTE_E  desplazar e ir al estado 19
-    CTE_R  desplazar e ir al estado 20
-    PARA   desplazar e ir al estado 21
-
-    termino  ir al estado 53
-    factor   ir al estado 26
-
-
-estado 36
-
-   21 expresion: expresion OP_RESTA . termino
-
-    ID     desplazar e ir al estado 17
-    CTE_S  desplazar e ir al estado 18
-    CTE_E  desplazar e ir al estado 19
-    CTE_R  desplazar e ir al estado 20
-    PARA   desplazar e ir al estado 21
-
-    termino  ir al estado 54
-    factor   ir al estado 26
-
-
 estado 37
 
-   37 comparador: MENOR_IGUAL .
+   34 asignacion: ID OP_ASIG expresion .
+   36 expresion: expresion . OP_SUM termino
+   37          | expresion . OP_RESTA termino
 
-    $default  reduce usando la regla 37 (comparador)
+    OP_SUM    desplazar e ir al estado 39
+    OP_RESTA  desplazar e ir al estado 40
+
+    $default  reduce usando la regla 34 (asignacion)
 
 
 estado 38
 
-   38 comparador: MAYOR_IGUAL .
+   36 expresion: expresion . OP_SUM termino
+   37          | expresion . OP_RESTA termino
+   41 factor: PARA expresion . PARC
 
-    $default  reduce usando la regla 38 (comparador)
+    OP_SUM    desplazar e ir al estado 39
+    OP_RESTA  desplazar e ir al estado 40
+    PARC      desplazar e ir al estado 58
 
 
 estado 39
 
-   39 comparador: MENOR .
+   36 expresion: expresion OP_SUM . termino
 
-    $default  reduce usando la regla 39 (comparador)
+    ID     desplazar e ir al estado 19
+    CTE_S  desplazar e ir al estado 20
+    CTE_E  desplazar e ir al estado 21
+    CTE_R  desplazar e ir al estado 22
+    PARA   desplazar e ir al estado 23
+
+    termino  ir al estado 59
+    factor   ir al estado 28
 
 
 estado 40
 
-   40 comparador: MAYOR .
+   37 expresion: expresion OP_RESTA . termino
 
-    $default  reduce usando la regla 40 (comparador)
+    ID     desplazar e ir al estado 19
+    CTE_S  desplazar e ir al estado 20
+    CTE_E  desplazar e ir al estado 21
+    CTE_R  desplazar e ir al estado 22
+    PARA   desplazar e ir al estado 23
+
+    termino  ir al estado 60
+    factor   ir al estado 28
 
 
 estado 41
 
-   41 comparador: DIFF .
+   53 comparador: MENOR_IGUAL .
 
-    $default  reduce usando la regla 41 (comparador)
+    $default  reduce usando la regla 53 (comparador)
 
 
 estado 42
 
-   42 comparador: IGUAL .
+   54 comparador: MAYOR_IGUAL .
 
-    $default  reduce usando la regla 42 (comparador)
+    $default  reduce usando la regla 54 (comparador)
 
 
 estado 43
 
-   36 comparacion: expresion comparador . expresion
+   55 comparador: MENOR .
 
-    ID     desplazar e ir al estado 17
-    CTE_S  desplazar e ir al estado 18
-    CTE_E  desplazar e ir al estado 19
-    CTE_R  desplazar e ir al estado 20
-    PARA   desplazar e ir al estado 21
-
-    expresion  ir al estado 55
-    termino    ir al estado 25
-    factor     ir al estado 26
+    $default  reduce usando la regla 55 (comparador)
 
 
 estado 44
 
-   23 termino: termino OP_MULT . factor
+   56 comparador: MAYOR .
 
-    ID     desplazar e ir al estado 17
-    CTE_S  desplazar e ir al estado 18
-    CTE_E  desplazar e ir al estado 19
-    CTE_R  desplazar e ir al estado 20
-    PARA   desplazar e ir al estado 21
-
-    factor  ir al estado 56
+    $default  reduce usando la regla 56 (comparador)
 
 
 estado 45
 
-   24 termino: termino OP_DIV . factor
+   57 comparador: DIFF .
 
-    ID     desplazar e ir al estado 17
-    CTE_S  desplazar e ir al estado 18
-    CTE_E  desplazar e ir al estado 19
-    CTE_R  desplazar e ir al estado 20
-    PARA   desplazar e ir al estado 21
-
-    factor  ir al estado 57
+    $default  reduce usando la regla 57 (comparador)
 
 
 estado 46
 
-   30 iteracion: WHILE condicion THEN . programa
+   58 comparador: IGUAL .
 
-    ID       desplazar e ir al estado 1
-    GET      desplazar e ir al estado 2
-    DISPLAY  desplazar e ir al estado 3
-    WHILE    desplazar e ir al estado 4
-    IF       desplazar e ir al estado 5
-    DIM      desplazar e ir al estado 6
-
-    programa     ir al estado 58
-    sentencia    ir al estado 9
-    declaracion  ir al estado 10
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    seleccion    ir al estado 13
-    display      ir al estado 14
-    get          ir al estado 15
+    $default  reduce usando la regla 58 (comparador)
 
 
 estado 47
 
-   34 condicion: condicion AND . comparacion
+   52 comparacion: expresion comparador . expresion
 
-    ID     desplazar e ir al estado 17
-    CTE_S  desplazar e ir al estado 18
-    CTE_E  desplazar e ir al estado 19
-    CTE_R  desplazar e ir al estado 20
-    PARA   desplazar e ir al estado 21
+    ID     desplazar e ir al estado 19
+    CTE_S  desplazar e ir al estado 20
+    CTE_E  desplazar e ir al estado 21
+    CTE_R  desplazar e ir al estado 22
+    PARA   desplazar e ir al estado 23
 
-    expresion    ir al estado 24
-    termino      ir al estado 25
-    factor       ir al estado 26
-    comparacion  ir al estado 59
+    expresion  ir al estado 61
+    termino    ir al estado 27
+    factor     ir al estado 28
 
 
 estado 48
 
-   35 condicion: condicion OR . comparacion
+   39 termino: termino OP_MULT . factor
 
-    ID     desplazar e ir al estado 17
-    CTE_S  desplazar e ir al estado 18
-    CTE_E  desplazar e ir al estado 19
-    CTE_R  desplazar e ir al estado 20
-    PARA   desplazar e ir al estado 21
+    ID     desplazar e ir al estado 19
+    CTE_S  desplazar e ir al estado 20
+    CTE_E  desplazar e ir al estado 21
+    CTE_R  desplazar e ir al estado 22
+    PARA   desplazar e ir al estado 23
 
-    expresion    ir al estado 24
-    termino      ir al estado 25
-    factor       ir al estado 26
-    comparacion  ir al estado 60
+    factor  ir al estado 62
 
 
 estado 49
 
-   31 seleccion: IF condicion THEN . programa
-   32          | IF condicion THEN . programa ELSE programa
+   40 termino: termino OP_DIV . factor
 
-    ID       desplazar e ir al estado 1
-    GET      desplazar e ir al estado 2
-    DISPLAY  desplazar e ir al estado 3
-    WHILE    desplazar e ir al estado 4
-    IF       desplazar e ir al estado 5
-    DIM      desplazar e ir al estado 6
+    ID     desplazar e ir al estado 19
+    CTE_S  desplazar e ir al estado 20
+    CTE_E  desplazar e ir al estado 21
+    CTE_R  desplazar e ir al estado 22
+    PARA   desplazar e ir al estado 23
 
-    programa     ir al estado 61
-    sentencia    ir al estado 9
-    declaracion  ir al estado 10
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    seleccion    ir al estado 13
-    display      ir al estado 14
-    get          ir al estado 15
+    factor  ir al estado 63
 
 
 estado 50
 
-   11 listaVarDec: ID .
+   46 iteracion: WHILE condicion THEN . programa
 
-    $default  reduce usando la regla 11 (listaVarDec)
+    ID       desplazar e ir al estado 1
+    GET      desplazar e ir al estado 2
+    DISPLAY  desplazar e ir al estado 3
+    WHILE    desplazar e ir al estado 4
+    IF       desplazar e ir al estado 5
+    DIM      desplazar e ir al estado 6
+
+    programa     ir al estado 64
+    sentencia    ir al estado 9
+    equmax       ir al estado 10
+    equmin       ir al estado 11
+    declaracion  ir al estado 12
+    asignacion   ir al estado 13
+    iteracion    ir al estado 14
+    seleccion    ir al estado 15
+    display      ir al estado 16
+    get          ir al estado 17
 
 
 estado 51
 
-   10 declaracion: DIM CORCHA listaVarDec . CORCHC AS CORCHA listaVarType CORCHC
-   12 listaVarDec: listaVarDec . COMA ID
+   50 condicion: condicion AND . comparacion
 
-    COMA    desplazar e ir al estado 62
-    CORCHC  desplazar e ir al estado 63
+    ID     desplazar e ir al estado 19
+    CTE_S  desplazar e ir al estado 20
+    CTE_E  desplazar e ir al estado 21
+    CTE_R  desplazar e ir al estado 22
+    PARA   desplazar e ir al estado 23
+
+    expresion    ir al estado 26
+    termino      ir al estado 27
+    factor       ir al estado 28
+    comparacion  ir al estado 65
 
 
 estado 52
 
-   25 factor: PARA expresion PARC .
+   51 condicion: condicion OR . comparacion
 
-    $default  reduce usando la regla 25 (factor)
+    ID     desplazar e ir al estado 19
+    CTE_S  desplazar e ir al estado 20
+    CTE_E  desplazar e ir al estado 21
+    CTE_R  desplazar e ir al estado 22
+    PARA   desplazar e ir al estado 23
+
+    expresion    ir al estado 26
+    termino      ir al estado 27
+    factor       ir al estado 28
+    comparacion  ir al estado 66
 
 
 estado 53
 
-   20 expresion: expresion OP_SUM termino .
-   23 termino: termino . OP_MULT factor
-   24        | termino . OP_DIV factor
+   13 equmax: IF EQUMAX PARA . expresionEqu PYC CORCHA $@1 listaEqu CORCHC PARC
 
-    OP_MULT  desplazar e ir al estado 44
-    OP_DIV   desplazar e ir al estado 45
+    ID     desplazar e ir al estado 67
+    CTE_E  desplazar e ir al estado 68
+    CTE_R  desplazar e ir al estado 69
 
-    $default  reduce usando la regla 20 (expresion)
+    expresionEqu  ir al estado 70
+    terminoEqu    ir al estado 71
+    factorEqu     ir al estado 72
 
 
 estado 54
 
-   21 expresion: expresion OP_RESTA termino .
-   23 termino: termino . OP_MULT factor
-   24        | termino . OP_DIV factor
+   14 equmin: IF EQUMIN PARA . expresionEqu PYC CORCHA listaEqu CORCHC PARC
 
-    OP_MULT  desplazar e ir al estado 44
-    OP_DIV   desplazar e ir al estado 45
+    ID     desplazar e ir al estado 67
+    CTE_E  desplazar e ir al estado 68
+    CTE_R  desplazar e ir al estado 69
 
-    $default  reduce usando la regla 21 (expresion)
+    expresionEqu  ir al estado 73
+    terminoEqu    ir al estado 71
+    factorEqu     ir al estado 72
 
 
 estado 55
 
-   20 expresion: expresion . OP_SUM termino
-   21          | expresion . OP_RESTA termino
-   36 comparacion: expresion comparador expresion .
+   47 seleccion: IF condicion THEN . programa
+   48          | IF condicion THEN . programa ELSE programa
 
-    OP_SUM    desplazar e ir al estado 35
-    OP_RESTA  desplazar e ir al estado 36
+    ID       desplazar e ir al estado 1
+    GET      desplazar e ir al estado 2
+    DISPLAY  desplazar e ir al estado 3
+    WHILE    desplazar e ir al estado 4
+    IF       desplazar e ir al estado 5
+    DIM      desplazar e ir al estado 6
 
-    $default  reduce usando la regla 36 (comparacion)
+    programa     ir al estado 74
+    sentencia    ir al estado 9
+    equmax       ir al estado 10
+    equmin       ir al estado 11
+    declaracion  ir al estado 12
+    asignacion   ir al estado 13
+    iteracion    ir al estado 14
+    seleccion    ir al estado 15
+    display      ir al estado 16
+    get          ir al estado 17
 
 
 estado 56
 
-   23 termino: termino OP_MULT factor .
+   27 listaVarDec: ID .
 
-    $default  reduce usando la regla 23 (termino)
+    $default  reduce usando la regla 27 (listaVarDec)
 
 
 estado 57
 
-   24 termino: termino OP_DIV factor .
+   26 declaracion: DIM CORCHA listaVarDec . CORCHC AS CORCHA listaVarType CORCHC
+   28 listaVarDec: listaVarDec . COMA ID
 
-    $default  reduce usando la regla 24 (termino)
+    COMA    desplazar e ir al estado 75
+    CORCHC  desplazar e ir al estado 76
 
 
 estado 58
 
-    3 programa: programa . sentencia
-   30 iteracion: WHILE condicion THEN programa .
+   41 factor: PARA expresion PARC .
 
-    ID       desplazar e ir al estado 1
-    GET      desplazar e ir al estado 2
-    DISPLAY  desplazar e ir al estado 3
-    WHILE    desplazar e ir al estado 4
-    IF       desplazar e ir al estado 5
-    DIM      desplazar e ir al estado 6
-
-    ID        [reduce usando la regla 30 (iteracion)]
-    GET       [reduce usando la regla 30 (iteracion)]
-    DISPLAY   [reduce usando la regla 30 (iteracion)]
-    WHILE     [reduce usando la regla 30 (iteracion)]
-    IF        [reduce usando la regla 30 (iteracion)]
-    DIM       [reduce usando la regla 30 (iteracion)]
-    $default  reduce usando la regla 30 (iteracion)
-
-    sentencia    ir al estado 32
-    declaracion  ir al estado 10
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    seleccion    ir al estado 13
-    display      ir al estado 14
-    get          ir al estado 15
+    $default  reduce usando la regla 41 (factor)
 
 
 estado 59
 
-   34 condicion: condicion AND comparacion .
+   36 expresion: expresion OP_SUM termino .
+   39 termino: termino . OP_MULT factor
+   40        | termino . OP_DIV factor
 
-    $default  reduce usando la regla 34 (condicion)
+    OP_MULT  desplazar e ir al estado 48
+    OP_DIV   desplazar e ir al estado 49
+
+    $default  reduce usando la regla 36 (expresion)
 
 
 estado 60
 
-   35 condicion: condicion OR comparacion .
+   37 expresion: expresion OP_RESTA termino .
+   39 termino: termino . OP_MULT factor
+   40        | termino . OP_DIV factor
 
-    $default  reduce usando la regla 35 (condicion)
+    OP_MULT  desplazar e ir al estado 48
+    OP_DIV   desplazar e ir al estado 49
+
+    $default  reduce usando la regla 37 (expresion)
 
 
 estado 61
 
-    3 programa: programa . sentencia
-   31 seleccion: IF condicion THEN programa .
-   32          | IF condicion THEN programa . ELSE programa
+   36 expresion: expresion . OP_SUM termino
+   37          | expresion . OP_RESTA termino
+   52 comparacion: expresion comparador expresion .
 
-    ID       desplazar e ir al estado 1
-    GET      desplazar e ir al estado 2
-    DISPLAY  desplazar e ir al estado 3
-    WHILE    desplazar e ir al estado 4
-    IF       desplazar e ir al estado 5
-    ELSE     desplazar e ir al estado 64
-    DIM      desplazar e ir al estado 6
+    OP_SUM    desplazar e ir al estado 39
+    OP_RESTA  desplazar e ir al estado 40
 
-    ID        [reduce usando la regla 31 (seleccion)]
-    GET       [reduce usando la regla 31 (seleccion)]
-    DISPLAY   [reduce usando la regla 31 (seleccion)]
-    WHILE     [reduce usando la regla 31 (seleccion)]
-    IF        [reduce usando la regla 31 (seleccion)]
-    ELSE      [reduce usando la regla 31 (seleccion)]
-    DIM       [reduce usando la regla 31 (seleccion)]
-    $default  reduce usando la regla 31 (seleccion)
-
-    sentencia    ir al estado 32
-    declaracion  ir al estado 10
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    seleccion    ir al estado 13
-    display      ir al estado 14
-    get          ir al estado 15
+    $default  reduce usando la regla 52 (comparacion)
 
 
 estado 62
 
-   12 listaVarDec: listaVarDec COMA . ID
+   39 termino: termino OP_MULT factor .
 
-    ID  desplazar e ir al estado 65
+    $default  reduce usando la regla 39 (termino)
 
 
 estado 63
 
-   10 declaracion: DIM CORCHA listaVarDec CORCHC . AS CORCHA listaVarType CORCHC
+   40 termino: termino OP_DIV factor .
 
-    AS  desplazar e ir al estado 66
+    $default  reduce usando la regla 40 (termino)
 
 
 estado 64
 
-   32 seleccion: IF condicion THEN programa ELSE . programa
+    3 programa: programa . sentencia
+   46 iteracion: WHILE condicion THEN programa .
 
     ID       desplazar e ir al estado 1
     GET      desplazar e ir al estado 2
@@ -887,34 +899,212 @@ estado 64
     IF       desplazar e ir al estado 5
     DIM      desplazar e ir al estado 6
 
-    programa     ir al estado 67
-    sentencia    ir al estado 9
-    declaracion  ir al estado 10
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    seleccion    ir al estado 13
-    display      ir al estado 14
-    get          ir al estado 15
+    ID        [reduce usando la regla 46 (iteracion)]
+    GET       [reduce usando la regla 46 (iteracion)]
+    DISPLAY   [reduce usando la regla 46 (iteracion)]
+    WHILE     [reduce usando la regla 46 (iteracion)]
+    IF        [reduce usando la regla 46 (iteracion)]
+    DIM       [reduce usando la regla 46 (iteracion)]
+    $default  reduce usando la regla 46 (iteracion)
+
+    sentencia    ir al estado 36
+    equmax       ir al estado 10
+    equmin       ir al estado 11
+    declaracion  ir al estado 12
+    asignacion   ir al estado 13
+    iteracion    ir al estado 14
+    seleccion    ir al estado 15
+    display      ir al estado 16
+    get          ir al estado 17
 
 
 estado 65
 
-   12 listaVarDec: listaVarDec COMA ID .
+   50 condicion: condicion AND comparacion .
 
-    $default  reduce usando la regla 12 (listaVarDec)
+    $default  reduce usando la regla 50 (condicion)
 
 
 estado 66
 
-   10 declaracion: DIM CORCHA listaVarDec CORCHC AS . CORCHA listaVarType CORCHC
+   51 condicion: condicion OR comparacion .
 
-    CORCHA  desplazar e ir al estado 68
+    $default  reduce usando la regla 51 (condicion)
 
 
 estado 67
 
+   23 factorEqu: ID .
+
+    $default  reduce usando la regla 23 (factorEqu)
+
+
+estado 68
+
+   24 factorEqu: CTE_E .
+
+    $default  reduce usando la regla 24 (factorEqu)
+
+
+estado 69
+
+   25 factorEqu: CTE_R .
+
+    $default  reduce usando la regla 25 (factorEqu)
+
+
+estado 70
+
+   13 equmax: IF EQUMAX PARA expresionEqu . PYC CORCHA $@1 listaEqu CORCHC PARC
+   18 expresionEqu: expresionEqu . OP_SUM terminoEqu
+   19             | expresionEqu . OP_RESTA terminoEqu
+
+    PYC       desplazar e ir al estado 77
+    OP_SUM    desplazar e ir al estado 78
+    OP_RESTA  desplazar e ir al estado 79
+
+
+estado 71
+
+   17 expresionEqu: terminoEqu .
+   21 terminoEqu: terminoEqu . OP_MULT factorEqu
+   22           | terminoEqu . OP_DIV factorEqu
+
+    OP_MULT  desplazar e ir al estado 80
+    OP_DIV   desplazar e ir al estado 81
+
+    $default  reduce usando la regla 17 (expresionEqu)
+
+
+estado 72
+
+   20 terminoEqu: factorEqu .
+
+    $default  reduce usando la regla 20 (terminoEqu)
+
+
+estado 73
+
+   14 equmin: IF EQUMIN PARA expresionEqu . PYC CORCHA listaEqu CORCHC PARC
+   18 expresionEqu: expresionEqu . OP_SUM terminoEqu
+   19             | expresionEqu . OP_RESTA terminoEqu
+
+    PYC       desplazar e ir al estado 82
+    OP_SUM    desplazar e ir al estado 78
+    OP_RESTA  desplazar e ir al estado 79
+
+
+estado 74
+
     3 programa: programa . sentencia
-   32 seleccion: IF condicion THEN programa ELSE programa .
+   47 seleccion: IF condicion THEN programa .
+   48          | IF condicion THEN programa . ELSE programa
+
+    ID       desplazar e ir al estado 1
+    GET      desplazar e ir al estado 2
+    DISPLAY  desplazar e ir al estado 3
+    WHILE    desplazar e ir al estado 4
+    IF       desplazar e ir al estado 5
+    ELSE     desplazar e ir al estado 83
+    DIM      desplazar e ir al estado 6
+
+    ID        [reduce usando la regla 47 (seleccion)]
+    GET       [reduce usando la regla 47 (seleccion)]
+    DISPLAY   [reduce usando la regla 47 (seleccion)]
+    WHILE     [reduce usando la regla 47 (seleccion)]
+    IF        [reduce usando la regla 47 (seleccion)]
+    ELSE      [reduce usando la regla 47 (seleccion)]
+    DIM       [reduce usando la regla 47 (seleccion)]
+    $default  reduce usando la regla 47 (seleccion)
+
+    sentencia    ir al estado 36
+    equmax       ir al estado 10
+    equmin       ir al estado 11
+    declaracion  ir al estado 12
+    asignacion   ir al estado 13
+    iteracion    ir al estado 14
+    seleccion    ir al estado 15
+    display      ir al estado 16
+    get          ir al estado 17
+
+
+estado 75
+
+   28 listaVarDec: listaVarDec COMA . ID
+
+    ID  desplazar e ir al estado 84
+
+
+estado 76
+
+   26 declaracion: DIM CORCHA listaVarDec CORCHC . AS CORCHA listaVarType CORCHC
+
+    AS  desplazar e ir al estado 85
+
+
+estado 77
+
+   13 equmax: IF EQUMAX PARA expresionEqu PYC . CORCHA $@1 listaEqu CORCHC PARC
+
+    CORCHA  desplazar e ir al estado 86
+
+
+estado 78
+
+   18 expresionEqu: expresionEqu OP_SUM . terminoEqu
+
+    ID     desplazar e ir al estado 67
+    CTE_E  desplazar e ir al estado 68
+    CTE_R  desplazar e ir al estado 69
+
+    terminoEqu  ir al estado 87
+    factorEqu   ir al estado 72
+
+
+estado 79
+
+   19 expresionEqu: expresionEqu OP_RESTA . terminoEqu
+
+    ID     desplazar e ir al estado 67
+    CTE_E  desplazar e ir al estado 68
+    CTE_R  desplazar e ir al estado 69
+
+    terminoEqu  ir al estado 88
+    factorEqu   ir al estado 72
+
+
+estado 80
+
+   21 terminoEqu: terminoEqu OP_MULT . factorEqu
+
+    ID     desplazar e ir al estado 67
+    CTE_E  desplazar e ir al estado 68
+    CTE_R  desplazar e ir al estado 69
+
+    factorEqu  ir al estado 89
+
+
+estado 81
+
+   22 terminoEqu: terminoEqu OP_DIV . factorEqu
+
+    ID     desplazar e ir al estado 67
+    CTE_E  desplazar e ir al estado 68
+    CTE_R  desplazar e ir al estado 69
+
+    factorEqu  ir al estado 90
+
+
+estado 82
+
+   14 equmin: IF EQUMIN PARA expresionEqu PYC . CORCHA listaEqu CORCHC PARC
+
+    CORCHA  desplazar e ir al estado 91
+
+
+estado 83
+
+   48 seleccion: IF condicion THEN programa ELSE . programa
 
     ID       desplazar e ir al estado 1
     GET      desplazar e ir al estado 2
@@ -923,92 +1113,274 @@ estado 67
     IF       desplazar e ir al estado 5
     DIM      desplazar e ir al estado 6
 
-    ID        [reduce usando la regla 32 (seleccion)]
-    GET       [reduce usando la regla 32 (seleccion)]
-    DISPLAY   [reduce usando la regla 32 (seleccion)]
-    WHILE     [reduce usando la regla 32 (seleccion)]
-    IF        [reduce usando la regla 32 (seleccion)]
-    DIM       [reduce usando la regla 32 (seleccion)]
-    $default  reduce usando la regla 32 (seleccion)
-
-    sentencia    ir al estado 32
-    declaracion  ir al estado 10
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    seleccion    ir al estado 13
-    display      ir al estado 14
-    get          ir al estado 15
+    programa     ir al estado 92
+    sentencia    ir al estado 9
+    equmax       ir al estado 10
+    equmin       ir al estado 11
+    declaracion  ir al estado 12
+    asignacion   ir al estado 13
+    iteracion    ir al estado 14
+    seleccion    ir al estado 15
+    display      ir al estado 16
+    get          ir al estado 17
 
 
-estado 68
+estado 84
 
-   10 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA . listaVarType CORCHC
+   28 listaVarDec: listaVarDec COMA ID .
 
-    INTEGER  desplazar e ir al estado 69
-    STRING   desplazar e ir al estado 70
-    REAL     desplazar e ir al estado 71
-
-    listaVarType  ir al estado 72
-    TYPE          ir al estado 73
+    $default  reduce usando la regla 28 (listaVarDec)
 
 
-estado 69
+estado 85
 
-   15 TYPE: INTEGER .
+   26 declaracion: DIM CORCHA listaVarDec CORCHC AS . CORCHA listaVarType CORCHC
 
-    $default  reduce usando la regla 15 (TYPE)
-
-
-estado 70
-
-   16 TYPE: STRING .
-
-    $default  reduce usando la regla 16 (TYPE)
+    CORCHA  desplazar e ir al estado 93
 
 
-estado 71
+estado 86
 
-   17 TYPE: REAL .
+   13 equmax: IF EQUMAX PARA expresionEqu PYC CORCHA . $@1 listaEqu CORCHC PARC
 
-    $default  reduce usando la regla 17 (TYPE)
+    $default  reduce usando la regla 12 ($@1)
 
-
-estado 72
-
-   10 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaVarType . CORCHC
-   14 listaVarType: listaVarType . COMA TYPE
-
-    COMA    desplazar e ir al estado 74
-    CORCHC  desplazar e ir al estado 75
+    $@1  ir al estado 94
 
 
-estado 73
+estado 87
 
-   13 listaVarType: TYPE .
+   18 expresionEqu: expresionEqu OP_SUM terminoEqu .
+   21 terminoEqu: terminoEqu . OP_MULT factorEqu
+   22           | terminoEqu . OP_DIV factorEqu
 
-    $default  reduce usando la regla 13 (listaVarType)
+    OP_MULT  desplazar e ir al estado 80
+    OP_DIV   desplazar e ir al estado 81
 
-
-estado 74
-
-   14 listaVarType: listaVarType COMA . TYPE
-
-    INTEGER  desplazar e ir al estado 69
-    STRING   desplazar e ir al estado 70
-    REAL     desplazar e ir al estado 71
-
-    TYPE  ir al estado 76
+    $default  reduce usando la regla 18 (expresionEqu)
 
 
-estado 75
+estado 88
 
-   10 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaVarType CORCHC .
+   19 expresionEqu: expresionEqu OP_RESTA terminoEqu .
+   21 terminoEqu: terminoEqu . OP_MULT factorEqu
+   22           | terminoEqu . OP_DIV factorEqu
 
-    $default  reduce usando la regla 10 (declaracion)
+    OP_MULT  desplazar e ir al estado 80
+    OP_DIV   desplazar e ir al estado 81
+
+    $default  reduce usando la regla 19 (expresionEqu)
 
 
-estado 76
+estado 89
 
-   14 listaVarType: listaVarType COMA TYPE .
+   21 terminoEqu: terminoEqu OP_MULT factorEqu .
 
-    $default  reduce usando la regla 14 (listaVarType)
+    $default  reduce usando la regla 21 (terminoEqu)
+
+
+estado 90
+
+   22 terminoEqu: terminoEqu OP_DIV factorEqu .
+
+    $default  reduce usando la regla 22 (terminoEqu)
+
+
+estado 91
+
+   14 equmin: IF EQUMIN PARA expresionEqu PYC CORCHA . listaEqu CORCHC PARC
+
+    ID     desplazar e ir al estado 67
+    CTE_E  desplazar e ir al estado 68
+    CTE_R  desplazar e ir al estado 69
+
+    listaEqu   ir al estado 95
+    factorEqu  ir al estado 96
+
+
+estado 92
+
+    3 programa: programa . sentencia
+   48 seleccion: IF condicion THEN programa ELSE programa .
+
+    ID       desplazar e ir al estado 1
+    GET      desplazar e ir al estado 2
+    DISPLAY  desplazar e ir al estado 3
+    WHILE    desplazar e ir al estado 4
+    IF       desplazar e ir al estado 5
+    DIM      desplazar e ir al estado 6
+
+    ID        [reduce usando la regla 48 (seleccion)]
+    GET       [reduce usando la regla 48 (seleccion)]
+    DISPLAY   [reduce usando la regla 48 (seleccion)]
+    WHILE     [reduce usando la regla 48 (seleccion)]
+    IF        [reduce usando la regla 48 (seleccion)]
+    DIM       [reduce usando la regla 48 (seleccion)]
+    $default  reduce usando la regla 48 (seleccion)
+
+    sentencia    ir al estado 36
+    equmax       ir al estado 10
+    equmin       ir al estado 11
+    declaracion  ir al estado 12
+    asignacion   ir al estado 13
+    iteracion    ir al estado 14
+    seleccion    ir al estado 15
+    display      ir al estado 16
+    get          ir al estado 17
+
+
+estado 93
+
+   26 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA . listaVarType CORCHC
+
+    INTEGER  desplazar e ir al estado 97
+    STRING   desplazar e ir al estado 98
+    REAL     desplazar e ir al estado 99
+
+    listaVarType  ir al estado 100
+    TYPE          ir al estado 101
+
+
+estado 94
+
+   13 equmax: IF EQUMAX PARA expresionEqu PYC CORCHA $@1 . listaEqu CORCHC PARC
+
+    ID     desplazar e ir al estado 67
+    CTE_E  desplazar e ir al estado 68
+    CTE_R  desplazar e ir al estado 69
+
+    listaEqu   ir al estado 102
+    factorEqu  ir al estado 96
+
+
+estado 95
+
+   14 equmin: IF EQUMIN PARA expresionEqu PYC CORCHA listaEqu . CORCHC PARC
+   16 listaEqu: listaEqu . COMA factorEqu
+
+    COMA    desplazar e ir al estado 103
+    CORCHC  desplazar e ir al estado 104
+
+
+estado 96
+
+   15 listaEqu: factorEqu .
+
+    $default  reduce usando la regla 15 (listaEqu)
+
+
+estado 97
+
+   31 TYPE: INTEGER .
+
+    $default  reduce usando la regla 31 (TYPE)
+
+
+estado 98
+
+   32 TYPE: STRING .
+
+    $default  reduce usando la regla 32 (TYPE)
+
+
+estado 99
+
+   33 TYPE: REAL .
+
+    $default  reduce usando la regla 33 (TYPE)
+
+
+estado 100
+
+   26 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaVarType . CORCHC
+   30 listaVarType: listaVarType . COMA TYPE
+
+    COMA    desplazar e ir al estado 105
+    CORCHC  desplazar e ir al estado 106
+
+
+estado 101
+
+   29 listaVarType: TYPE .
+
+    $default  reduce usando la regla 29 (listaVarType)
+
+
+estado 102
+
+   13 equmax: IF EQUMAX PARA expresionEqu PYC CORCHA $@1 listaEqu . CORCHC PARC
+   16 listaEqu: listaEqu . COMA factorEqu
+
+    COMA    desplazar e ir al estado 103
+    CORCHC  desplazar e ir al estado 107
+
+
+estado 103
+
+   16 listaEqu: listaEqu COMA . factorEqu
+
+    ID     desplazar e ir al estado 67
+    CTE_E  desplazar e ir al estado 68
+    CTE_R  desplazar e ir al estado 69
+
+    factorEqu  ir al estado 108
+
+
+estado 104
+
+   14 equmin: IF EQUMIN PARA expresionEqu PYC CORCHA listaEqu CORCHC . PARC
+
+    PARC  desplazar e ir al estado 109
+
+
+estado 105
+
+   30 listaVarType: listaVarType COMA . TYPE
+
+    INTEGER  desplazar e ir al estado 97
+    STRING   desplazar e ir al estado 98
+    REAL     desplazar e ir al estado 99
+
+    TYPE  ir al estado 110
+
+
+estado 106
+
+   26 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaVarType CORCHC .
+
+    $default  reduce usando la regla 26 (declaracion)
+
+
+estado 107
+
+   13 equmax: IF EQUMAX PARA expresionEqu PYC CORCHA $@1 listaEqu CORCHC . PARC
+
+    PARC  desplazar e ir al estado 111
+
+
+estado 108
+
+   16 listaEqu: listaEqu COMA factorEqu .
+
+    $default  reduce usando la regla 16 (listaEqu)
+
+
+estado 109
+
+   14 equmin: IF EQUMIN PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC .
+
+    $default  reduce usando la regla 14 (equmin)
+
+
+estado 110
+
+   30 listaVarType: listaVarType COMA TYPE .
+
+    $default  reduce usando la regla 30 (listaVarType)
+
+
+estado 111
+
+   13 equmax: IF EQUMAX PARA expresionEqu PYC CORCHA $@1 listaEqu CORCHC PARC .
+
+    $default  reduce usando la regla 13 (equmax)

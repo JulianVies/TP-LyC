@@ -25,7 +25,7 @@ COMENTARIO		\*\/.+\/\*
 "GET"			{ return (GET);}
 "DISPLAY"		{ return (DISPLAY);}
 
-"EQUMAX"		{return (DISPLAY);}
+"EQUMAX"		{return (EQUMAX);}
 "EQUMIN"		{return (EQUMIN);}
 
 
@@ -83,6 +83,7 @@ COMENTARIO		\*\/.+\/\*
 {CTE_S}			{	
 					// se cambia 30 por 31 por que cuenta las comillas que valen por 2 caracteres 
 					// ( y 30 no es valido).
+					printf("%s",yytext);
 					if(strlen(yytext)<=31){
 						return CTE_S;
 

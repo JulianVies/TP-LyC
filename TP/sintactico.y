@@ -116,7 +116,33 @@ sentencia: asignacion
 		| declaracion
 		| display
 		| get
+		| equmax
+		| equmin
 		;
+
+equmax: IF EQUMAX PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC {printf("equmax");} ;
+equmin: IF EQUMIN PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC {printf("equmin");};
+
+listaEqu: factorEqu
+			| listaEqu COMA factorEqu
+			;
+
+expresionEqu: terminoEqu
+        | expresionEqu OP_SUM terminoEqu       
+        | expresionEqu OP_RESTA terminoEqu  
+		;
+		
+
+terminoEqu: factorEqu 
+        | terminoEqu OP_MULT factorEqu
+        | terminoEqu OP_DIV factorEqu
+		;
+
+factorEqu: ID
+			| CTE_E
+			| CTE_R
+			;
+
 
 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaVarType CORCHC {printf("declaracion regla");} ;
 

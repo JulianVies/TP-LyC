@@ -730,7 +730,7 @@ YY_RULE_SETUP
 case 3:
 YY_RULE_SETUP
 #line 28 "lexico.l"
-{return (DISPLAY);}
+{return (EQUMAX);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
@@ -911,6 +911,7 @@ YY_RULE_SETUP
 {	
 					// se cambia 30 por 31 por que cuenta las comillas que valen por 2 caracteres 
 					// ( y 30 no es valido).
+					printf("%s",yytext);
 					if(strlen(yytext)<=31){
 						return CTE_S;
 
@@ -935,7 +936,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 108 "lexico.l"
+#line 109 "lexico.l"
 {
 					if(atoll(yytext)<=2147483647){	 //convierto a long, comparo con el max de int
 							// entero = atoi(yytext);
@@ -958,7 +959,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 127 "lexico.l"
+#line 128 "lexico.l"
 {
 					if(atof(yytext)<=3.40282347e+38F){
 						// real = atof(yytext);
@@ -982,7 +983,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 148 "lexico.l"
+#line 149 "lexico.l"
 {
 						if(strlen(yytext)<=30){
 							return ID;
@@ -999,15 +1000,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 162 "lexico.l"
+#line 163 "lexico.l"
 
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 163 "lexico.l"
+#line 164 "lexico.l"
 ECHO;
 	YY_BREAK
-#line 1011 "lex.yy.c"
+#line 1012 "lex.yy.c"
 			case YY_STATE_EOF(INITIAL):
 				yyterminate();
 
@@ -1891,4 +1892,4 @@ int main()
 	return 0;
 	}
 #endif
-#line 163 "lexico.l"
+#line 164 "lexico.l"

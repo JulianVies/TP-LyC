@@ -1,3 +1,3 @@
-idPrueba := "12345678912345678912345678912"
-idPrueba := 25
-idPrueba := 25.5
+IF EQUMAX(10+101; [100, 111, var1] ) 
+IF EQUMIN(10; [100, 111] ) 
+IF EQUMIN(10; [100] ) 

@@ -27,6 +27,7 @@ COMENTARIO		\*\/.+\/\*
 
 "EQUMAX"		{return (EQUMAX);}
 "EQUMIN"		{return (EQUMIN);}
+"FOR"			{return (FOR);}
 
 
 "WHILE"			{return (WHILE);}
@@ -59,11 +60,14 @@ COMENTARIO		\*\/.+\/\*
 ">" 			{return (MAYOR);}
 "!="			{return (DIFF);}
 "=="			{return (IGUAL);}
+"="				{return (IGUALFOR);}
 
 
 
 "DIM"			{return (DIM);}
 "AS"			{return (AS);}
+"TO"			{return (TO);}
+"NEXT"			{return (NEXT);}
 
 "integer"		{return (INTEGER);}
 "string"		{return (STRING);}

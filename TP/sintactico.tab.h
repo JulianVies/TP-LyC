@@ -74,11 +74,14 @@
      MAYOR = 290,
      DIFF = 291,
      IGUAL = 292,
-     DIM = 293,
-     AS = 294,
-     INTEGER = 295,
-     STRING = 296,
-     REAL = 297
+     IGUALFOR = 293,
+     DIM = 294,
+     AS = 295,
+     TO = 296,
+     NEXT = 297,
+     INTEGER = 298,
+     STRING = 299,
+     REAL = 300
    };
 #endif
 

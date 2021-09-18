@@ -1,9 +1,4 @@
 NOMBRE                              TIPO DE DATO     VALOR                               LONGITUD                           
-beta                                real             -                                                                      
-b                                   real             -                                                                      
-a                                   integer          -                                                                      
-_1                                                   1                                                                      
-_10                                                  10                                                                     
-_101                                                 101                                                                    
-_100                                                 100                                                                    
-_111                                                 111                                                                    
+_60                                                  60                                                                     
+_21                                                  21                                                                     
+_3                                                   3                                                                      

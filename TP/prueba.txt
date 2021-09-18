@@ -1,5 +1,2 @@
-DIM [ a, b, beta ] AS [ integer, real, real]
-
-a := 1 
-
-WHILE EQUMIN(10+101; [100, 111, a] )
+FOR varAasdasd = 60 TO 21 [ 3 ] NEXT varA
+FOR varA = 60 TO 21 [  ] NEXT varA

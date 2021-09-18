@@ -136,9 +136,12 @@
 %token MAYOR 			
 %token DIFF		
 %token IGUAL
+%token IGUALFOR
 
 %token DIM		
 %token AS		
+%token TO
+%token NEXT
 
 %token INTEGER		
 %token STRING		
@@ -161,9 +164,14 @@ sentencia: asignacion
 		| equmin
 		;
 
-asignacion: ID {BuscarEnLista(&lista_ts, yytext);} OP_ASIG expresion;
+asignacion: ID {BuscarEnLista(&lista_ts, yytext);} OP_ASIG tipoAsig;
 
-iteracion: WHILE condicion THEN programa ;
+tipoAsig: expresion | CTE_S; 
+
+iteracion: while
+		|  for;
+
+while: WHILE condicion THEN programa;
 
 seleccion: IF condicion THEN programa
         |  IF condicion THEN programa ELSE programa
@@ -256,6 +264,9 @@ comparador: MENOR_IGUAL
  			| DIFF		
 			| IGUAL
 			;
+
+for:	FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID {printf("for con step");}
+	| FOR ID IGUALFOR expresion TO expresion CORCHA CORCHC NEXT ID {printf("for sin step");};
 			
 
 

@@ -87,7 +87,7 @@
 	FILE  *yyin;
 
 
-	// Estructuras para la tabla de simbolos
+	//----Estructuras para la lista tabla de simbolos----
 	typedef struct
 	{
 			char nombre[TAM];
@@ -116,6 +116,37 @@
 	int nuevoSimbolo(char* nombre,char* valor,char* tipoDato, int longitud);
 
 	void grabar_lista(t_lista *);
+
+	//----Fin estructuras para la lista----
+
+
+	//----Estructuras para la pila----
+	typedef struct
+	{
+		char text[32];
+	}t_info_p;
+
+	typedef struct s_nodo_p
+	{
+		t_info_p info;
+		struct s_nodo_p *sig;
+	}t_nodo_p;
+
+	typedef t_nodo_p* t_pila; //Sirve para mantener el mismo main que el de pila estatica
+
+	void crearPila(t_pila *); //debo pasarrlo por *
+	int pilaLlena(const t_pila *); //me combiene pasarlo por *
+	int apilar(t_pila *, const t_info_p *);
+	int pilaVacia(const t_pila *);
+	int verTope(const t_pila *, t_info_p *);
+	int desapilar(t_pila *, t_info_p *);
+	void vaciarPila(t_pila *);
+	void mostrarNodo(t_info_p *);
+	int mostrarPila(t_pila *);
+	int cargarInfo(t_info_p *);
+	//----Fin estructuras para la pila----
+
+
 	void reemplazar_blancos_por_guiones_y_quitar_comillas(char *);
 	void quitar_comillas(char *);
 	void agregarGuion(char *pc, char* result);
@@ -124,6 +155,9 @@
 	t_lista lista_ts;
 	t_info dato;
 	
+	t_info_p info_p;
+	t_pila pilaVar;
+	t_pila pilaType;
 
 
 
@@ -515,13 +549,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   111,   111,   113,   114,   117,   118,   119,   120,   121,
-     122,   123,   124,   127,   129,   131,   132,   135,   137,   139,
-     141,   143,   145,   146,   149,   150,   151,   154,   155,   156,
-     159,   160,   161,   164,   165,   168,   169,   172,   172,   172,
-     174,   175,   176,   179,   180,   181,   184,   185,   186,   187,
-     188,   191,   192,   193,   195,   197,   198,   199,   200,   201,
-     202
+       0,   145,   145,   147,   148,   151,   152,   153,   154,   155,
+     156,   157,   158,   161,   163,   165,   166,   169,   181,   183,
+     185,   187,   189,   190,   193,   194,   195,   198,   199,   200,
+     203,   204,   205,   208,   209,   212,   213,   216,   216,   216,
+     218,   219,   220,   223,   224,   225,   228,   229,   230,   231,
+     232,   235,   236,   237,   239,   241,   242,   243,   244,   245,
+     246
 };
 #endif
 
@@ -538,7 +572,7 @@ static const char *const yytname[] =
   "AS", "INTEGER", "STRING", "REAL", "$accept", "inicio", "programa",
   "sentencia", "asignacion", "iteracion", "seleccion", "declaracion",
   "display", "get", "equmax", "equmin", "listaEqu", "expresionEqu",
-  "terminoEqu", "factorEqu", "listaVarDec", "listaVarType", "TYPE",
+  "terminoEqu", "factorEqu", "listaVarDec", "listaType", "TYPE",
   "expresion", "termino", "factor", "condicion", "comparacion",
   "comparador", 0
 };
@@ -1496,7 +1530,42 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-      
+        case 17:
+
+    {
+	while(!pilaVacia(&pilaVar) || !pilaVacia(&pilaType)) {
+		t_info_p variable;
+		desapilar(&pilaVar, &variable);
+
+		t_info_p tipo;
+		desapilar(&pilaType, &tipo);
+
+		nuevoSimbolo(variable.text,"-",tipo.text,-1);
+	}
+;}
+    break;
+
+  case 33:
+
+    {strcpy(info_p.text, yytext); apilar(&pilaVar, &info_p);;}
+    break;
+
+  case 34:
+
+    {strcpy(info_p.text, yytext); apilar(&pilaVar, &info_p);;}
+    break;
+
+  case 35:
+
+    {strcpy(info_p.text, yytext); apilar(&pilaType, &info_p);;}
+    break;
+
+  case 36:
+
+    {strcpy(info_p.text, yytext); apilar(&pilaType, &info_p);;}
+    break;
+
+
 
       default: break;
     }
@@ -1716,10 +1785,13 @@ int main(int argc,char *argv[]){
   }
   else
   {
+	crearPila(&pilaVar);
+	crearPila(&pilaType);
 	yyparse();
+	mostrarPila(&pilaVar);
+	mostrarPila(&pilaType);
 	// t_lista* lista_ts;
 	// crear_ts(lista_ts);
-	printf("llega a esto?");
 	grabar_lista(&lista_ts);
 
   	fclose(yyin);
@@ -1784,6 +1856,9 @@ void agregarValorAlFinal(char * array, char valor){
 	// }
 }
 
+
+// ---- Funciones de Lista ----
+
 //funcion intermedia usada desde lexico para llegar hasta insertar_en_ts
 int nuevoSimbolo(char* nombre,char* valor,char* tipoDato, int longitud){
 	// printf("%s--%s--%s--%d",nombre,valor,tipoDato,longitud);
@@ -1808,7 +1883,6 @@ int insertar_en_ts(t_lista *l_ts, t_info *d) {
 	strcpy(d->longitud,"\0");
 }
 
-//Funciones lista
 void crear_lista(t_lista *p){
     *p=NULL;
 }
@@ -1854,7 +1928,6 @@ void grabar_lista(t_lista *pl){
 	FILE *pf;
 
 	pf = fopen("ts.txt", "wt");
-
 	// Cabecera de la tabla
 	fprintf(pf,"%-35s %-16s %-35s %-35s", "NOMBRE", "TIPO DE DATO", "VALOR", "LONGITUD");
 	// Datos
@@ -1866,3 +1939,97 @@ void grabar_lista(t_lista *pl){
 	fclose(pf);
 }
 
+//---- Fin Funciones de Lista ----
+
+//---- Funciones de Pila ----
+
+void crearPila(t_pila *p)
+{
+    *p=NULL;
+}
+
+int pilaVacia(const t_pila *p)
+{
+    return *p==NULL;
+}
+
+int pilaLlena(const t_pila *p)
+{
+    t_nodo_p *aux = (t_nodo_p *)malloc(sizeof(t_nodo_p));
+    free(aux);
+    return aux == NULL;
+}
+
+
+int apilar(t_pila *p, const t_info_p *d)
+{
+    t_nodo_p *nue=(t_nodo_p *)malloc(sizeof(t_nodo_p));
+    if(nue==NULL)
+        return 0;
+    nue -> info = *d;
+    nue -> sig = *p;
+    *p = nue;
+    return 1;
+}
+
+int verTope(const t_pila *p, t_info_p *d)
+{
+    if(*p==NULL)
+        return 0;
+    *d = (*p) -> info;
+    return 1;
+}
+
+int desapilar(t_pila *p, t_info_p *d)
+{
+    t_nodo_p *aux;
+    if(*p == NULL)
+        return 0;
+    aux = *p;
+    *d = aux -> info;
+    *p = aux -> sig;
+    free(aux);
+    return 1;
+}
+
+void vaciarPila(t_pila *p)
+{
+    t_nodo_p *aux;
+    while(*p)
+    {
+        aux = *p;
+        *p = aux -> sig;
+        free(aux);
+    }
+}
+
+/*int cargarInfo(t_info_p *d)
+{
+    printf("ingrse dni: ");
+    scanf("%d",&d->dni);
+    fflush(stdin);
+    printf("\ningrese apellido y nombre: ");
+    gets(d->apyn);
+    return 1;
+}*/
+
+void mostrarNodo(t_info_p *d)
+{
+    printf("\n Texto: %s",d->text);
+}
+
+int mostrarPila(t_pila *p)
+{
+    t_pila *aux;
+    aux = p;
+    if((*aux)==NULL)
+        return 0;
+    while((*aux)->sig!=NULL)
+    {
+        printf("\n-> texto: %s ",(*aux)->info.text);
+        *aux = (*aux)->sig;
+    }
+    printf("\n-> texto: %s ",(*aux)->info.text);
+}
+
+//---- Fin funciones de Pila ----

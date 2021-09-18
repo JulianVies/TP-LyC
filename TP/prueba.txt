@@ -2,3 +2,5 @@ a1 := 3
 a2 := "sarasasarasa"
 a3 := 4
 a3 := 12321
+a4 := 12
+DIM [ a, b, beta ] AS [ integer, real, string]

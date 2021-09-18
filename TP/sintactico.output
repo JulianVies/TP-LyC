@@ -35,7 +35,7 @@ Gramática
    14 seleccion: IF condicion THEN programa
    15          | IF condicion THEN programa ELSE programa
 
-   16 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaVarType CORCHC
+   16 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC
 
    17 display: DISPLAY factor
 
@@ -63,8 +63,8 @@ Gramática
    32 listaVarDec: ID
    33            | listaVarDec COMA ID
 
-   34 listaVarType: TYPE
-   35             | listaVarType COMA TYPE
+   34 listaType: TYPE
+   35          | listaType COMA TYPE
 
    36 TYPE: INTEGER
    37     | STRING
@@ -179,7 +179,7 @@ factorEqu (57)
     en la izquierda: 29 30 31, en la derecha: 21 22 26 27 28
 listaVarDec (58)
     en la izquierda: 32 33, en la derecha: 16 33
-listaVarType (59)
+listaType (59)
     en la izquierda: 34 35, en la derecha: 16 35
 TYPE (60)
     en la izquierda: 36 37 38, en la derecha: 34 35
@@ -295,7 +295,7 @@ estado 5
 
 estado 6
 
-   16 declaracion: DIM . CORCHA listaVarDec CORCHC AS CORCHA listaVarType CORCHC
+   16 declaracion: DIM . CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC
 
     CORCHA  desplazar e ir al estado 34
 
@@ -550,7 +550,7 @@ estado 33
 
 estado 34
 
-   16 declaracion: DIM CORCHA . listaVarDec CORCHC AS CORCHA listaVarType CORCHC
+   16 declaracion: DIM CORCHA . listaVarDec CORCHC AS CORCHA listaType CORCHC
 
     ID  desplazar e ir al estado 56
 
@@ -819,7 +819,7 @@ estado 56
 
 estado 57
 
-   16 declaracion: DIM CORCHA listaVarDec . CORCHC AS CORCHA listaVarType CORCHC
+   16 declaracion: DIM CORCHA listaVarDec . CORCHC AS CORCHA listaType CORCHC
    33 listaVarDec: listaVarDec . COMA ID
 
     COMA    desplazar e ir al estado 75
@@ -1033,7 +1033,7 @@ estado 75
 
 estado 76
 
-   16 declaracion: DIM CORCHA listaVarDec CORCHC . AS CORCHA listaVarType CORCHC
+   16 declaracion: DIM CORCHA listaVarDec CORCHC . AS CORCHA listaType CORCHC
 
     AS  desplazar e ir al estado 85
 
@@ -1130,7 +1130,7 @@ estado 84
 
 estado 85
 
-   16 declaracion: DIM CORCHA listaVarDec CORCHC AS . CORCHA listaVarType CORCHC
+   16 declaracion: DIM CORCHA listaVarDec CORCHC AS . CORCHA listaType CORCHC
 
     CORCHA  desplazar e ir al estado 93
 
@@ -1230,14 +1230,14 @@ estado 92
 
 estado 93
 
-   16 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA . listaVarType CORCHC
+   16 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA . listaType CORCHC
 
     INTEGER  desplazar e ir al estado 97
     STRING   desplazar e ir al estado 98
     REAL     desplazar e ir al estado 99
 
-    listaVarType  ir al estado 100
-    TYPE          ir al estado 101
+    listaType  ir al estado 100
+    TYPE       ir al estado 101
 
 
 estado 94
@@ -1288,8 +1288,8 @@ estado 99
 
 estado 100
 
-   16 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaVarType . CORCHC
-   35 listaVarType: listaVarType . COMA TYPE
+   16 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType . CORCHC
+   35 listaType: listaType . COMA TYPE
 
     COMA    desplazar e ir al estado 105
     CORCHC  desplazar e ir al estado 106
@@ -1297,9 +1297,9 @@ estado 100
 
 estado 101
 
-   34 listaVarType: TYPE .
+   34 listaType: TYPE .
 
-    $default  reduce usando la regla 34 (listaVarType)
+    $default  reduce usando la regla 34 (listaType)
 
 
 estado 102
@@ -1329,7 +1329,7 @@ estado 104
 
 estado 105
 
-   35 listaVarType: listaVarType COMA . TYPE
+   35 listaType: listaType COMA . TYPE
 
     INTEGER  desplazar e ir al estado 97
     STRING   desplazar e ir al estado 98
@@ -1340,7 +1340,7 @@ estado 105
 
 estado 106
 
-   16 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaVarType CORCHC .
+   16 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC .
 
     $default  reduce usando la regla 16 (declaracion)
 
@@ -1368,6 +1368,6 @@ estado 109
 
 estado 110
 
-   35 listaVarType: listaVarType COMA TYPE .
+   35 listaType: listaType COMA TYPE .
 
-    $default  reduce usando la regla 35 (listaVarType)
+    $default  reduce usando la regla 35 (listaType)

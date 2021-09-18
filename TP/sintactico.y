@@ -18,7 +18,7 @@
 	FILE  *yyin;
 
 
-	// Estructuras para la tabla de simbolos
+	//----Estructuras para la lista tabla de simbolos----
 	typedef struct
 	{
 			char nombre[TAM];
@@ -47,6 +47,37 @@
 	int nuevoSimbolo(char* nombre,char* valor,char* tipoDato, int longitud);
 
 	void grabar_lista(t_lista *);
+
+	//----Fin estructuras para la lista----
+
+
+	//----Estructuras para la pila----
+	typedef struct
+	{
+		char text[32];
+	}t_info_p;
+
+	typedef struct s_nodo_p
+	{
+		t_info_p info;
+		struct s_nodo_p *sig;
+	}t_nodo_p;
+
+	typedef t_nodo_p* t_pila; //Sirve para mantener el mismo main que el de pila estatica
+
+	void crearPila(t_pila *); //debo pasarrlo por *
+	int pilaLlena(const t_pila *); //me combiene pasarlo por *
+	int apilar(t_pila *, const t_info_p *);
+	int pilaVacia(const t_pila *);
+	int verTope(const t_pila *, t_info_p *);
+	int desapilar(t_pila *, t_info_p *);
+	void vaciarPila(t_pila *);
+	void mostrarNodo(t_info_p *);
+	int mostrarPila(t_pila *);
+	int cargarInfo(t_info_p *);
+	//----Fin estructuras para la pila----
+
+
 	void reemplazar_blancos_por_guiones_y_quitar_comillas(char *);
 	void quitar_comillas(char *);
 	void agregarGuion(char *pc, char* result);
@@ -55,6 +86,9 @@
 	t_lista lista_ts;
 	t_info dato;
 	
+	t_info_p info_p;
+	t_pila pilaVar;
+	t_pila pilaType;
 %}
 
 
@@ -132,7 +166,17 @@ seleccion: IF condicion THEN programa
         |  IF condicion THEN programa ELSE programa
 		;
 
-declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaVarType CORCHC;
+declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC {
+	while(!pilaVacia(&pilaVar) || !pilaVacia(&pilaType)) {
+		t_info_p variable;
+		desapilar(&pilaVar, &variable);
+
+		t_info_p tipo;
+		desapilar(&pilaType, &tipo);
+
+		nuevoSimbolo(variable.text,"-",tipo.text,-1);
+	}
+};
 
 display: DISPLAY factor;
 
@@ -161,12 +205,12 @@ factorEqu: ID
 		| CTE_R
 		;
 
-listaVarDec: ID 
-			| listaVarDec COMA ID
+listaVarDec: ID {strcpy(info_p.text, yytext); apilar(&pilaVar, &info_p);}
+			| listaVarDec COMA ID {strcpy(info_p.text, yytext); apilar(&pilaVar, &info_p);}
 			;
 
-listaVarType: TYPE 
-			| listaVarType COMA TYPE
+listaType: TYPE {strcpy(info_p.text, yytext); apilar(&pilaType, &info_p);}
+			| listaType COMA TYPE {strcpy(info_p.text, yytext); apilar(&pilaType, &info_p);}
 			;
 
 TYPE: INTEGER | STRING | REAL;
@@ -212,10 +256,13 @@ int main(int argc,char *argv[]){
   }
   else
   {
+	crearPila(&pilaVar);
+	crearPila(&pilaType);
 	yyparse();
+	mostrarPila(&pilaVar);
+	mostrarPila(&pilaType);
 	// t_lista* lista_ts;
 	// crear_ts(lista_ts);
-	printf("llega a esto?");
 	grabar_lista(&lista_ts);
 
   	fclose(yyin);
@@ -280,6 +327,9 @@ void agregarValorAlFinal(char * array, char valor){
 	// }
 }
 
+
+// ---- Funciones de Lista ----
+
 //funcion intermedia usada desde lexico para llegar hasta insertar_en_ts
 int nuevoSimbolo(char* nombre,char* valor,char* tipoDato, int longitud){
 	// printf("%s--%s--%s--%d",nombre,valor,tipoDato,longitud);
@@ -304,7 +354,6 @@ int insertar_en_ts(t_lista *l_ts, t_info *d) {
 	strcpy(d->longitud,"\0");
 }
 
-//Funciones lista
 void crear_lista(t_lista *p){
     *p=NULL;
 }
@@ -350,7 +399,6 @@ void grabar_lista(t_lista *pl){
 	FILE *pf;
 
 	pf = fopen("ts.txt", "wt");
-
 	// Cabecera de la tabla
 	fprintf(pf,"%-35s %-16s %-35s %-35s", "NOMBRE", "TIPO DE DATO", "VALOR", "LONGITUD");
 	// Datos
@@ -361,3 +409,98 @@ void grabar_lista(t_lista *pl){
 
 	fclose(pf);
 }
+
+//---- Fin Funciones de Lista ----
+
+//---- Funciones de Pila ----
+
+void crearPila(t_pila *p)
+{
+    *p=NULL;
+}
+
+int pilaVacia(const t_pila *p)
+{
+    return *p==NULL;
+}
+
+int pilaLlena(const t_pila *p)
+{
+    t_nodo_p *aux = (t_nodo_p *)malloc(sizeof(t_nodo_p));
+    free(aux);
+    return aux == NULL;
+}
+
+
+int apilar(t_pila *p, const t_info_p *d)
+{
+    t_nodo_p *nue=(t_nodo_p *)malloc(sizeof(t_nodo_p));
+    if(nue==NULL)
+        return 0;
+    nue -> info = *d;
+    nue -> sig = *p;
+    *p = nue;
+    return 1;
+}
+
+int verTope(const t_pila *p, t_info_p *d)
+{
+    if(*p==NULL)
+        return 0;
+    *d = (*p) -> info;
+    return 1;
+}
+
+int desapilar(t_pila *p, t_info_p *d)
+{
+    t_nodo_p *aux;
+    if(*p == NULL)
+        return 0;
+    aux = *p;
+    *d = aux -> info;
+    *p = aux -> sig;
+    free(aux);
+    return 1;
+}
+
+void vaciarPila(t_pila *p)
+{
+    t_nodo_p *aux;
+    while(*p)
+    {
+        aux = *p;
+        *p = aux -> sig;
+        free(aux);
+    }
+}
+
+/*int cargarInfo(t_info_p *d)
+{
+    printf("ingrse dni: ");
+    scanf("%d",&d->dni);
+    fflush(stdin);
+    printf("\ningrese apellido y nombre: ");
+    gets(d->apyn);
+    return 1;
+}*/
+
+void mostrarNodo(t_info_p *d)
+{
+    printf("\n Texto: %s",d->text);
+}
+
+int mostrarPila(t_pila *p)
+{
+    t_pila *aux;
+    aux = p;
+    if((*aux)==NULL)
+        return 0;
+    while((*aux)->sig!=NULL)
+    {
+        printf("\n-> texto: %s ",(*aux)->info.text);
+        *aux = (*aux)->sig;
+    }
+    printf("\n-> texto: %s ",(*aux)->info.text);
+}
+
+//---- Fin funciones de Pila ----

@@ -1,6 +1,5 @@
 NOMBRE                              TIPO DE DATO     VALOR                               LONGITUD                           
-_10                                 CTE_E            10                                  0                                  
-_101                                CTE_E            101                                 0                                  
-_100                                CTE_E            100                                 0                                  
-_111                                CTE_E            111                                 0                                  
-_sarasasarasa                       STRING           sarasasarasa                        12                                 
+_3                                                   3                                                                      
+_sarasasarasa                                        sarasasarasa                        12                                 
+_4                                                   4                                                                      
+_12321                                               12321                                                                  

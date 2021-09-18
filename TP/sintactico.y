@@ -124,7 +124,7 @@ sentencia: asignacion
 		| equmin
 		;
 
-asignacion: ID OP_ASIG expresion {printf("asignacion\n");};
+asignacion: ID OP_ASIG expresion;
 
 iteracion: WHILE condicion THEN programa ;
 
@@ -138,9 +138,9 @@ display: DISPLAY factor;
 
 get:GET	factor;
 
-equmax: IF EQUMAX PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC {printf("equmax");};
+equmax: IF EQUMAX PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC;
 
-equmin: IF EQUMIN PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC {printf("equmin");};
+equmin: IF EQUMIN PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC;
 
 listaEqu: factorEqu
 		| listaEqu COMA factorEqu
@@ -161,15 +161,11 @@ factorEqu: ID
 		| CTE_R
 		;
 
-listaVarDec: ID { 
-			// agregarValorAlFinal(arrayIdsDeclaracion,yytext);
-	 		}
+listaVarDec: ID 
 			| listaVarDec COMA ID
 			;
 
-listaVarType: TYPE { 
-			// agregarValorAlFinal(arrayTypesDeclaracion,yytext);
-	 		}
+listaVarType: TYPE 
 			| listaVarType COMA TYPE
 			;
 
@@ -180,7 +176,7 @@ expresion: termino
         | expresion OP_RESTA termino  
 		;
 		
-termino: factor 
+termino: factor
         | termino OP_MULT factor
         | termino OP_DIV factor
 		;
@@ -290,7 +286,7 @@ int nuevoSimbolo(char* nombre,char* valor,char* tipoDato, int longitud){
 	strcpy(dato.nombre, nombre);
 	strcpy(dato.valor, valor);
 
-	if(tipoDato){strcpy(dato.tipodato,"");
+	if(tipoDato == NULL){strcpy(dato.tipodato,"");
 	}else{strcpy(dato.tipodato,tipoDato);}
 
 	if(longitud == -1){strcpy(dato.longitud,"");
@@ -351,7 +347,6 @@ void crear_ts(t_lista *l_ts){
 }
 
 void grabar_lista(t_lista *pl){
-	printf("prueba de entrada.");
 	FILE *pf;
 
 	pf = fopen("ts.txt", "wt");

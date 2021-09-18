@@ -518,10 +518,10 @@ static const yytype_uint8 yyrline[] =
        0,   111,   111,   113,   114,   117,   118,   119,   120,   121,
      122,   123,   124,   127,   129,   131,   132,   135,   137,   139,
      141,   143,   145,   146,   149,   150,   151,   154,   155,   156,
-     159,   160,   161,   164,   167,   170,   173,   176,   176,   176,
-     178,   179,   180,   183,   184,   185,   188,   189,   190,   191,
-     192,   195,   196,   197,   199,   201,   202,   203,   204,   205,
-     206
+     159,   160,   161,   164,   165,   168,   169,   172,   172,   172,
+     174,   175,   176,   179,   180,   181,   184,   185,   186,   187,
+     188,   191,   192,   193,   195,   197,   198,   199,   200,   201,
+     202
 };
 #endif
 
@@ -1496,46 +1496,7 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 13:
-
-    {printf("asignacion\n");;}
-    break;
-
-  case 15:
-
-    {printf("seleccion sin else\n");;}
-    break;
-
-  case 16:
-
-    {printf("seleccion con else\n");;}
-    break;
-
-  case 20:
-
-    {printf("equmax");;}
-    break;
-
-  case 21:
-
-    {printf("equmin");;}
-    break;
-
-  case 33:
-
-    { 
-			// agregarValorAlFinal(arrayIdsDeclaracion,yytext);
-	 		;}
-    break;
-
-  case 35:
-
-    { 
-			// agregarValorAlFinal(arrayTypesDeclaracion,yytext);
-	 		;}
-    break;
-
-
+      
 
       default: break;
     }
@@ -1829,7 +1790,7 @@ int nuevoSimbolo(char* nombre,char* valor,char* tipoDato, int longitud){
 	strcpy(dato.nombre, nombre);
 	strcpy(dato.valor, valor);
 
-	if(tipoDato){strcpy(dato.tipodato,"");
+	if(tipoDato == NULL){strcpy(dato.tipodato,"");
 	}else{strcpy(dato.tipodato,tipoDato);}
 
 	if(longitud == -1){strcpy(dato.longitud,"");
@@ -1890,7 +1851,6 @@ void crear_ts(t_lista *l_ts){
 }
 
 void grabar_lista(t_lista *pl){
-	printf("prueba de entrada.");
 	FILE *pf;
 
 	pf = fopen("ts.txt", "wt");

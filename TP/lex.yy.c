@@ -471,7 +471,7 @@ char *yytext;
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <math.h>
-	#include "y.tab.h"
+	#include "sintactico.tab.h"
 #line 476 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
@@ -898,7 +898,6 @@ YY_RULE_SETUP
 {
 					if(strlen(yytext)<=200){
 						printf("COMENTARIO\n");
-						//aca no retorna token
 					}else{
 						printf("Error lexico: Los comentarios deben ser de menos de 50 caracteres!");
 						return 1;
@@ -907,27 +906,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 83 "lexico.l"
+#line 82 "lexico.l"
 {	
 					// se cambia 30 por 31 por que cuenta las comillas que valen por 2 caracteres 
 					// ( y 30 no es valido).
 					printf("%s",yytext);
 					if(strlen(yytext)<=31){
+						quitar_comillas(yytext);
+						char stringConGuion[100];
+						agregarGuion(yytext,stringConGuion);
+						nuevoSimbolo(stringConGuion,yytext,"STRING",strlen(yytext));
 						return CTE_S;
-
-						// sacarComillas(yytext);
-						
-						// char stringConGuion[100];
-						// agregarGuion(yytext,stringConGuion);
-						
-						// //lista
-						// strcpy(dato.nombre, stringConGuion);
-						// strcpy(dato.valor, yytext);
-						// strcpy(dato.tipodato, "STRING"); //TODO: revisar si es necesario el tipo de dato en el lexico
-						// dato.longitud = strlen(yytext);
-						// insertar_en_ts(&lista_ts, &dato);
-
-
 					}else{
 						printf("Error lexico: Los string deben ser de menos de 30 caracteres!");
 						return 1;
@@ -936,20 +925,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 109 "lexico.l"
+#line 98 "lexico.l"
 {
 					if(atoll(yytext)<=2147483647){	 //convierto a long, comparo con el max de int
-							// entero = atoi(yytext);
-							return CTE_E;
-
-							// char enteroConGuion[100];
-							// agregarGuion(yytext,enteroConGuion);
-	
-							// //lista
-							// strcpy(dato.nombre, enteroConGuion);
-							// strcpy(dato.valor, yytext);
-							// strcpy(dato.tipodato, "CTE_E");
-							// insertar_en_ts(&lista_ts, &dato);
+						entero = atoi(yytext);
+						char enteroConGuion[100];
+						agregarGuion(yytext,enteroConGuion);
+						nuevoSimbolo(enteroConGuion,yytext,"CTE_E",NULL);
+						return CTE_E;
 					}else{
 						printf("Error lexico: tam de entero excedido!");
 						return 1;
@@ -959,21 +942,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 128 "lexico.l"
+#line 111 "lexico.l"
 {
 					if(atof(yytext)<=3.40282347e+38F){
-						// real = atof(yytext);
+						real = atof(yytext);
+						char realConGuion[100];
+						agregarGuion(yytext,realConGuion);
+						nuevoSimbolo(realConGuion,yytext,"CTE_R",NULL);
 						return CTE_R;
-
-						// char realConGuion[100];
-						// agregarGuion(yytext,realConGuion);
-						// //lista
-
-						// strcpy(dato.nombre,realConGuion);
-						// strcpy(dato.valor, yytext);
-						// strcpy(dato.tipodato, "CTE_R");
-						// insertar_en_ts(&lista_ts, &dato);
-
 					}else{
 						printf("Error lexico: tam de float excedido!");
 						return 1;
@@ -983,15 +959,16 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 149 "lexico.l"
+#line 125 "lexico.l"
 {
 						if(strlen(yytext)<=30){
-							return ID;
 
 							// strcpy(dato.nombre, yytext);
 							// strcpy(dato.valor, "-");
 							// strcpy(dato.tipodato, "-");
 							// insertar_en_ts(&lista_ts, &dato);
+
+							return ID;
 						}else{
 							printf("Error lexico: Los ID deben ser de menos de 30 caracteres!");
 							return 1;
@@ -1000,15 +977,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 163 "lexico.l"
+#line 140 "lexico.l"
 
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 164 "lexico.l"
+#line 141 "lexico.l"
 ECHO;
 	YY_BREAK
-#line 1012 "lex.yy.c"
+#line 989 "lex.yy.c"
 			case YY_STATE_EOF(INITIAL):
 				yyterminate();
 
@@ -1892,4 +1869,4 @@ int main()
 	return 0;
 	}
 #endif
-#line 164 "lexico.l"
+#line 141 "lexico.l"

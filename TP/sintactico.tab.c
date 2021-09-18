@@ -67,8 +67,6 @@
 
 /* Copy the first part of user declarations.  */
 
-/* Line 189 of yacc.c  */
-#line 1 "sintactico.y"
 
 	#include <string.h>
     //lista
@@ -125,8 +123,6 @@
 	t_info dato;
 
 
-/* Line 189 of yacc.c  */
-#line 130 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -194,47 +190,6 @@
      REAL = 296
    };
 #endif
-/* Tokens.  */
-#define ID 258
-#define CTE_S 259
-#define CTE_E 260
-#define CTE_R 261
-#define GET 262
-#define DISPLAY 263
-#define EQUMAX 264
-#define EQUMIN 265
-#define WHILE 266
-#define THEN 267
-#define IF 268
-#define ELSE 269
-#define NOT 270
-#define AND 271
-#define OR 272
-#define OP_ASIG 273
-#define COMA 274
-#define PYC 275
-#define OP_SUM 276
-#define OP_RESTA 277
-#define OP_MULT 278
-#define OP_DIV 279
-#define CORCHA 280
-#define CORCHC 281
-#define PARA 282
-#define PARC 283
-#define LLAVEA 284
-#define LLAVEC 285
-#define MENOR_IGUAL 286
-#define MAYOR_IGUAL 287
-#define MENOR 288
-#define MAYOR 289
-#define DIFF 290
-#define IGUAL 291
-#define DIM 292
-#define AS 293
-#define INTEGER 294
-#define STRING 295
-#define REAL 296
-
 
 
 
@@ -249,8 +204,6 @@ typedef int YYSTYPE;
 /* Copy the second part of user declarations.  */
 
 
-/* Line 264 of yacc.c  */
-#line 254 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -1541,42 +1494,32 @@ yyreduce:
     {
         case 13:
 
-/* Line 1455 of yacc.c  */
-#line 124 "sintactico.y"
-    {printf("equmax");}
+    {printf("equmax");;}
     break;
 
   case 14:
 
-/* Line 1455 of yacc.c  */
-#line 125 "sintactico.y"
-    {printf("equmin");}
+    {printf("equmin");;}
     break;
 
   case 26:
 
-/* Line 1455 of yacc.c  */
-#line 148 "sintactico.y"
-    {printf("declaracion regla");}
+    {printf("declaracion regla");;}
     break;
 
   case 34:
 
-/* Line 1455 of yacc.c  */
-#line 161 "sintactico.y"
     {
 	//verificar que id exista
 	//consultar tipo de dato de id , obtener tipo de dato expresion
 	//tipo id = tipo expresion 
 	// ok
 	// sino, avisa
-	printf("asignacion regla\n");}
+	printf("asignacion regla\n");;}
     break;
 
   case 43:
 
-/* Line 1455 of yacc.c  */
-#line 185 "sintactico.y"
     {
 			// char enteroConGuion[100];
 			// agregarGuion(yytext,enteroConGuion);
@@ -1585,13 +1528,11 @@ yyreduce:
 			// strcpy(dato.valor, yytext);
 			// strcpy(dato.tipodato, "CTE_E");
 			// insertar_en_ts(&lista_ts, &dato);
-		}
+		;}
     break;
 
   case 44:
 
-/* Line 1455 of yacc.c  */
-#line 194 "sintactico.y"
     {
 			// char realConGuion[100];
 			// agregarGuion(yytext,realConGuion);
@@ -1600,13 +1541,11 @@ yyreduce:
 			// strcpy(dato.valor, yytext);
 			// strcpy(dato.tipodato, "CTE_R");
 			// insertar_en_ts(&lista_ts, &dato);
-		}
+		;}
     break;
 
   case 45:
 
-/* Line 1455 of yacc.c  */
-#line 203 "sintactico.y"
     {
 			// quitar_comillas(yytext);
 			// char stringConGuion[100];
@@ -1617,41 +1556,31 @@ yyreduce:
 			// strcpy(dato.tipodato, "STRING"); //TODO: revisar si es necesario el tipo de dato en el lexico
 			// dato.longitud = strlen(yytext);
 			// insertar_en_ts(&lista_ts, &dato);
-		}
+		;}
     break;
 
   case 47:
 
-/* Line 1455 of yacc.c  */
-#line 218 "sintactico.y"
-    {printf("seleccion sin else\n");}
+    {printf("seleccion sin else\n");;}
     break;
 
   case 48:
 
-/* Line 1455 of yacc.c  */
-#line 219 "sintactico.y"
-    {printf("seleccion con else\n");}
+    {printf("seleccion con else\n");;}
     break;
 
   case 49:
 
-/* Line 1455 of yacc.c  */
-#line 222 "sintactico.y"
-    {printf("condicion\n");}
+    {printf("condicion\n");;}
     break;
 
   case 52:
 
-/* Line 1455 of yacc.c  */
-#line 226 "sintactico.y"
-    {printf("comparacion\n");}
+    {printf("comparacion\n");;}
     break;
 
 
 
-/* Line 1455 of yacc.c  */
-#line 1655 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1862,8 +1791,6 @@ yyreturn:
 
 
 
-/* Line 1675 of yacc.c  */
-#line 240 "sintactico.y"
 
 int main(int argc,char *argv[])
 {

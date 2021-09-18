@@ -4,7 +4,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <math.h>
-	#include "y.tab.h"
+	#include "sintactico.tab.h"
 
 	#define TAM 35
 	#define DUPLICADO 2
@@ -16,6 +16,9 @@
 	extern char * yytext;
 
 	FILE  *yyin;
+
+	char arrayIdsDeclaracion[30];
+	char arrayTypesDeclaracion[30];
 
 	// Estructuras para la tabla de simbolos
 	typedef struct
@@ -43,14 +46,17 @@
 
 	void crear_ts(t_lista *l_ts);
 	int insertar_en_ts(t_lista *l_ts, t_info *d);
+	int nuevoSimbolo(char* nombre,char* valor,char* tipoDato, int longitud);
 
 	void grabar_lista(t_lista *);
 	void reemplazar_blancos_por_guiones_y_quitar_comillas(char *);
 	void quitar_comillas(char *);
 	void agregarGuion(char *pc, char* result);
+	void agregarValorAlFinal(char * array, char valor);
 
 	t_lista lista_ts;
 	t_info dato;
+	
 %}
 
 
@@ -146,7 +152,7 @@ factorEqu: ID
 
 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaVarType CORCHC {printf("declaracion regla");} ;
 
-listaVarDec: ID
+listaVarDec: ID { arrayIdsDeclaracion }
 			| listaVarDec COMA ID
 			;
 
@@ -154,10 +160,17 @@ listaVarType: TYPE
 			| listaVarType COMA TYPE
 			;
 
+
 TYPE: INTEGER | STRING | REAL;
 		
 
-asignacion: ID OP_ASIG expresion {printf("asignacion regla\n");}
+asignacion: ID OP_ASIG expresion {
+	//verificar que id exista
+	//consultar tipo de dato de id , obtener tipo de dato expresion
+	//tipo id = tipo expresion 
+	// ok
+	// sino, avisa
+	printf("asignacion regla\n");}
 		;
 		
 
@@ -176,33 +189,33 @@ termino: factor
 factor: PARA expresion PARC
 		| ID
 		| CTE_E {
-			char enteroConGuion[100];
-			agregarGuion(yytext,enteroConGuion);
-			//lista
-			strcpy(dato.nombre, enteroConGuion);
-			strcpy(dato.valor, yytext);
-			strcpy(dato.tipodato, "CTE_E");
-			insertar_en_ts(&lista_ts, &dato);
+			// char enteroConGuion[100];
+			// agregarGuion(yytext,enteroConGuion);
+			// //lista
+			// strcpy(dato.nombre, enteroConGuion);
+			// strcpy(dato.valor, yytext);
+			// strcpy(dato.tipodato, "CTE_E");
+			// insertar_en_ts(&lista_ts, &dato);
 		}
 		| CTE_R {
-			char realConGuion[100];
-			agregarGuion(yytext,realConGuion);
-			//lista
-			strcpy(dato.nombre,realConGuion);
-			strcpy(dato.valor, yytext);
-			strcpy(dato.tipodato, "CTE_R");
-			insertar_en_ts(&lista_ts, &dato);
+			// char realConGuion[100];
+			// agregarGuion(yytext,realConGuion);
+			// //lista
+			// strcpy(dato.nombre,realConGuion);
+			// strcpy(dato.valor, yytext);
+			// strcpy(dato.tipodato, "CTE_R");
+			// insertar_en_ts(&lista_ts, &dato);
 		}
 		| CTE_S {
-			quitar_comillas(yytext);
-			char stringConGuion[100];
-			agregarGuion(yytext,stringConGuion);
-			//lista
-			strcpy(dato.nombre, stringConGuion);
-			strcpy(dato.valor, yytext);
-			strcpy(dato.tipodato, "STRING"); //TODO: revisar si es necesario el tipo de dato en el lexico
-			dato.longitud = strlen(yytext);
-			insertar_en_ts(&lista_ts, &dato);
+			// quitar_comillas(yytext);
+			// char stringConGuion[100];
+			// agregarGuion(yytext,stringConGuion);
+			// //lista
+			// strcpy(dato.nombre, stringConGuion);
+			// strcpy(dato.valor, yytext);
+			// strcpy(dato.tipodato, "STRING"); //TODO: revisar si es necesario el tipo de dato en el lexico
+			// dato.longitud = strlen(yytext);
+			// insertar_en_ts(&lista_ts, &dato);
 		}
 		;
 
@@ -240,6 +253,8 @@ int main(int argc,char *argv[])
   else
   {
 	yyparse();
+	// t_lista* lista_ts;
+	// crear_ts(lista_ts);
 	grabar_lista(&lista_ts);
 
   	fclose(yyin);
@@ -285,6 +300,22 @@ void crear_ts(t_lista *l_ts) {
 	printf("\n");
 	printf("Creando tabla de simbolos...\n");	
 	printf("Tabla de simbolos creada\n");
+}
+
+void agregarValorAlFinal(char * array, char valor){
+	int i;
+	for(i = 0 ; i < array.length ; i++){
+		array[i] = valor;
+	}
+}
+
+
+int nuevoSimbolo(char* nombre,char* valor,char* tipoDato, int longitud){
+	strcpy(dato.nombre, nombre);
+	strcpy(dato.valor, valor);
+	strcpy(dato.tipodato, tipoDato);
+	dato.longitud = longitud;
+	insertar_en_ts(&lista_ts, &dato);
 }
 
 int insertar_en_ts(t_lista *l_ts, t_info *d) {

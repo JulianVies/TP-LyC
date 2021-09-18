@@ -82,12 +82,11 @@ COMENTARIO		\*\/.+\/\*
 {CTE_S}			{	
 					// se cambia 30 por 31 por que cuenta las comillas que valen por 2 caracteres 
 					// ( y 30 no es valido).
-					printf("%s",yytext);
 					if(strlen(yytext)<=31){
 						quitar_comillas(yytext);
 						char stringConGuion[100];
 						agregarGuion(yytext,stringConGuion);
-						nuevoSimbolo(stringConGuion,yytext,"STRING",strlen(yytext));
+						nuevoSimbolo(stringConGuion,yytext,NULL,strlen(yytext));
 						return CTE_S;
 					}else{
 						printf("Error lexico: Los string deben ser de menos de 30 caracteres!");
@@ -100,7 +99,7 @@ COMENTARIO		\*\/.+\/\*
 						entero = atoi(yytext);
 						char enteroConGuion[100];
 						agregarGuion(yytext,enteroConGuion);
-						nuevoSimbolo(enteroConGuion,yytext,"CTE_E",NULL);
+						nuevoSimbolo(enteroConGuion,yytext,NULL,-1);
 						return CTE_E;
 					}else{
 						printf("Error lexico: tam de entero excedido!");
@@ -113,7 +112,7 @@ COMENTARIO		\*\/.+\/\*
 						real = atof(yytext);
 						char realConGuion[100];
 						agregarGuion(yytext,realConGuion);
-						nuevoSimbolo(realConGuion,yytext,"CTE_R",NULL);
+						nuevoSimbolo(realConGuion,yytext,NULL,-1);
 						return CTE_R;
 					}else{
 						printf("Error lexico: tam de float excedido!");
@@ -124,12 +123,10 @@ COMENTARIO		\*\/.+\/\*
 
 {ID}			{
 						if(strlen(yytext)<=30){
-
 							// strcpy(dato.nombre, yytext);
 							// strcpy(dato.valor, "-");
 							// strcpy(dato.tipodato, "-");
 							// insertar_en_ts(&lista_ts, &dato);
-
 							return ID;
 						}else{
 							printf("Error lexico: Los ID deben ser de menos de 30 caracteres!");

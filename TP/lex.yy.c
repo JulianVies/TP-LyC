@@ -910,12 +910,11 @@ YY_RULE_SETUP
 {	
 					// se cambia 30 por 31 por que cuenta las comillas que valen por 2 caracteres 
 					// ( y 30 no es valido).
-					printf("%s",yytext);
 					if(strlen(yytext)<=31){
 						quitar_comillas(yytext);
 						char stringConGuion[100];
 						agregarGuion(yytext,stringConGuion);
-						nuevoSimbolo(stringConGuion,yytext,"STRING",strlen(yytext));
+						nuevoSimbolo(stringConGuion,yytext,NULL,strlen(yytext));
 						return CTE_S;
 					}else{
 						printf("Error lexico: Los string deben ser de menos de 30 caracteres!");
@@ -925,13 +924,13 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 98 "lexico.l"
+#line 97 "lexico.l"
 {
 					if(atoll(yytext)<=2147483647){	 //convierto a long, comparo con el max de int
 						entero = atoi(yytext);
 						char enteroConGuion[100];
 						agregarGuion(yytext,enteroConGuion);
-						nuevoSimbolo(enteroConGuion,yytext,"CTE_E",NULL);
+						nuevoSimbolo(enteroConGuion,yytext,NULL,-1);
 						return CTE_E;
 					}else{
 						printf("Error lexico: tam de entero excedido!");
@@ -942,13 +941,13 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 111 "lexico.l"
+#line 110 "lexico.l"
 {
 					if(atof(yytext)<=3.40282347e+38F){
 						real = atof(yytext);
 						char realConGuion[100];
 						agregarGuion(yytext,realConGuion);
-						nuevoSimbolo(realConGuion,yytext,"CTE_R",NULL);
+						nuevoSimbolo(realConGuion,yytext,NULL,-1);
 						return CTE_R;
 					}else{
 						printf("Error lexico: tam de float excedido!");
@@ -959,15 +958,13 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 125 "lexico.l"
+#line 124 "lexico.l"
 {
 						if(strlen(yytext)<=30){
-
 							// strcpy(dato.nombre, yytext);
 							// strcpy(dato.valor, "-");
 							// strcpy(dato.tipodato, "-");
 							// insertar_en_ts(&lista_ts, &dato);
-
 							return ID;
 						}else{
 							printf("Error lexico: Los ID deben ser de menos de 30 caracteres!");
@@ -977,15 +974,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 140 "lexico.l"
+#line 137 "lexico.l"
 
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 141 "lexico.l"
+#line 138 "lexico.l"
 ECHO;
 	YY_BREAK
-#line 989 "lex.yy.c"
+#line 986 "lex.yy.c"
 			case YY_STATE_EOF(INITIAL):
 				yyterminate();
 
@@ -1869,4 +1866,4 @@ int main()
 	return 0;
 	}
 #endif
-#line 141 "lexico.l"
+#line 138 "lexico.l"

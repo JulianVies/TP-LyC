@@ -86,13 +86,14 @@
 
 	FILE  *yyin;
 
+
 	// Estructuras para la tabla de simbolos
 	typedef struct
 	{
 			char nombre[TAM];
 			char tipodato[TAM];
 			char valor[TAM];
-			int longitud;
+			char longitud[TAM];
 	}t_info;
 
 	typedef struct s_nodo
@@ -118,9 +119,11 @@
 	void reemplazar_blancos_por_guiones_y_quitar_comillas(char *);
 	void quitar_comillas(char *);
 	void agregarGuion(char *pc, char* result);
+	void agregarValorAlFinal(char * array, char valor);
 
 	t_lista lista_ts;
 	t_info dato;
+	
 
 
 
@@ -477,48 +480,48 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyprhs[] =
 {
        0,     0,     3,     5,     7,    10,    12,    14,    16,    18,
-      20,    22,    24,    26,    36,    46,    48,    52,    54,    58,
-      62,    64,    68,    72,    74,    76,    78,    87,    89,    93,
-      95,    99,   101,   103,   105,   109,   111,   115,   119,   121,
-     125,   129,   133,   135,   137,   139,   141,   146,   151,   158,
-     160,   164,   168,   172,   174,   176,   178,   180,   182,   184,
-     187
+      20,    22,    24,    26,    30,    35,    40,    47,    56,    59,
+      62,    72,    82,    84,    88,    90,    94,    98,   100,   104,
+     108,   110,   112,   114,   116,   120,   122,   126,   128,   130,
+     132,   134,   138,   142,   144,   148,   152,   156,   158,   160,
+     162,   164,   166,   170,   174,   178,   180,   182,   184,   186,
+     188
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
       43,     0,    -1,    44,    -1,    45,    -1,    44,    45,    -1,
-      56,    -1,    60,    -1,    61,    -1,    52,    -1,    65,    -1,
-      66,    -1,    46,    -1,    47,    -1,    13,     9,    27,    49,
-      20,    25,    48,    26,    28,    -1,    13,    10,    27,    49,
-      20,    25,    48,    26,    28,    -1,    51,    -1,    48,    19,
-      51,    -1,    50,    -1,    49,    21,    50,    -1,    49,    22,
-      50,    -1,    51,    -1,    50,    23,    51,    -1,    50,    24,
-      51,    -1,     3,    -1,     5,    -1,     6,    -1,    37,    25,
-      53,    26,    38,    25,    54,    26,    -1,     3,    -1,    53,
-      19,     3,    -1,    55,    -1,    54,    19,    55,    -1,    39,
-      -1,    40,    -1,    41,    -1,     3,    18,    57,    -1,    58,
-      -1,    57,    21,    58,    -1,    57,    22,    58,    -1,    59,
-      -1,    58,    23,    59,    -1,    58,    24,    59,    -1,    27,
-      57,    28,    -1,     3,    -1,     5,    -1,     6,    -1,     4,
-      -1,    11,    62,    12,    44,    -1,    13,    62,    12,    44,
-      -1,    13,    62,    12,    44,    14,    44,    -1,    63,    -1,
-      62,    16,    63,    -1,    62,    17,    63,    -1,    57,    64,
-      57,    -1,    31,    -1,    32,    -1,    33,    -1,    34,    -1,
-      35,    -1,    36,    -1,     8,    59,    -1,     7,    59,    -1
+      46,    -1,    47,    -1,    48,    -1,    49,    -1,    50,    -1,
+      51,    -1,    52,    -1,    53,    -1,     3,    18,    61,    -1,
+      11,    64,    12,    44,    -1,    13,    64,    12,    44,    -1,
+      13,    64,    12,    44,    14,    44,    -1,    37,    25,    58,
+      26,    38,    25,    59,    26,    -1,     8,    63,    -1,     7,
+      63,    -1,    13,     9,    27,    55,    20,    25,    54,    26,
+      28,    -1,    13,    10,    27,    55,    20,    25,    54,    26,
+      28,    -1,    57,    -1,    54,    19,    57,    -1,    56,    -1,
+      55,    21,    56,    -1,    55,    22,    56,    -1,    57,    -1,
+      56,    23,    57,    -1,    56,    24,    57,    -1,     3,    -1,
+       5,    -1,     6,    -1,     3,    -1,    58,    19,     3,    -1,
+      60,    -1,    59,    19,    60,    -1,    39,    -1,    40,    -1,
+      41,    -1,    62,    -1,    61,    21,    62,    -1,    61,    22,
+      62,    -1,    63,    -1,    62,    23,    63,    -1,    62,    24,
+      63,    -1,    27,    61,    28,    -1,     3,    -1,     5,    -1,
+       6,    -1,     4,    -1,    65,    -1,    64,    16,    65,    -1,
+      64,    17,    65,    -1,    61,    66,    61,    -1,    31,    -1,
+      32,    -1,    33,    -1,    34,    -1,    35,    -1,    36,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   108,   108,   110,   111,   114,   115,   116,   117,   118,
-     119,   120,   121,   124,   125,   127,   128,   131,   132,   133,
-     137,   138,   139,   142,   143,   144,   148,   150,   151,   154,
-     155,   158,   158,   158,   161,   171,   172,   173,   177,   178,
-     179,   183,   184,   185,   194,   203,   216,   218,   219,   222,
-     223,   224,   226,   228,   229,   230,   231,   232,   233,   236,
-     238
+       0,   111,   111,   113,   114,   117,   118,   119,   120,   121,
+     122,   123,   124,   127,   129,   131,   132,   135,   137,   139,
+     141,   143,   145,   146,   149,   150,   151,   154,   155,   156,
+     159,   160,   161,   164,   167,   170,   173,   176,   176,   176,
+     178,   179,   180,   183,   184,   185,   188,   189,   190,   191,
+     192,   195,   196,   197,   199,   201,   202,   203,   204,   205,
+     206
 };
 #endif
 
@@ -533,10 +536,11 @@ static const char *const yytname[] =
   "OP_DIV", "CORCHA", "CORCHC", "PARA", "PARC", "LLAVEA", "LLAVEC",
   "MENOR_IGUAL", "MAYOR_IGUAL", "MENOR", "MAYOR", "DIFF", "IGUAL", "DIM",
   "AS", "INTEGER", "STRING", "REAL", "$accept", "inicio", "programa",
-  "sentencia", "equmax", "equmin", "listaEqu", "expresionEqu",
-  "terminoEqu", "factorEqu", "declaracion", "listaVarDec", "listaVarType",
-  "TYPE", "asignacion", "expresion", "termino", "factor", "iteracion",
-  "seleccion", "condicion", "comparacion", "comparador", "display", "get", 0
+  "sentencia", "asignacion", "iteracion", "seleccion", "declaracion",
+  "display", "get", "equmax", "equmin", "listaEqu", "expresionEqu",
+  "terminoEqu", "factorEqu", "listaVarDec", "listaVarType", "TYPE",
+  "expresion", "termino", "factor", "condicion", "comparacion",
+  "comparador", 0
 };
 #endif
 
@@ -557,11 +561,11 @@ static const yytype_uint16 yytoknum[] =
 static const yytype_uint8 yyr1[] =
 {
        0,    42,    43,    44,    44,    45,    45,    45,    45,    45,
-      45,    45,    45,    46,    47,    48,    48,    49,    49,    49,
-      50,    50,    50,    51,    51,    51,    52,    53,    53,    54,
-      54,    55,    55,    55,    56,    57,    57,    57,    58,    58,
-      58,    59,    59,    59,    59,    59,    60,    61,    61,    62,
-      62,    62,    63,    64,    64,    64,    64,    64,    64,    65,
+      45,    45,    45,    46,    47,    48,    48,    49,    50,    51,
+      52,    53,    54,    54,    55,    55,    55,    56,    56,    56,
+      57,    57,    57,    58,    58,    59,    59,    60,    60,    60,
+      61,    61,    61,    62,    62,    62,    63,    63,    63,    63,
+      63,    64,    64,    64,    65,    66,    66,    66,    66,    66,
       66
 };
 
@@ -569,12 +573,12 @@ static const yytype_uint8 yyr1[] =
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     1,     1,     2,     1,     1,     1,     1,     1,
-       1,     1,     1,     9,     9,     1,     3,     1,     3,     3,
-       1,     3,     3,     1,     1,     1,     8,     1,     3,     1,
-       3,     1,     1,     1,     3,     1,     3,     3,     1,     3,
-       3,     3,     1,     1,     1,     1,     4,     4,     6,     1,
-       3,     3,     3,     1,     1,     1,     1,     1,     1,     2,
-       2
+       1,     1,     1,     3,     4,     4,     6,     8,     2,     2,
+       9,     9,     1,     3,     1,     3,     3,     1,     3,     3,
+       1,     1,     1,     1,     3,     1,     3,     1,     1,     1,
+       1,     3,     3,     1,     3,     3,     3,     1,     1,     1,
+       1,     1,     3,     3,     3,     1,     1,     1,     1,     1,
+       1
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -583,25 +587,25 @@ static const yytype_uint8 yyr2[] =
 static const yytype_uint8 yydefact[] =
 {
        0,     0,     0,     0,     0,     0,     0,     0,     2,     3,
-      11,    12,     8,     5,     6,     7,     9,    10,     0,    42,
-      45,    43,    44,     0,    60,    59,     0,    35,    38,     0,
-      49,     0,     0,     0,     0,     1,     4,    34,     0,     0,
-       0,    53,    54,    55,    56,    57,    58,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,    27,     0,    41,    36,
-      37,    52,    39,    40,    46,    50,    51,    23,    24,    25,
-       0,    17,    20,     0,    47,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,    28,     0,     0,    18,    19,    21,
-      22,     0,    48,     0,     0,    15,     0,    31,    32,    33,
-       0,    29,     0,     0,     0,     0,    26,    16,    13,    14,
-      30
+       5,     6,     7,     8,     9,    10,    11,    12,     0,    47,
+      50,    48,    49,     0,    19,    18,     0,    40,    43,     0,
+      51,     0,     0,     0,     0,     1,     4,    13,     0,     0,
+       0,    55,    56,    57,    58,    59,    60,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,    33,     0,    46,    41,
+      42,    54,    44,    45,    14,    52,    53,    30,    31,    32,
+       0,    24,    27,     0,    15,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    34,     0,     0,    25,    26,    28,
+      29,     0,    16,     0,     0,    22,     0,    37,    38,    39,
+       0,    35,     0,     0,     0,     0,    17,    23,    20,    21,
+      36
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     7,     8,     9,    10,    11,    94,    70,    71,    72,
-      12,    57,   100,   101,    13,    26,    27,    28,    14,    15,
-      29,    30,    47,    16,    17
+      -1,     7,     8,     9,    10,    11,    12,    13,    14,    15,
+      16,    17,    94,    70,    71,    72,    57,   100,   101,    26,
+      27,    28,    29,    30,    47
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
@@ -626,9 +630,9 @@ static const yytype_int8 yypact[] =
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -58,   -58,   -45,    -8,   -58,   -58,     6,    55,    23,   -57,
-     -58,   -58,   -58,     2,   -58,   -14,    64,    -1,   -58,   -58,
-     103,    54,   -58,   -58,   -58
+     -58,   -58,   -45,    -8,   -58,   -58,   -58,   -58,   -58,   -58,
+     -58,   -58,     6,    55,    23,   -57,   -58,   -58,     2,   -14,
+      64,    -1,   103,    54,   -58
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -671,17 +675,17 @@ static const yytype_uint8 yycheck[] =
 static const yytype_uint8 yystos[] =
 {
        0,     3,     7,     8,    11,    13,    37,    43,    44,    45,
-      46,    47,    52,    56,    60,    61,    65,    66,    18,     3,
-       4,     5,     6,    27,    59,    59,    57,    58,    59,    62,
-      63,     9,    10,    62,    25,     0,    45,    57,    57,    21,
-      22,    31,    32,    33,    34,    35,    36,    64,    23,    24,
-      12,    16,    17,    27,    27,    12,     3,    53,    28,    58,
-      58,    57,    59,    59,    44,    63,    63,     3,     5,     6,
-      49,    50,    51,    49,    44,    19,    26,    20,    21,    22,
-      23,    24,    20,    14,     3,    38,    25,    50,    50,    51,
-      51,    25,    44,    25,    48,    51,    48,    39,    40,    41,
-      54,    55,    19,    26,    26,    19,    26,    51,    28,    28,
-      55
+      46,    47,    48,    49,    50,    51,    52,    53,    18,     3,
+       4,     5,     6,    27,    63,    63,    61,    62,    63,    64,
+      65,     9,    10,    64,    25,     0,    45,    61,    61,    21,
+      22,    31,    32,    33,    34,    35,    36,    66,    23,    24,
+      12,    16,    17,    27,    27,    12,     3,    58,    28,    62,
+      62,    61,    63,    63,    44,    65,    65,     3,     5,     6,
+      55,    56,    57,    55,    44,    19,    26,    20,    21,    22,
+      23,    24,    20,    14,     3,    38,    25,    56,    56,    57,
+      57,    25,    44,    25,    54,    57,    54,    39,    40,    41,
+      59,    60,    19,    26,    26,    19,    26,    57,    28,    28,
+      60
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1494,89 +1498,41 @@ yyreduce:
     {
         case 13:
 
-    {printf("equmax");;}
+    {printf("asignacion\n");;}
     break;
 
-  case 14:
-
-    {printf("equmin");;}
-    break;
-
-  case 26:
-
-    {printf("declaracion regla");;}
-    break;
-
-  case 34:
-
-    {
-	//verificar que id exista
-	//consultar tipo de dato de id , obtener tipo de dato expresion
-	//tipo id = tipo expresion 
-	// ok
-	// sino, avisa
-	printf("asignacion regla\n");;}
-    break;
-
-  case 43:
-
-    {
-			// char enteroConGuion[100];
-			// agregarGuion(yytext,enteroConGuion);
-			// //lista
-			// strcpy(dato.nombre, enteroConGuion);
-			// strcpy(dato.valor, yytext);
-			// strcpy(dato.tipodato, "CTE_E");
-			// insertar_en_ts(&lista_ts, &dato);
-		;}
-    break;
-
-  case 44:
-
-    {
-			// char realConGuion[100];
-			// agregarGuion(yytext,realConGuion);
-			// //lista
-			// strcpy(dato.nombre,realConGuion);
-			// strcpy(dato.valor, yytext);
-			// strcpy(dato.tipodato, "CTE_R");
-			// insertar_en_ts(&lista_ts, &dato);
-		;}
-    break;
-
-  case 45:
-
-    {
-			// quitar_comillas(yytext);
-			// char stringConGuion[100];
-			// agregarGuion(yytext,stringConGuion);
-			// //lista
-			// strcpy(dato.nombre, stringConGuion);
-			// strcpy(dato.valor, yytext);
-			// strcpy(dato.tipodato, "STRING"); //TODO: revisar si es necesario el tipo de dato en el lexico
-			// dato.longitud = strlen(yytext);
-			// insertar_en_ts(&lista_ts, &dato);
-		;}
-    break;
-
-  case 47:
+  case 15:
 
     {printf("seleccion sin else\n");;}
     break;
 
-  case 48:
+  case 16:
 
     {printf("seleccion con else\n");;}
     break;
 
-  case 49:
+  case 20:
 
-    {printf("condicion\n");;}
+    {printf("equmax");;}
     break;
 
-  case 52:
+  case 21:
 
-    {printf("comparacion\n");;}
+    {printf("equmin");;}
+    break;
+
+  case 33:
+
+    { 
+			// agregarValorAlFinal(arrayIdsDeclaracion,yytext);
+	 		;}
+    break;
+
+  case 35:
+
+    { 
+			// agregarValorAlFinal(arrayTypesDeclaracion,yytext);
+	 		;}
     break;
 
 
@@ -1792,8 +1748,7 @@ yyreturn:
 
 
 
-int main(int argc,char *argv[])
-{
+int main(int argc,char *argv[]){
   if ((yyin = fopen(argv[1], "rt")) == NULL)
   {
 	printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
@@ -1803,6 +1758,7 @@ int main(int argc,char *argv[])
 	yyparse();
 	// t_lista* lista_ts;
 	// crear_ts(lista_ts);
+	printf("llega a esto?");
 	grabar_lista(&lista_ts);
 
   	fclose(yyin);
@@ -1811,15 +1767,15 @@ int main(int argc,char *argv[])
 }
 
 int yywrap(){}
-int yyerror(char* mensaje)
- {
+
+int yyerror(char* mensaje){
 	printf("Error sintactico: %s\n", mensaje );
 	system ("Pause");
 	exit (1);
  }
 
- void agregarGuion(char *pc, char* result)
-{
+//Funciones utiles
+void agregarGuion(char *pc, char* result){
     const char *middle = pc;
     result[0] = '\0';
     strcat(result, "_");
@@ -1827,7 +1783,6 @@ int yyerror(char* mensaje)
 }
 
 void quitar_comillas(char *pc){
-
 	// Cadena del tipo "" (sin nada)
 	if(strlen(pc) == 2){
 		*pc='\0';
@@ -1842,38 +1797,62 @@ void quitar_comillas(char *pc){
 		*pc='\0';
 	}	
 }
-void crear_ts(t_lista *l_ts) {
-	crear_lista(l_ts);
 
-	printf("\n");
-	printf("Creando tabla de simbolos...\n");	
-	printf("Tabla de simbolos creada\n");
+int compararPorNombre(const void *d1, const void *d2){
+    t_info *dato1=(t_info*)d1;
+    t_info *dato2=(t_info*)d2;
+
+    return strcmp(dato1->nombre, dato2->nombre);
 }
 
+void reemplazar_blancos_por_guiones_y_quitar_comillas(char *pc){
+	quitar_comillas(pc);
+	char *aux = pc;
+	while(*aux != '\0'){
+		if(*aux == ' '){
+			*aux= '_';
+		}
+		aux++;
+	}
+}
+
+void agregarValorAlFinal(char * array, char valor){
+	// int i;
+	// for(i = 0 ; i < array ; i++){
+	// 	array[i] = valor;
+	// }
+}
+
+//funcion intermedia usada desde lexico para llegar hasta insertar_en_ts
 int nuevoSimbolo(char* nombre,char* valor,char* tipoDato, int longitud){
+	// printf("%s--%s--%s--%d",nombre,valor,tipoDato,longitud);
 	strcpy(dato.nombre, nombre);
 	strcpy(dato.valor, valor);
-	strcpy(dato.tipodato, tipoDato);
-	dato.longitud = longitud;
+
+	if(tipoDato){strcpy(dato.tipodato,"");
+	}else{strcpy(dato.tipodato,tipoDato);}
+
+	if(longitud == -1){strcpy(dato.longitud,"");
+	}else{itoa(longitud,dato.longitud,10);}
+	
 	insertar_en_ts(&lista_ts, &dato);
 }
 
 int insertar_en_ts(t_lista *l_ts, t_info *d) {
 	insertarEnListaEnOrdenSinDuplicados(l_ts, d, compararPorNombre);
-	
 	// Un reinicio de la estructura dato para que vuelva a ser reutilizada sin problemas (quizas no hace falta) .
 	strcpy(d->nombre,"\0");
 	strcpy(d->tipodato,"\0");
 	strcpy(d->valor,"\0");	
-	d->longitud=0;
+	strcpy(d->longitud,"\0");
 }
 
-void crear_lista(t_lista *p) {
+//Funciones lista
+void crear_lista(t_lista *p){
     *p=NULL;
 }
 
-int insertarEnListaEnOrdenSinDuplicados(t_lista *pl, t_info *d, t_cmp comparar)
-{
+int insertarEnListaEnOrdenSinDuplicados(t_lista *pl, t_info *d, t_cmp comparar){
     int cmp;
     t_nodo *nuevo;
     while(*pl && (cmp=comparar(d, &(*pl)->info))!=0)
@@ -1889,29 +1868,29 @@ int insertarEnListaEnOrdenSinDuplicados(t_lista *pl, t_info *d, t_cmp comparar)
     return 1;
 }
 
-int BuscarEnLista(t_lista *pl, char* cadena )
-{
+int BuscarEnLista(t_lista *pl, char* cadena ){
     int cmp;
 
     while(*pl && (cmp=strcmp(cadena,(*pl)->info.nombre))!=0)
         pl=&(*pl)->pSig;
     if(cmp==0)
-	{
+	{	
+		printf("\nvariable declarada");
         return ID_EN_LISTA;
 	}
 	printf("\nVariable sin declarar: %s \n",cadena);
     exit(1);
 }
 
-int compararPorNombre(const void *d1, const void *d2)
-{
-    t_info *dato1=(t_info*)d1;
-    t_info *dato2=(t_info*)d2;
-
-    return strcmp(dato1->nombre, dato2->nombre);
+void crear_ts(t_lista *l_ts){
+	crear_lista(l_ts);
+	printf("\n");
+	printf("Creando tabla de simbolos...\n");	
+	printf("Tabla de simbolos creada\n");
 }
 
 void grabar_lista(t_lista *pl){
+	printf("prueba de entrada.");
 	FILE *pf;
 
 	pf = fopen("ts.txt", "wt");
@@ -1920,23 +1899,10 @@ void grabar_lista(t_lista *pl){
 	fprintf(pf,"%-35s %-16s %-35s %-35s", "NOMBRE", "TIPO DE DATO", "VALOR", "LONGITUD");
 	// Datos
 	while(*pl) {
-		fprintf(pf,"\n%-35s %-16s %-35s %-35d", (*pl)->info.nombre, (*pl)->info.tipodato, (*pl)->info.valor, (*pl)->info.longitud);
+		fprintf(pf,"\n%-35s %-16s %-35s %-35s", (*pl)->info.nombre, (*pl)->info.tipodato, (*pl)->info.valor, (*pl)->info.longitud);
 		pl=&(*pl)->pSig;
 	}
 
 	fclose(pf);
 }
 
-void reemplazar_blancos_por_guiones_y_quitar_comillas(char *pc){
-
-	quitar_comillas(pc);
-
-	char *aux = pc;
-	
-	while(*aux != '\0'){
-		if(*aux == ' '){
-			*aux= '_';
-		}
-		aux++;
-	}
-}

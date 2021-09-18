@@ -1,1 +1,9 @@
 NOMBRE                              TIPO DE DATO     VALOR                               LONGITUD                           
+_3                                                   3                                                                      
+_sarasasarasa                                        sarasasarasa                        12                                 
+_4                                                   4                                                                      
+_12321                                               12321                                                                  
+_12                                                  12                                                                     
+beta                                string           -                                                                      
+b                                   real             -                                                                      
+a                                   integer          -                                                                      

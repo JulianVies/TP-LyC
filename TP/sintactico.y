@@ -4,7 +4,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <math.h>
-	#include "y.tab.h"
+	#include "sintactico.tab.h"
 
 	#define TAM 35
 	#define DUPLICADO 2
@@ -17,13 +17,14 @@
 
 	FILE  *yyin;
 
-	// Estructuras para la tabla de simbolos
+
+	//----Estructuras para la lista tabla de simbolos----
 	typedef struct
 	{
 			char nombre[TAM];
 			char tipodato[TAM];
 			char valor[TAM];
-			int longitud;
+			char longitud[TAM];
 	}t_info;
 
 	typedef struct s_nodo
@@ -43,14 +44,51 @@
 
 	void crear_ts(t_lista *l_ts);
 	int insertar_en_ts(t_lista *l_ts, t_info *d);
+	int nuevoSimbolo(char* nombre,char* valor,char* tipoDato, int longitud);
 
 	void grabar_lista(t_lista *);
+
+	//----Fin estructuras para la lista----
+
+
+	//----Estructuras para la pila----
+	typedef struct
+	{
+		char text[32];
+	}t_info_p;
+
+	typedef struct s_nodo_p
+	{
+		t_info_p info;
+		struct s_nodo_p *sig;
+	}t_nodo_p;
+
+	typedef t_nodo_p* t_pila; //Sirve para mantener el mismo main que el de pila estatica
+
+	void crearPila(t_pila *); //debo pasarrlo por *
+	int pilaLlena(const t_pila *); //me combiene pasarlo por *
+	int apilar(t_pila *, const t_info_p *);
+	int pilaVacia(const t_pila *);
+	int verTope(const t_pila *, t_info_p *);
+	int desapilar(t_pila *, t_info_p *);
+	void vaciarPila(t_pila *);
+	void mostrarNodo(t_info_p *);
+	int mostrarPila(t_pila *);
+	int cargarInfo(t_info_p *);
+	//----Fin estructuras para la pila----
+
+
 	void reemplazar_blancos_por_guiones_y_quitar_comillas(char *);
 	void quitar_comillas(char *);
 	void agregarGuion(char *pc, char* result);
+	void agregarValorAlFinal(char * array, char valor);
 
 	t_lista lista_ts;
 	t_info dato;
+	
+	t_info_p info_p;
+	t_pila pilaVar;
+	t_pila pilaType;
 %}
 
 
@@ -120,103 +158,85 @@ sentencia: asignacion
 		| equmin
 		;
 
-equmax: IF EQUMAX PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC {printf("equmax");} ;
-equmin: IF EQUMIN PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC {printf("equmin");};
+asignacion: ID OP_ASIG expresion;
+
+iteracion: WHILE condicion THEN programa ;
+
+seleccion: IF condicion THEN programa
+        |  IF condicion THEN programa ELSE programa
+		;
+
+declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC {
+	while(!pilaVacia(&pilaVar) || !pilaVacia(&pilaType)) {
+		t_info_p variable;
+		desapilar(&pilaVar, &variable);
+
+		t_info_p tipo;
+		desapilar(&pilaType, &tipo);
+
+		nuevoSimbolo(variable.text,"-",tipo.text,-1);
+	}
+};
+
+display: DISPLAY factor;
+
+get:GET	factor;
+
+equmax: IF EQUMAX PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC;
+
+equmin: IF EQUMIN PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC;
 
 listaEqu: factorEqu
-			| listaEqu COMA factorEqu
-			;
+		| listaEqu COMA factorEqu
+		;
 
 expresionEqu: terminoEqu
-        | expresionEqu OP_SUM terminoEqu       
-        | expresionEqu OP_RESTA terminoEqu  
-		;
+        	| expresionEqu OP_SUM terminoEqu  
+        	| expresionEqu OP_RESTA terminoEqu  
+			;
 		
-
 terminoEqu: factorEqu 
-        | terminoEqu OP_MULT factorEqu
-        | terminoEqu OP_DIV factorEqu
-		;
+        	| terminoEqu OP_MULT factorEqu
+        	| terminoEqu OP_DIV factorEqu
+			;
 
 factorEqu: ID
-			| CTE_E
-			| CTE_R
+		| CTE_E
+		| CTE_R
+		;
+
+listaVarDec: ID {strcpy(info_p.text, yytext); apilar(&pilaVar, &info_p);}
+			| listaVarDec COMA ID {strcpy(info_p.text, yytext); apilar(&pilaVar, &info_p);}
 			;
 
-
-declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaVarType CORCHC {printf("declaracion regla");} ;
-
-listaVarDec: ID
-			| listaVarDec COMA ID
-			;
-
-listaVarType: TYPE
-			| listaVarType COMA TYPE
+listaType: TYPE {strcpy(info_p.text, yytext); apilar(&pilaType, &info_p);}
+			| listaType COMA TYPE {strcpy(info_p.text, yytext); apilar(&pilaType, &info_p);}
 			;
 
 TYPE: INTEGER | STRING | REAL;
 		
-
-asignacion: ID OP_ASIG expresion {printf("asignacion regla\n");}
-		;
-		
-
 expresion: termino
         | expresion OP_SUM termino       
         | expresion OP_RESTA termino  
 		;
 		
-
-termino: factor 
+termino: factor
         | termino OP_MULT factor
         | termino OP_DIV factor
 		;
 		
-
 factor: PARA expresion PARC
 		| ID
-		| CTE_E {
-			char enteroConGuion[100];
-			agregarGuion(yytext,enteroConGuion);
-			//lista
-			strcpy(dato.nombre, enteroConGuion);
-			strcpy(dato.valor, yytext);
-			strcpy(dato.tipodato, "CTE_E");
-			insertar_en_ts(&lista_ts, &dato);
-		}
-		| CTE_R {
-			char realConGuion[100];
-			agregarGuion(yytext,realConGuion);
-			//lista
-			strcpy(dato.nombre,realConGuion);
-			strcpy(dato.valor, yytext);
-			strcpy(dato.tipodato, "CTE_R");
-			insertar_en_ts(&lista_ts, &dato);
-		}
-		| CTE_S {
-			quitar_comillas(yytext);
-			char stringConGuion[100];
-			agregarGuion(yytext,stringConGuion);
-			//lista
-			strcpy(dato.nombre, stringConGuion);
-			strcpy(dato.valor, yytext);
-			strcpy(dato.tipodato, "STRING"); //TODO: revisar si es necesario el tipo de dato en el lexico
-			dato.longitud = strlen(yytext);
-			insertar_en_ts(&lista_ts, &dato);
-		}
+		| CTE_E
+		| CTE_R
+		| CTE_S
 		;
 
-iteracion: WHILE condicion THEN programa ;
-
-seleccion: IF condicion THEN programa {printf("seleccion sin else\n");}
-        |  IF condicion THEN programa ELSE programa  {printf("seleccion con else\n");}
-		;
-
-condicion: comparacion {printf("condicion\n");}
+condicion: comparacion 
         |  condicion AND comparacion
         |  condicion OR comparacion ;
 
-comparacion: expresion comparador expresion {printf("comparacion\n");} ;
+comparacion: expresion comparador expresion ;
 
 comparador: MENOR_IGUAL			
 			| MAYOR_IGUAL			
@@ -226,20 +246,23 @@ comparador: MENOR_IGUAL
 			| IGUAL
 			;
 			
-display: DISPLAY factor;
 
-get:GET	factor;
 
 %%
-int main(int argc,char *argv[])
-{
+int main(int argc,char *argv[]){
   if ((yyin = fopen(argv[1], "rt")) == NULL)
   {
 	printf("\nNo se puede abrir el archivo: %s\n", argv[1]);
   }
   else
   {
+	crearPila(&pilaVar);
+	crearPila(&pilaType);
 	yyparse();
+	mostrarPila(&pilaVar);
+	mostrarPila(&pilaType);
+	// t_lista* lista_ts;
+	// crear_ts(lista_ts);
 	grabar_lista(&lista_ts);
 
   	fclose(yyin);
@@ -248,15 +271,15 @@ int main(int argc,char *argv[])
 }
 
 int yywrap(){}
-int yyerror(char* mensaje)
- {
+
+int yyerror(char* mensaje){
 	printf("Error sintactico: %s\n", mensaje );
 	system ("Pause");
 	exit (1);
  }
 
- void agregarGuion(char *pc, char* result)
-{
+//Funciones utiles
+void agregarGuion(char *pc, char* result){
     const char *middle = pc;
     result[0] = '\0';
     strcat(result, "_");
@@ -264,7 +287,6 @@ int yyerror(char* mensaje)
 }
 
 void quitar_comillas(char *pc){
-
 	// Cadena del tipo "" (sin nada)
 	if(strlen(pc) == 2){
 		*pc='\0';
@@ -279,30 +301,64 @@ void quitar_comillas(char *pc){
 		*pc='\0';
 	}	
 }
-void crear_ts(t_lista *l_ts) {
-	crear_lista(l_ts);
 
-	printf("\n");
-	printf("Creando tabla de simbolos...\n");	
-	printf("Tabla de simbolos creada\n");
+int compararPorNombre(const void *d1, const void *d2){
+    t_info *dato1=(t_info*)d1;
+    t_info *dato2=(t_info*)d2;
+
+    return strcmp(dato1->nombre, dato2->nombre);
+}
+
+void reemplazar_blancos_por_guiones_y_quitar_comillas(char *pc){
+	quitar_comillas(pc);
+	char *aux = pc;
+	while(*aux != '\0'){
+		if(*aux == ' '){
+			*aux= '_';
+		}
+		aux++;
+	}
+}
+
+void agregarValorAlFinal(char * array, char valor){
+	// int i;
+	// for(i = 0 ; i < array ; i++){
+	// 	array[i] = valor;
+	// }
+}
+
+
+// ---- Funciones de Lista ----
+
+//funcion intermedia usada desde lexico para llegar hasta insertar_en_ts
+int nuevoSimbolo(char* nombre,char* valor,char* tipoDato, int longitud){
+	// printf("%s--%s--%s--%d",nombre,valor,tipoDato,longitud);
+	strcpy(dato.nombre, nombre);
+	strcpy(dato.valor, valor);
+
+	if(tipoDato == NULL){strcpy(dato.tipodato,"");
+	}else{strcpy(dato.tipodato,tipoDato);}
+
+	if(longitud == -1){strcpy(dato.longitud,"");
+	}else{itoa(longitud,dato.longitud,10);}
+	
+	insertar_en_ts(&lista_ts, &dato);
 }
 
 int insertar_en_ts(t_lista *l_ts, t_info *d) {
 	insertarEnListaEnOrdenSinDuplicados(l_ts, d, compararPorNombre);
-	
 	// Un reinicio de la estructura dato para que vuelva a ser reutilizada sin problemas (quizas no hace falta) .
 	strcpy(d->nombre,"\0");
 	strcpy(d->tipodato,"\0");
 	strcpy(d->valor,"\0");	
-	d->longitud=0;
+	strcpy(d->longitud,"\0");
 }
 
-void crear_lista(t_lista *p) {
+void crear_lista(t_lista *p){
     *p=NULL;
 }
 
-int insertarEnListaEnOrdenSinDuplicados(t_lista *pl, t_info *d, t_cmp comparar)
-{
+int insertarEnListaEnOrdenSinDuplicados(t_lista *pl, t_info *d, t_cmp comparar){
     int cmp;
     t_nodo *nuevo;
     while(*pl && (cmp=comparar(d, &(*pl)->info))!=0)
@@ -318,54 +374,133 @@ int insertarEnListaEnOrdenSinDuplicados(t_lista *pl, t_info *d, t_cmp comparar)
     return 1;
 }
 
-int BuscarEnLista(t_lista *pl, char* cadena )
-{
+int BuscarEnLista(t_lista *pl, char* cadena ){
     int cmp;
 
     while(*pl && (cmp=strcmp(cadena,(*pl)->info.nombre))!=0)
         pl=&(*pl)->pSig;
     if(cmp==0)
-	{
+	{	
+		printf("\nvariable declarada");
         return ID_EN_LISTA;
 	}
 	printf("\nVariable sin declarar: %s \n",cadena);
     exit(1);
 }
 
-int compararPorNombre(const void *d1, const void *d2)
-{
-    t_info *dato1=(t_info*)d1;
-    t_info *dato2=(t_info*)d2;
-
-    return strcmp(dato1->nombre, dato2->nombre);
+void crear_ts(t_lista *l_ts){
+	crear_lista(l_ts);
+	printf("\n");
+	printf("Creando tabla de simbolos...\n");	
+	printf("Tabla de simbolos creada\n");
 }
 
 void grabar_lista(t_lista *pl){
 	FILE *pf;
 
 	pf = fopen("ts.txt", "wt");
-
 	// Cabecera de la tabla
 	fprintf(pf,"%-35s %-16s %-35s %-35s", "NOMBRE", "TIPO DE DATO", "VALOR", "LONGITUD");
 	// Datos
 	while(*pl) {
-		fprintf(pf,"\n%-35s %-16s %-35s %-35d", (*pl)->info.nombre, (*pl)->info.tipodato, (*pl)->info.valor, (*pl)->info.longitud);
+		fprintf(pf,"\n%-35s %-16s %-35s %-35s", (*pl)->info.nombre, (*pl)->info.tipodato, (*pl)->info.valor, (*pl)->info.longitud);
 		pl=&(*pl)->pSig;
 	}
 
 	fclose(pf);
 }
 
-void reemplazar_blancos_por_guiones_y_quitar_comillas(char *pc){
+//---- Fin Funciones de Lista ----
 
-	quitar_comillas(pc);
+//---- Funciones de Pila ----
 
-	char *aux = pc;
-	
-	while(*aux != '\0'){
-		if(*aux == ' '){
-			*aux= '_';
-		}
-		aux++;
-	}
+void crearPila(t_pila *p)
+{
+    *p=NULL;
 }
+
+int pilaVacia(const t_pila *p)
+{
+    return *p==NULL;
+}
+
+int pilaLlena(const t_pila *p)
+{
+    t_nodo_p *aux = (t_nodo_p *)malloc(sizeof(t_nodo_p));
+    free(aux);
+    return aux == NULL;
+}
+
+
+int apilar(t_pila *p, const t_info_p *d)
+{
+    t_nodo_p *nue=(t_nodo_p *)malloc(sizeof(t_nodo_p));
+    if(nue==NULL)
+        return 0;
+    nue -> info = *d;
+    nue -> sig = *p;
+    *p = nue;
+    return 1;
+}
+
+int verTope(const t_pila *p, t_info_p *d)
+{
+    if(*p==NULL)
+        return 0;
+    *d = (*p) -> info;
+    return 1;
+}
+
+int desapilar(t_pila *p, t_info_p *d)
+{
+    t_nodo_p *aux;
+    if(*p == NULL)
+        return 0;
+    aux = *p;
+    *d = aux -> info;
+    *p = aux -> sig;
+    free(aux);
+    return 1;
+}
+
+void vaciarPila(t_pila *p)
+{
+    t_nodo_p *aux;
+    while(*p)
+    {
+        aux = *p;
+        *p = aux -> sig;
+        free(aux);
+    }
+}
+
+/*int cargarInfo(t_info_p *d)
+{
+    printf("ingrse dni: ");
+    scanf("%d",&d->dni);
+    fflush(stdin);
+    printf("\ningrese apellido y nombre: ");
+    gets(d->apyn);
+    return 1;
+}*/
+
+void mostrarNodo(t_info_p *d)
+{
+    printf("\n Texto: %s",d->text);
+}
+
+int mostrarPila(t_pila *p)
+{
+    t_pila *aux;
+    aux = p;
+    if((*aux)==NULL)
+        return 0;
+    while((*aux)->sig!=NULL)
+    {
+        printf("\n-> texto: %s ",(*aux)->info.text);
+        *aux = (*aux)->sig;
+    }
+    printf("\n-> texto: %s ",(*aux)->info.text);
+}
+
+//---- Fin funciones de Pila ----

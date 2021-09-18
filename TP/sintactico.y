@@ -40,7 +40,7 @@
 
 	void crear_lista(t_lista *p);
 	int insertarEnListaEnOrdenSinDuplicados(t_lista *l_ts, t_info *d, t_cmp);
-	int BuscarEnLista(t_lista *pl, char* cadena );
+	int BuscarEnLista(t_lista *pl, char* cadena);
 
 	void crear_ts(t_lista *l_ts);
 	int insertar_en_ts(t_lista *l_ts, t_info *d);
@@ -85,7 +85,9 @@
 
 	t_lista lista_ts;
 	t_info dato;
-	
+
+	t_lista lista_dup;
+
 	t_info_p info_p;
 	t_pila pilaVar;
 	t_pila pilaType;
@@ -102,6 +104,7 @@
 
 %token EQUMAX		
 %token EQUMIN		
+%token FOR
 
 %token WHILE
 %token THEN			
@@ -158,7 +161,7 @@ sentencia: asignacion
 		| equmin
 		;
 
-asignacion: ID OP_ASIG expresion;
+asignacion: ID {BuscarEnLista(&lista_ts, yytext);} OP_ASIG expresion;
 
 iteracion: WHILE condicion THEN programa ;
 
@@ -167,40 +170,49 @@ seleccion: IF condicion THEN programa
 		;
 
 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC {
-	while(!pilaVacia(&pilaVar) || !pilaVacia(&pilaType)) {
+	while(!pilaVacia(&pilaVar) && !pilaVacia(&pilaType)) {
 		t_info_p variable;
 		desapilar(&pilaVar, &variable);
+
+		t_info info_dup;
+		strcpy(info_dup.nombre, variable.text);
+		strcpy(info_dup.tipodato, "");
+		strcpy(info_dup.valor, "");
+		strcpy(info_dup.longitud, "");
+		int respuesta = insertarEnListaEnOrdenSinDuplicados(&lista_dup, &info_dup, compararPorNombre);
+		if (respuesta == DUPLICADO) {
+			yyerror("Variable Duplicada en declaracion");
+		}
 
 		t_info_p tipo;
 		desapilar(&pilaType, &tipo);
 
 		nuevoSimbolo(variable.text,"-",tipo.text,-1);
 	}
+
+	if (!pilaVacia(&pilaVar) || !pilaVacia(&pilaType)) {
+		yyerror("Diferencia en declaracion de cantidad de IDs con Tipos");
+	}
 };
 
-display: DISPLAY factor;
+display: DISPLAY ID 
+		| DISPLAY CTE_S;
 
-get:GET	factor;
+get:GET	ID;
 
-equmax: IF EQUMAX PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC;
+equmax: IF EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC
+		| WHILE EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC
+		| FOR EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC;
 
-equmin: IF EQUMIN PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC;
+equmin: IF EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC
+		| WHILE EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC
+		| FOR EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC;
 
-listaEqu: factorEqu
-		| listaEqu COMA factorEqu
+listaEqu: itemEqu
+		| listaEqu COMA itemEqu
 		;
 
-expresionEqu: terminoEqu
-        	| expresionEqu OP_SUM terminoEqu  
-        	| expresionEqu OP_RESTA terminoEqu  
-			;
-		
-terminoEqu: factorEqu 
-        	| terminoEqu OP_MULT factorEqu
-        	| terminoEqu OP_DIV factorEqu
-			;
-
-factorEqu: ID
+itemEqu: ID
 		| CTE_E
 		| CTE_R
 		;
@@ -229,7 +241,6 @@ factor: PARA expresion PARC
 		| ID
 		| CTE_E
 		| CTE_R
-		| CTE_S
 		;
 
 condicion: comparacion 
@@ -256,9 +267,12 @@ int main(int argc,char *argv[]){
   }
   else
   {
+	crear_lista(&lista_dup);
 	crearPila(&pilaVar);
 	crearPila(&pilaType);
+
 	yyparse();
+
 	mostrarPila(&pilaVar);
 	mostrarPila(&pilaType);
 	// t_lista* lista_ts;
@@ -374,14 +388,13 @@ int insertarEnListaEnOrdenSinDuplicados(t_lista *pl, t_info *d, t_cmp comparar){
     return 1;
 }
 
-int BuscarEnLista(t_lista *pl, char* cadena ){
+int BuscarEnLista(t_lista *pl, char* cadena){
     int cmp;
 
     while(*pl && (cmp=strcmp(cadena,(*pl)->info.nombre))!=0)
         pl=&(*pl)->pSig;
     if(cmp==0)
 	{	
-		printf("\nvariable declarada");
         return ID_EN_LISTA;
 	}
 	printf("\nVariable sin declarar: %s \n",cadena);

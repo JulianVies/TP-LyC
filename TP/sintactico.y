@@ -208,13 +208,9 @@ display: DISPLAY ID
 
 get:GET	ID;
 
-equmax: IF EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC
-		| WHILE EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC
-		| FOR EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC;
+equmax: EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC;
 
-equmin: IF EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC
-		| WHILE EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC
-		| FOR EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC;
+equmin: EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC;
 
 listaEqu: itemEqu
 		| listaEqu COMA itemEqu
@@ -253,9 +249,13 @@ factor: PARA expresion PARC
 
 condicion: comparacion 
         |  condicion AND comparacion
-        |  condicion OR comparacion ;
+        |  condicion OR comparacion
+		;
 
-comparacion: expresion comparador expresion ;
+comparacion: expresion comparador expresion 
+		|  equmax
+		|  equmin
+		;
 
 comparador: MENOR_IGUAL			
 			| MAYOR_IGUAL			

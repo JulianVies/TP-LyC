@@ -1,16 +1,17 @@
 Terminals unused in grammar
 
+   FOR
    NOT
    LLAVEA
    LLAVEC
 
 
-Estado 85 conflictos: 7 desplazamiento(s)/reducción(ones)
-Estado 90 conflictos: 8 desplazamiento(s)/reducción(ones)
-Estado 110 conflictos: 7 desplazamiento(s)/reducción(ones)
+Estado 71 conflictos: 8 desplazamiento(s)/reducciï¿½n(ones)
+Estado 74 conflictos: 9 desplazamiento(s)/reducciï¿½n(ones)
+Estado 88 conflictos: 8 desplazamiento(s)/reducciï¿½n(ones)
 
 
-Gramática
+Gramï¿½tica
 
     0 $accept: inicio $end
 
@@ -28,7 +29,7 @@ Gramática
    10          | equmax
    11          | equmin
 
-   12 $@1: /* vacío */
+   12 $@1: /* vacï¿½o */
 
    13 asignacion: ID $@1 OP_ASIG tipoAsig
 
@@ -45,113 +46,100 @@ Gramática
 
    21 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC
 
-   22 display: DISPLAY ID
-   23        | DISPLAY CTE_S
+   21 equmax: EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC
 
-   24 get: GET ID
+   22 equmin: EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC
 
-   25 equmax: IF EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC
-   26       | WHILE EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC
-   27       | FOR EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC
+   23 listaEqu: itemEqu
+   24         | listaEqu COMA itemEqu
 
-   28 equmin: IF EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC
-   29       | WHILE EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC
-   30       | FOR EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC
+   25 itemEqu: ID
+   26        | CTE_E
+   27        | CTE_R
 
-   31 listaEqu: itemEqu
-   32         | listaEqu COMA itemEqu
+   28 listaVarDec: ID
+   29            | listaVarDec COMA ID
 
-   33 itemEqu: ID
-   34        | CTE_E
-   35        | CTE_R
+   30 listaType: TYPE
+   31          | listaType COMA TYPE
 
-   36 listaVarDec: ID
-   37            | listaVarDec COMA ID
+   32 TYPE: INTEGER
+   33     | STRING
+   34     | REAL
 
-   38 listaType: TYPE
-   39          | listaType COMA TYPE
+   35 expresion: termino
+   36          | expresion OP_SUM termino
+   37          | expresion OP_RESTA termino
 
-   40 TYPE: INTEGER
-   41     | STRING
-   42     | REAL
+   38 termino: factor
+   39        | termino OP_MULT factor
+   40        | termino OP_DIV factor
 
-   43 expresion: termino
-   44          | expresion OP_SUM termino
-   45          | expresion OP_RESTA termino
+   41 factor: PARA expresion PARC
+   42       | ID
+   43       | CTE_E
+   44       | CTE_R
 
-   46 termino: factor
-   47        | termino OP_MULT factor
-   48        | termino OP_DIV factor
+   45 condicion: comparacion
+   46          | condicion AND comparacion
+   47          | condicion OR comparacion
 
-   49 factor: PARA expresion PARC
-   50       | ID
-   51       | CTE_E
-   52       | CTE_R
+   48 comparacion: expresion comparador expresion
+   49            | equmax
+   50            | equmin
 
-   53 condicion: comparacion
-   54          | condicion AND comparacion
-   55          | condicion OR comparacion
-
-   56 comparacion: expresion comparador expresion
-
-   57 comparador: MENOR_IGUAL
-   58           | MAYOR_IGUAL
-   59           | MENOR
-   60           | MAYOR
-   61           | DIFF
-   62           | IGUAL
-
-   63 for: FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID
-   64    | FOR ID IGUALFOR expresion TO expresion CORCHA CORCHC NEXT ID
+   51 comparador: MENOR_IGUAL
+   52           | MAYOR_IGUAL
+   53           | MENOR
+   54           | MAYOR
+   55           | DIFF
+   56           | IGUAL
 
 
 Terminales con las reglas donde aparecen
 
 $end (0) 0
 error (256)
-ID (258) 13 22 24 33 36 37 50 63 64
-CTE_S (259) 15 23
-CTE_E (260) 34 51 63
-CTE_R (261) 35 52
-GET (262) 24
-DISPLAY (263) 22 23
-EQUMAX (264) 25 26 27
-EQUMIN (265) 28 29 30
-FOR (266) 27 30 63 64
-WHILE (267) 18 26 29
-THEN (268) 18 19 20
-IF (269) 19 20 25 28
-ELSE (270) 20
+ID (258) 13 18 20 25 28 29 42
+CTE_S (259) 19
+CTE_E (260) 26 43
+CTE_R (261) 27 44
+GET (262) 20
+DISPLAY (263) 18 19
+EQUMAX (264) 21
+EQUMIN (265) 22
+FOR (266)
+WHILE (267) 14
+THEN (268) 14 15 16
+IF (269) 15 16
+ELSE (270) 16
 NOT (271)
-AND (272) 54
-OR (273) 55
+AND (272) 46
+OR (273) 47
 OP_ASIG (274) 13
-COMA (275) 32 37 39
-PYC (276) 25 26 27 28 29 30
-OP_SUM (277) 44
-OP_RESTA (278) 45
-OP_MULT (279) 47
-OP_DIV (280) 48
-CORCHA (281) 21 25 26 27 28 29 30 63 64
-CORCHC (282) 21 25 26 27 28 29 30 63 64
-PARA (283) 25 26 27 28 29 30 49
-PARC (284) 25 26 27 28 29 30 49
+COMA (275) 24 29 31
+PYC (276) 21 22
+OP_SUM (277) 36
+OP_RESTA (278) 37
+OP_MULT (279) 39
+OP_DIV (280) 40
+CORCHA (281) 17 21 22
+CORCHC (282) 17 21 22
+PARA (283) 21 22 41
+PARC (284) 21 22 41
 LLAVEA (285)
 LLAVEC (286)
-MENOR_IGUAL (287) 57
-MAYOR_IGUAL (288) 58
-MENOR (289) 59
-MAYOR (290) 60
-DIFF (291) 61
-IGUAL (292) 62
-IGUALFOR (293) 63 64
-DIM (294) 21
-AS (295) 21
-TO (296) 63 64
-NEXT (297) 63 64
-INTEGER (298) 40
-STRING (299) 41
-REAL (300) 42
+MENOR_IGUAL (287) 51
+MAYOR_IGUAL (288) 52
+MENOR (289) 53
+MAYOR (290) 54
+DIFF (291) 55
+IGUAL (292) 56
+DIM (293) 17
+AS (294) 17
+INTEGER (295) 32
+STRING (296) 33
+REAL (297) 34
 
 
 No terminales con las reglas donde aparecen
@@ -168,49 +156,42 @@ asignacion (50)
     en la izquierda: 13, en la derecha: 4
 $@1 (51)
     en la izquierda: 12, en la derecha: 13
-tipoAsig (52)
-    en la izquierda: 14 15, en la derecha: 13
-iteracion (53)
-    en la izquierda: 16 17, en la derecha: 5
-while (54)
-    en la izquierda: 18, en la derecha: 16
-seleccion (55)
-    en la izquierda: 19 20, en la derecha: 6
-declaracion (56)
-    en la izquierda: 21, en la derecha: 7
-display (57)
-    en la izquierda: 22 23, en la derecha: 8
-get (58)
-    en la izquierda: 24, en la derecha: 9
-equmax (59)
-    en la izquierda: 25 26 27, en la derecha: 10
-equmin (60)
-    en la izquierda: 28 29 30, en la derecha: 11
-listaEqu (61)
-    en la izquierda: 31 32, en la derecha: 25 26 27 28 29 30 32
-itemEqu (62)
-    en la izquierda: 33 34 35, en la derecha: 31 32
-listaVarDec (63)
-    en la izquierda: 36 37, en la derecha: 21 37
-listaType (64)
-    en la izquierda: 38 39, en la derecha: 21 39
-TYPE (65)
-    en la izquierda: 40 41 42, en la derecha: 38 39
-expresion (66)
-    en la izquierda: 43 44 45, en la derecha: 14 25 26 27 28 29 30
-    44 45 49 56 63 64
-termino (67)
-    en la izquierda: 46 47 48, en la derecha: 43 44 45 47 48
-factor (68)
-    en la izquierda: 49 50 51 52, en la derecha: 46 47 48
-condicion (69)
-    en la izquierda: 53 54 55, en la derecha: 18 19 20 54 55
-comparacion (70)
-    en la izquierda: 56, en la derecha: 53 54 55
-comparador (71)
-    en la izquierda: 57 58 59 60 61 62, en la derecha: 56
-for (72)
-    en la izquierda: 63 64, en la derecha: 17
+iteracion (49)
+    en la izquierda: 14, en la derecha: 5
+seleccion (50)
+    en la izquierda: 15 16, en la derecha: 6
+declaracion (51)
+    en la izquierda: 17, en la derecha: 7
+display (52)
+    en la izquierda: 18 19, en la derecha: 8
+get (53)
+    en la izquierda: 20, en la derecha: 9
+equmax (54)
+    en la izquierda: 21, en la derecha: 10 49
+equmin (55)
+    en la izquierda: 22, en la derecha: 11 50
+listaEqu (56)
+    en la izquierda: 23 24, en la derecha: 21 22 24
+itemEqu (57)
+    en la izquierda: 25 26 27, en la derecha: 23 24
+listaVarDec (58)
+    en la izquierda: 28 29, en la derecha: 17 29
+listaType (59)
+    en la izquierda: 30 31, en la derecha: 17 31
+TYPE (60)
+    en la izquierda: 32 33 34, en la derecha: 30 31
+expresion (61)
+    en la izquierda: 35 36 37, en la derecha: 13 21 22 36 37 41 48
+termino (62)
+    en la izquierda: 38 39 40, en la derecha: 35 36 37 39 40
+factor (63)
+    en la izquierda: 41 42 43 44, en la derecha: 38 39 40
+condicion (64)
+    en la izquierda: 45 46 47, en la derecha: 14 15 16 46 47
+comparacion (65)
+    en la izquierda: 48 49 50, en la derecha: 45 46 47
+comparador (66)
+    en la izquierda: 51 52 53 54 55 56, en la derecha: 48
 
 
 estado 0
@@ -220,24 +201,23 @@ estado 0
     ID       desplazar e ir al estado 1
     GET      desplazar e ir al estado 2
     DISPLAY  desplazar e ir al estado 3
-    FOR      desplazar e ir al estado 4
-    WHILE    desplazar e ir al estado 5
-    IF       desplazar e ir al estado 6
-    DIM      desplazar e ir al estado 7
+    EQUMAX   desplazar e ir al estado 4
+    EQUMIN   desplazar e ir al estado 5
+    WHILE    desplazar e ir al estado 6
+    IF       desplazar e ir al estado 7
+    DIM      desplazar e ir al estado 8
 
-    inicio       ir al estado 8
-    programa     ir al estado 9
-    sentencia    ir al estado 10
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    while        ir al estado 13
+    inicio       ir al estado 9
+    programa     ir al estado 10
+    sentencia    ir al estado 11
+    asignacion   ir al estado 12
+    iteracion    ir al estado 13
     seleccion    ir al estado 14
     declaracion  ir al estado 15
     display      ir al estado 16
     get          ir al estado 17
     equmax       ir al estado 18
     equmin       ir al estado 19
-    for          ir al estado 20
 
 
 estado 1
@@ -246,14 +226,14 @@ estado 1
 
     $default  reduce usando la regla 12 ($@1)
 
-    $@1  ir al estado 21
+    $@1  ir al estado 20
 
 
 estado 2
 
    24 get: GET . ID
 
-    ID  desplazar e ir al estado 22
+    ID  desplazar e ir al estado 21
 
 
 estado 3
@@ -261,78 +241,80 @@ estado 3
    22 display: DISPLAY . ID
    23        | DISPLAY . CTE_S
 
-    ID     desplazar e ir al estado 23
-    CTE_S  desplazar e ir al estado 24
+    ID     desplazar e ir al estado 22
+    CTE_S  desplazar e ir al estado 23
 
 
 estado 4
 
-   27 equmax: FOR . EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC
-   30 equmin: FOR . EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC
-   63 for: FOR . ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID
-   64    | FOR . ID IGUALFOR expresion TO expresion CORCHA CORCHC NEXT ID
+   21 equmax: EQUMAX . PARA expresion PYC CORCHA listaEqu CORCHC PARC
 
-    ID      desplazar e ir al estado 25
-    EQUMAX  desplazar e ir al estado 26
-    EQUMIN  desplazar e ir al estado 27
+    PARA  desplazar e ir al estado 24
 
 
 estado 5
 
-   18 while: WHILE . condicion THEN programa
-   26 equmax: WHILE . EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC
-   29 equmin: WHILE . EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC
+   22 equmin: EQUMIN . PARA expresion PYC CORCHA listaEqu CORCHC PARC
 
-    ID      desplazar e ir al estado 28
-    CTE_E   desplazar e ir al estado 29
-    CTE_R   desplazar e ir al estado 30
-    EQUMAX  desplazar e ir al estado 31
-    EQUMIN  desplazar e ir al estado 32
-    PARA    desplazar e ir al estado 33
-
-    expresion    ir al estado 34
-    termino      ir al estado 35
-    factor       ir al estado 36
-    condicion    ir al estado 37
-    comparacion  ir al estado 38
+    PARA  desplazar e ir al estado 25
 
 
 estado 6
 
-   19 seleccion: IF . condicion THEN programa
-   20          | IF . condicion THEN programa ELSE programa
-   25 equmax: IF . EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC
-   28 equmin: IF . EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC
+   14 iteracion: WHILE . condicion THEN programa
 
-    ID      desplazar e ir al estado 28
-    CTE_E   desplazar e ir al estado 29
-    CTE_R   desplazar e ir al estado 30
-    EQUMAX  desplazar e ir al estado 39
-    EQUMIN  desplazar e ir al estado 40
-    PARA    desplazar e ir al estado 33
+    ID      desplazar e ir al estado 26
+    CTE_E   desplazar e ir al estado 27
+    CTE_R   desplazar e ir al estado 28
+    EQUMAX  desplazar e ir al estado 4
+    EQUMIN  desplazar e ir al estado 5
+    PARA    desplazar e ir al estado 29
 
-    expresion    ir al estado 34
-    termino      ir al estado 35
-    factor       ir al estado 36
-    condicion    ir al estado 41
-    comparacion  ir al estado 38
+    equmax       ir al estado 30
+    equmin       ir al estado 31
+    expresion    ir al estado 32
+    termino      ir al estado 33
+    factor       ir al estado 34
+    condicion    ir al estado 35
+    comparacion  ir al estado 36
 
 
 estado 7
 
-   21 declaracion: DIM . CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC
+   15 seleccion: IF . condicion THEN programa
+   16          | IF . condicion THEN programa ELSE programa
 
-    CORCHA  desplazar e ir al estado 42
+    ID      desplazar e ir al estado 26
+    CTE_E   desplazar e ir al estado 27
+    CTE_R   desplazar e ir al estado 28
+    EQUMAX  desplazar e ir al estado 4
+    EQUMIN  desplazar e ir al estado 5
+    PARA    desplazar e ir al estado 29
+
+    equmax       ir al estado 30
+    equmin       ir al estado 31
+    expresion    ir al estado 32
+    termino      ir al estado 33
+    factor       ir al estado 34
+    condicion    ir al estado 37
+    comparacion  ir al estado 36
 
 
 estado 8
 
-    0 $accept: inicio . $end
+   21 declaracion: DIM . CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC
 
-    $end  desplazar e ir al estado 43
+    CORCHA  desplazar e ir al estado 38
 
 
 estado 9
+
+    0 $accept: inicio . $end
+
+    $end  desplazar e ir al estado 39
+
+
+estado 10
 
     1 inicio: programa .
     3 programa: programa . sentencia
@@ -340,48 +322,47 @@ estado 9
     ID       desplazar e ir al estado 1
     GET      desplazar e ir al estado 2
     DISPLAY  desplazar e ir al estado 3
-    FOR      desplazar e ir al estado 4
-    WHILE    desplazar e ir al estado 5
-    IF       desplazar e ir al estado 6
-    DIM      desplazar e ir al estado 7
+    EQUMAX   desplazar e ir al estado 4
+    EQUMIN   desplazar e ir al estado 5
+    WHILE    desplazar e ir al estado 6
+    IF       desplazar e ir al estado 7
+    DIM      desplazar e ir al estado 8
 
     $default  reduce usando la regla 1 (inicio)
 
-    sentencia    ir al estado 44
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    while        ir al estado 13
+    sentencia    ir al estado 40
+    asignacion   ir al estado 12
+    iteracion    ir al estado 13
     seleccion    ir al estado 14
     declaracion  ir al estado 15
     display      ir al estado 16
     get          ir al estado 17
     equmax       ir al estado 18
     equmin       ir al estado 19
-    for          ir al estado 20
 
 
-estado 10
+estado 11
 
     2 programa: sentencia .
 
     $default  reduce usando la regla 2 (programa)
 
 
-estado 11
+estado 12
 
     4 sentencia: asignacion .
 
     $default  reduce usando la regla 4 (sentencia)
 
 
-estado 12
+estado 13
 
     5 sentencia: iteracion .
 
     $default  reduce usando la regla 5 (sentencia)
 
 
-estado 13
+estado 14
 
    16 iteracion: while .
 
@@ -432,180 +413,193 @@ estado 19
 
 estado 20
 
+   13 asignacion: ID $@1 . OP_ASIG expresion
+
+    OP_ASIG  desplazar e ir al estado 41
+
+
+estado 21
+
    17 iteracion: for .
 
     $default  reduce usando la regla 17 (iteracion)
 
 
-estado 21
+estado 22
 
    13 asignacion: ID $@1 . OP_ASIG tipoAsig
 
     OP_ASIG  desplazar e ir al estado 45
 
 
-estado 22
+estado 23
 
    24 get: GET ID .
 
     $default  reduce usando la regla 24 (get)
 
 
-estado 23
-
-   22 display: DISPLAY ID .
-
-    $default  reduce usando la regla 22 (display)
-
-
 estado 24
 
-   23 display: DISPLAY CTE_S .
+   21 equmax: EQUMAX PARA . expresion PYC CORCHA listaEqu CORCHC PARC
 
-    $default  reduce usando la regla 23 (display)
+    ID     desplazar e ir al estado 26
+    CTE_E  desplazar e ir al estado 27
+    CTE_R  desplazar e ir al estado 28
+    PARA   desplazar e ir al estado 29
+
+    expresion  ir al estado 42
+    termino    ir al estado 33
+    factor     ir al estado 34
 
 
 estado 25
 
-   63 for: FOR ID . IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID
-   64    | FOR ID . IGUALFOR expresion TO expresion CORCHA CORCHC NEXT ID
+   22 equmin: EQUMIN PARA . expresion PYC CORCHA listaEqu CORCHC PARC
 
-    IGUALFOR  desplazar e ir al estado 46
+    ID     desplazar e ir al estado 26
+    CTE_E  desplazar e ir al estado 27
+    CTE_R  desplazar e ir al estado 28
+    PARA   desplazar e ir al estado 29
+
+    expresion  ir al estado 43
+    termino    ir al estado 33
+    factor     ir al estado 34
 
 
 estado 26
 
-   27 equmax: FOR EQUMAX . PARA expresion PYC CORCHA listaEqu CORCHC PARC
+   42 factor: ID .
 
-    PARA  desplazar e ir al estado 47
+    $default  reduce usando la regla 42 (factor)
 
 
 estado 27
 
-   30 equmin: FOR EQUMIN . PARA expresion PYC CORCHA listaEqu CORCHC PARC
+   43 factor: CTE_E .
 
-    PARA  desplazar e ir al estado 48
+    $default  reduce usando la regla 43 (factor)
 
 
 estado 28
 
-   50 factor: ID .
+   44 factor: CTE_R .
 
-    $default  reduce usando la regla 50 (factor)
+    $default  reduce usando la regla 44 (factor)
 
 
 estado 29
 
-   51 factor: CTE_E .
+   41 factor: PARA . expresion PARC
 
-    $default  reduce usando la regla 51 (factor)
+    ID     desplazar e ir al estado 26
+    CTE_E  desplazar e ir al estado 27
+    CTE_R  desplazar e ir al estado 28
+    PARA   desplazar e ir al estado 29
+
+    expresion  ir al estado 44
+    termino    ir al estado 33
+    factor     ir al estado 34
 
 
 estado 30
 
-   52 factor: CTE_R .
+   49 comparacion: equmax .
 
-    $default  reduce usando la regla 52 (factor)
+    $default  reduce usando la regla 49 (comparacion)
 
 
 estado 31
 
-   26 equmax: WHILE EQUMAX . PARA expresion PYC CORCHA listaEqu CORCHC PARC
+   50 comparacion: equmin .
 
-    PARA  desplazar e ir al estado 49
+    $default  reduce usando la regla 50 (comparacion)
 
 
 estado 32
 
-   29 equmin: WHILE EQUMIN . PARA expresion PYC CORCHA listaEqu CORCHC PARC
+   36 expresion: expresion . OP_SUM termino
+   37          | expresion . OP_RESTA termino
+   48 comparacion: expresion . comparador expresion
 
-    PARA  desplazar e ir al estado 50
+    OP_SUM       desplazar e ir al estado 45
+    OP_RESTA     desplazar e ir al estado 46
+    MENOR_IGUAL  desplazar e ir al estado 47
+    MAYOR_IGUAL  desplazar e ir al estado 48
+    MENOR        desplazar e ir al estado 49
+    MAYOR        desplazar e ir al estado 50
+    DIFF         desplazar e ir al estado 51
+    IGUAL        desplazar e ir al estado 52
+
+    comparador  ir al estado 53
 
 
 estado 33
 
-   49 factor: PARA . expresion PARC
+   35 expresion: termino .
+   39 termino: termino . OP_MULT factor
+   40        | termino . OP_DIV factor
 
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
+    OP_MULT  desplazar e ir al estado 54
+    OP_DIV   desplazar e ir al estado 55
 
-    expresion  ir al estado 51
-    termino    ir al estado 35
-    factor     ir al estado 36
+    $default  reduce usando la regla 35 (expresion)
 
 
 estado 34
 
-   44 expresion: expresion . OP_SUM termino
-   45          | expresion . OP_RESTA termino
-   56 comparacion: expresion . comparador expresion
+   38 termino: factor .
 
-    OP_SUM       desplazar e ir al estado 52
-    OP_RESTA     desplazar e ir al estado 53
-    MENOR_IGUAL  desplazar e ir al estado 54
-    MAYOR_IGUAL  desplazar e ir al estado 55
-    MENOR        desplazar e ir al estado 56
-    MAYOR        desplazar e ir al estado 57
-    DIFF         desplazar e ir al estado 58
-    IGUAL        desplazar e ir al estado 59
-
-    comparador  ir al estado 60
+    $default  reduce usando la regla 38 (termino)
 
 
 estado 35
 
-   43 expresion: termino .
-   47 termino: termino . OP_MULT factor
-   48        | termino . OP_DIV factor
+   14 iteracion: WHILE condicion . THEN programa
+   46 condicion: condicion . AND comparacion
+   47          | condicion . OR comparacion
 
-    OP_MULT  desplazar e ir al estado 61
-    OP_DIV   desplazar e ir al estado 62
-
-    $default  reduce usando la regla 43 (expresion)
+    THEN  desplazar e ir al estado 56
+    AND   desplazar e ir al estado 57
+    OR    desplazar e ir al estado 58
 
 
 estado 36
 
-   46 termino: factor .
+   45 condicion: comparacion .
 
-    $default  reduce usando la regla 46 (termino)
+    $default  reduce usando la regla 45 (condicion)
 
 
 estado 37
 
-   18 while: WHILE condicion . THEN programa
-   54 condicion: condicion . AND comparacion
-   55          | condicion . OR comparacion
+   15 seleccion: IF condicion . THEN programa
+   16          | IF condicion . THEN programa ELSE programa
+   46 condicion: condicion . AND comparacion
+   47          | condicion . OR comparacion
 
-    THEN  desplazar e ir al estado 63
-    AND   desplazar e ir al estado 64
-    OR    desplazar e ir al estado 65
+    THEN  desplazar e ir al estado 59
+    AND   desplazar e ir al estado 57
+    OR    desplazar e ir al estado 58
 
 
 estado 38
 
-   53 condicion: comparacion .
+   17 declaracion: DIM CORCHA . listaVarDec CORCHC AS CORCHA listaType CORCHC
 
-    $default  reduce usando la regla 53 (condicion)
+    ID  desplazar e ir al estado 60
+
+    listaVarDec  ir al estado 61
 
 
 estado 39
-
-   25 equmax: IF EQUMAX . PARA expresion PYC CORCHA listaEqu CORCHC PARC
-
-    PARA  desplazar e ir al estado 66
-
-
-estado 40
 
    28 equmin: IF EQUMIN . PARA expresion PYC CORCHA listaEqu CORCHC PARC
 
     PARA  desplazar e ir al estado 67
 
 
-estado 41
+estado 40
 
    19 seleccion: IF condicion . THEN programa
    20          | IF condicion . THEN programa ELSE programa
@@ -617,486 +611,397 @@ estado 41
     OR    desplazar e ir al estado 65
 
 
-estado 42
+estado 41
 
    21 declaracion: DIM CORCHA . listaVarDec CORCHC AS CORCHA listaType CORCHC
 
-    ID  desplazar e ir al estado 69
+    ID     desplazar e ir al estado 26
+    CTE_E  desplazar e ir al estado 27
+    CTE_R  desplazar e ir al estado 28
+    PARA   desplazar e ir al estado 29
 
-    listaVarDec  ir al estado 70
+    expresion  ir al estado 62
+    termino    ir al estado 33
+    factor     ir al estado 34
+
+
+estado 42
+
+   21 equmax: EQUMAX PARA expresion . PYC CORCHA listaEqu CORCHC PARC
+   36 expresion: expresion . OP_SUM termino
+   37          | expresion . OP_RESTA termino
+
+    PYC       desplazar e ir al estado 63
+    OP_SUM    desplazar e ir al estado 45
+    OP_RESTA  desplazar e ir al estado 46
 
 
 estado 43
 
-    0 $accept: inicio $end .
+   22 equmin: EQUMIN PARA expresion . PYC CORCHA listaEqu CORCHC PARC
+   36 expresion: expresion . OP_SUM termino
+   37          | expresion . OP_RESTA termino
 
-    $default  aceptar
+    PYC       desplazar e ir al estado 64
+    OP_SUM    desplazar e ir al estado 45
+    OP_RESTA  desplazar e ir al estado 46
 
 
 estado 44
 
-    3 programa: programa sentencia .
+   36 expresion: expresion . OP_SUM termino
+   37          | expresion . OP_RESTA termino
+   41 factor: PARA expresion . PARC
 
-    $default  reduce usando la regla 3 (programa)
+    OP_SUM    desplazar e ir al estado 45
+    OP_RESTA  desplazar e ir al estado 46
+    PARC      desplazar e ir al estado 65
 
 
 estado 45
 
-   13 asignacion: ID $@1 OP_ASIG . tipoAsig
+   36 expresion: expresion OP_SUM . termino
 
-    ID     desplazar e ir al estado 28
-    CTE_S  desplazar e ir al estado 71
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
+    ID     desplazar e ir al estado 26
+    CTE_E  desplazar e ir al estado 27
+    CTE_R  desplazar e ir al estado 28
+    PARA   desplazar e ir al estado 29
 
-    tipoAsig   ir al estado 72
-    expresion  ir al estado 73
-    termino    ir al estado 35
-    factor     ir al estado 36
+    termino  ir al estado 66
+    factor   ir al estado 34
 
 
 estado 46
 
-   63 for: FOR ID IGUALFOR . expresion TO expresion CORCHA CTE_E CORCHC NEXT ID
-   64    | FOR ID IGUALFOR . expresion TO expresion CORCHA CORCHC NEXT ID
+   37 expresion: expresion OP_RESTA . termino
 
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
+    ID     desplazar e ir al estado 26
+    CTE_E  desplazar e ir al estado 27
+    CTE_R  desplazar e ir al estado 28
+    PARA   desplazar e ir al estado 29
 
-    expresion  ir al estado 74
-    termino    ir al estado 35
-    factor     ir al estado 36
+    termino  ir al estado 67
+    factor   ir al estado 34
 
 
 estado 47
 
-   27 equmax: FOR EQUMAX PARA . expresion PYC CORCHA listaEqu CORCHC PARC
+   51 comparador: MENOR_IGUAL .
 
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
-
-    expresion  ir al estado 75
-    termino    ir al estado 35
-    factor     ir al estado 36
+    $default  reduce usando la regla 51 (comparador)
 
 
 estado 48
 
-   30 equmin: FOR EQUMIN PARA . expresion PYC CORCHA listaEqu CORCHC PARC
+   52 comparador: MAYOR_IGUAL .
 
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
-
-    expresion  ir al estado 76
-    termino    ir al estado 35
-    factor     ir al estado 36
+    $default  reduce usando la regla 52 (comparador)
 
 
 estado 49
 
-   26 equmax: WHILE EQUMAX PARA . expresion PYC CORCHA listaEqu CORCHC PARC
+   53 comparador: MENOR .
 
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
-
-    expresion  ir al estado 77
-    termino    ir al estado 35
-    factor     ir al estado 36
+    $default  reduce usando la regla 53 (comparador)
 
 
 estado 50
 
-   29 equmin: WHILE EQUMIN PARA . expresion PYC CORCHA listaEqu CORCHC PARC
+   54 comparador: MAYOR .
 
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
-
-    expresion  ir al estado 78
-    termino    ir al estado 35
-    factor     ir al estado 36
+    $default  reduce usando la regla 54 (comparador)
 
 
 estado 51
 
-   44 expresion: expresion . OP_SUM termino
-   45          | expresion . OP_RESTA termino
-   49 factor: PARA expresion . PARC
+   55 comparador: DIFF .
 
-    OP_SUM    desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
-    PARC      desplazar e ir al estado 79
+    $default  reduce usando la regla 55 (comparador)
 
 
 estado 52
 
-   44 expresion: expresion OP_SUM . termino
+   56 comparador: IGUAL .
 
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
-
-    termino  ir al estado 80
-    factor   ir al estado 36
+    $default  reduce usando la regla 56 (comparador)
 
 
 estado 53
 
-   45 expresion: expresion OP_RESTA . termino
+   48 comparacion: expresion comparador . expresion
 
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
+    ID     desplazar e ir al estado 26
+    CTE_E  desplazar e ir al estado 27
+    CTE_R  desplazar e ir al estado 28
+    PARA   desplazar e ir al estado 29
 
-    termino  ir al estado 81
-    factor   ir al estado 36
+    expresion  ir al estado 68
+    termino    ir al estado 33
+    factor     ir al estado 34
 
 
 estado 54
 
-   57 comparador: MENOR_IGUAL .
+   39 termino: termino OP_MULT . factor
 
-    $default  reduce usando la regla 57 (comparador)
+    ID     desplazar e ir al estado 26
+    CTE_E  desplazar e ir al estado 27
+    CTE_R  desplazar e ir al estado 28
+    PARA   desplazar e ir al estado 29
+
+    factor  ir al estado 69
 
 
 estado 55
 
-   58 comparador: MAYOR_IGUAL .
+   40 termino: termino OP_DIV . factor
 
-    $default  reduce usando la regla 58 (comparador)
+    ID     desplazar e ir al estado 26
+    CTE_E  desplazar e ir al estado 27
+    CTE_R  desplazar e ir al estado 28
+    PARA   desplazar e ir al estado 29
+
+    factor  ir al estado 70
 
 
 estado 56
 
-   59 comparador: MENOR .
+   14 iteracion: WHILE condicion THEN . programa
 
-    $default  reduce usando la regla 59 (comparador)
+    ID       desplazar e ir al estado 1
+    GET      desplazar e ir al estado 2
+    DISPLAY  desplazar e ir al estado 3
+    EQUMAX   desplazar e ir al estado 4
+    EQUMIN   desplazar e ir al estado 5
+    WHILE    desplazar e ir al estado 6
+    IF       desplazar e ir al estado 7
+    DIM      desplazar e ir al estado 8
+
+    programa     ir al estado 71
+    sentencia    ir al estado 11
+    asignacion   ir al estado 12
+    iteracion    ir al estado 13
+    seleccion    ir al estado 14
+    declaracion  ir al estado 15
+    display      ir al estado 16
+    get          ir al estado 17
+    equmax       ir al estado 18
+    equmin       ir al estado 19
 
 
 estado 57
 
-   60 comparador: MAYOR .
+   46 condicion: condicion AND . comparacion
 
-    $default  reduce usando la regla 60 (comparador)
+    ID      desplazar e ir al estado 26
+    CTE_E   desplazar e ir al estado 27
+    CTE_R   desplazar e ir al estado 28
+    EQUMAX  desplazar e ir al estado 4
+    EQUMIN  desplazar e ir al estado 5
+    PARA    desplazar e ir al estado 29
+
+    equmax       ir al estado 30
+    equmin       ir al estado 31
+    expresion    ir al estado 32
+    termino      ir al estado 33
+    factor       ir al estado 34
+    comparacion  ir al estado 72
 
 
 estado 58
 
-   61 comparador: DIFF .
+   47 condicion: condicion OR . comparacion
 
-    $default  reduce usando la regla 61 (comparador)
+    ID      desplazar e ir al estado 26
+    CTE_E   desplazar e ir al estado 27
+    CTE_R   desplazar e ir al estado 28
+    EQUMAX  desplazar e ir al estado 4
+    EQUMIN  desplazar e ir al estado 5
+    PARA    desplazar e ir al estado 29
+
+    equmax       ir al estado 30
+    equmin       ir al estado 31
+    expresion    ir al estado 32
+    termino      ir al estado 33
+    factor       ir al estado 34
+    comparacion  ir al estado 73
 
 
 estado 59
 
-   62 comparador: IGUAL .
+   15 seleccion: IF condicion THEN . programa
+   16          | IF condicion THEN . programa ELSE programa
 
-    $default  reduce usando la regla 62 (comparador)
+    ID       desplazar e ir al estado 1
+    GET      desplazar e ir al estado 2
+    DISPLAY  desplazar e ir al estado 3
+    EQUMAX   desplazar e ir al estado 4
+    EQUMIN   desplazar e ir al estado 5
+    WHILE    desplazar e ir al estado 6
+    IF       desplazar e ir al estado 7
+    DIM      desplazar e ir al estado 8
+
+    programa     ir al estado 74
+    sentencia    ir al estado 11
+    asignacion   ir al estado 12
+    iteracion    ir al estado 13
+    seleccion    ir al estado 14
+    declaracion  ir al estado 15
+    display      ir al estado 16
+    get          ir al estado 17
+    equmax       ir al estado 18
+    equmin       ir al estado 19
 
 
 estado 60
 
-   56 comparacion: expresion comparador . expresion
+   28 listaVarDec: ID .
 
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
-
-    expresion  ir al estado 82
-    termino    ir al estado 35
-    factor     ir al estado 36
+    $default  reduce usando la regla 28 (listaVarDec)
 
 
 estado 61
 
-   47 termino: termino OP_MULT . factor
+   17 declaracion: DIM CORCHA listaVarDec . CORCHC AS CORCHA listaType CORCHC
+   29 listaVarDec: listaVarDec . COMA ID
 
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
-
-    factor  ir al estado 83
+    COMA    desplazar e ir al estado 75
+    CORCHC  desplazar e ir al estado 76
 
 
 estado 62
 
-   48 termino: termino OP_DIV . factor
+   13 asignacion: ID $@1 OP_ASIG expresion .
+   36 expresion: expresion . OP_SUM termino
+   37          | expresion . OP_RESTA termino
 
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
-
-    factor  ir al estado 84
-
-
-estado 63
-
-   18 while: WHILE condicion THEN . programa
-
-    ID       desplazar e ir al estado 1
-    GET      desplazar e ir al estado 2
-    DISPLAY  desplazar e ir al estado 3
-    FOR      desplazar e ir al estado 4
-    WHILE    desplazar e ir al estado 5
-    IF       desplazar e ir al estado 6
-    DIM      desplazar e ir al estado 7
-
-    programa     ir al estado 85
-    sentencia    ir al estado 10
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    while        ir al estado 13
-    seleccion    ir al estado 14
-    declaracion  ir al estado 15
-    display      ir al estado 16
-    get          ir al estado 17
-    equmax       ir al estado 18
-    equmin       ir al estado 19
-    for          ir al estado 20
-
-
-estado 64
-
-   54 condicion: condicion AND . comparacion
-
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
-
-    expresion    ir al estado 34
-    termino      ir al estado 35
-    factor       ir al estado 36
-    comparacion  ir al estado 86
-
-
-estado 65
-
-   55 condicion: condicion OR . comparacion
-
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
-
-    expresion    ir al estado 34
-    termino      ir al estado 35
-    factor       ir al estado 36
-    comparacion  ir al estado 87
-
-
-estado 66
-
-   25 equmax: IF EQUMAX PARA . expresion PYC CORCHA listaEqu CORCHC PARC
-
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
-
-    expresion  ir al estado 88
-    termino    ir al estado 35
-    factor     ir al estado 36
-
-
-estado 67
-
-   28 equmin: IF EQUMIN PARA . expresion PYC CORCHA listaEqu CORCHC PARC
-
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
-
-    expresion  ir al estado 89
-    termino    ir al estado 35
-    factor     ir al estado 36
-
-
-estado 68
-
-   19 seleccion: IF condicion THEN . programa
-   20          | IF condicion THEN . programa ELSE programa
-
-    ID       desplazar e ir al estado 1
-    GET      desplazar e ir al estado 2
-    DISPLAY  desplazar e ir al estado 3
-    FOR      desplazar e ir al estado 4
-    WHILE    desplazar e ir al estado 5
-    IF       desplazar e ir al estado 6
-    DIM      desplazar e ir al estado 7
-
-    programa     ir al estado 90
-    sentencia    ir al estado 10
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    while        ir al estado 13
-    seleccion    ir al estado 14
-    declaracion  ir al estado 15
-    display      ir al estado 16
-    get          ir al estado 17
-    equmax       ir al estado 18
-    equmin       ir al estado 19
-    for          ir al estado 20
-
-
-estado 69
-
-   36 listaVarDec: ID .
-
-    $default  reduce usando la regla 36 (listaVarDec)
-
-
-estado 70
-
-   21 declaracion: DIM CORCHA listaVarDec . CORCHC AS CORCHA listaType CORCHC
-   37 listaVarDec: listaVarDec . COMA ID
-
-    COMA    desplazar e ir al estado 91
-    CORCHC  desplazar e ir al estado 92
-
-
-estado 71
-
-   15 tipoAsig: CTE_S .
-
-    $default  reduce usando la regla 15 (tipoAsig)
-
-
-estado 72
-
-   13 asignacion: ID $@1 OP_ASIG tipoAsig .
+    OP_SUM    desplazar e ir al estado 45
+    OP_RESTA  desplazar e ir al estado 46
 
     $default  reduce usando la regla 13 (asignacion)
 
 
+estado 63
+
+   21 equmax: EQUMAX PARA expresion PYC . CORCHA listaEqu CORCHC PARC
+
+    CORCHA  desplazar e ir al estado 77
+
+
+estado 64
+
+   22 equmin: EQUMIN PARA expresion PYC . CORCHA listaEqu CORCHC PARC
+
+    CORCHA  desplazar e ir al estado 78
+
+
+estado 65
+
+   41 factor: PARA expresion PARC .
+
+    $default  reduce usando la regla 41 (factor)
+
+
+estado 66
+
+   36 expresion: expresion OP_SUM termino .
+   39 termino: termino . OP_MULT factor
+   40        | termino . OP_DIV factor
+
+    OP_MULT  desplazar e ir al estado 54
+    OP_DIV   desplazar e ir al estado 55
+
+    $default  reduce usando la regla 36 (expresion)
+
+
+estado 67
+
+   37 expresion: expresion OP_RESTA termino .
+   39 termino: termino . OP_MULT factor
+   40        | termino . OP_DIV factor
+
+    OP_MULT  desplazar e ir al estado 54
+    OP_DIV   desplazar e ir al estado 55
+
+    $default  reduce usando la regla 37 (expresion)
+
+
+estado 68
+
+   36 expresion: expresion . OP_SUM termino
+   37          | expresion . OP_RESTA termino
+   48 comparacion: expresion comparador expresion .
+
+    OP_SUM    desplazar e ir al estado 45
+    OP_RESTA  desplazar e ir al estado 46
+
+    $default  reduce usando la regla 48 (comparacion)
+
+
+estado 69
+
+   39 termino: termino OP_MULT factor .
+
+    $default  reduce usando la regla 39 (termino)
+
+
+estado 70
+
+   40 termino: termino OP_DIV factor .
+
+    $default  reduce usando la regla 40 (termino)
+
+
+estado 71
+
+    3 programa: programa . sentencia
+   14 iteracion: WHILE condicion THEN programa .
+
+    ID       desplazar e ir al estado 1
+    GET      desplazar e ir al estado 2
+    DISPLAY  desplazar e ir al estado 3
+    EQUMAX   desplazar e ir al estado 4
+    EQUMIN   desplazar e ir al estado 5
+    WHILE    desplazar e ir al estado 6
+    IF       desplazar e ir al estado 7
+    DIM      desplazar e ir al estado 8
+
+    ID        [reduce usando la regla 14 (iteracion)]
+    GET       [reduce usando la regla 14 (iteracion)]
+    DISPLAY   [reduce usando la regla 14 (iteracion)]
+    EQUMAX    [reduce usando la regla 14 (iteracion)]
+    EQUMIN    [reduce usando la regla 14 (iteracion)]
+    WHILE     [reduce usando la regla 14 (iteracion)]
+    IF        [reduce usando la regla 14 (iteracion)]
+    DIM       [reduce usando la regla 14 (iteracion)]
+    $default  reduce usando la regla 14 (iteracion)
+
+    sentencia    ir al estado 40
+    asignacion   ir al estado 12
+    iteracion    ir al estado 13
+    seleccion    ir al estado 14
+    declaracion  ir al estado 15
+    display      ir al estado 16
+    get          ir al estado 17
+    equmax       ir al estado 18
+    equmin       ir al estado 19
+
+
+estado 72
+
+   46 condicion: condicion AND comparacion .
+
+    $default  reduce usando la regla 46 (condicion)
+
+
 estado 73
 
-   14 tipoAsig: expresion .
-   44 expresion: expresion . OP_SUM termino
-   45          | expresion . OP_RESTA termino
+   47 condicion: condicion OR comparacion .
 
-    OP_SUM    desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
-
-    $default  reduce usando la regla 14 (tipoAsig)
+    $default  reduce usando la regla 47 (condicion)
 
 
 estado 74
-
-   44 expresion: expresion . OP_SUM termino
-   45          | expresion . OP_RESTA termino
-   63 for: FOR ID IGUALFOR expresion . TO expresion CORCHA CTE_E CORCHC NEXT ID
-   64    | FOR ID IGUALFOR expresion . TO expresion CORCHA CORCHC NEXT ID
-
-    OP_SUM    desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
-    TO        desplazar e ir al estado 93
-
-
-estado 75
-
-   27 equmax: FOR EQUMAX PARA expresion . PYC CORCHA listaEqu CORCHC PARC
-   44 expresion: expresion . OP_SUM termino
-   45          | expresion . OP_RESTA termino
-
-    PYC       desplazar e ir al estado 94
-    OP_SUM    desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
-
-
-estado 76
-
-   30 equmin: FOR EQUMIN PARA expresion . PYC CORCHA listaEqu CORCHC PARC
-   44 expresion: expresion . OP_SUM termino
-   45          | expresion . OP_RESTA termino
-
-    PYC       desplazar e ir al estado 95
-    OP_SUM    desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
-
-
-estado 77
-
-   26 equmax: WHILE EQUMAX PARA expresion . PYC CORCHA listaEqu CORCHC PARC
-   44 expresion: expresion . OP_SUM termino
-   45          | expresion . OP_RESTA termino
-
-    PYC       desplazar e ir al estado 96
-    OP_SUM    desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
-
-
-estado 78
-
-   29 equmin: WHILE EQUMIN PARA expresion . PYC CORCHA listaEqu CORCHC PARC
-   44 expresion: expresion . OP_SUM termino
-   45          | expresion . OP_RESTA termino
-
-    PYC       desplazar e ir al estado 97
-    OP_SUM    desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
-
-
-estado 79
-
-   49 factor: PARA expresion PARC .
-
-    $default  reduce usando la regla 49 (factor)
-
-
-estado 80
-
-   44 expresion: expresion OP_SUM termino .
-   47 termino: termino . OP_MULT factor
-   48        | termino . OP_DIV factor
-
-    OP_MULT  desplazar e ir al estado 61
-    OP_DIV   desplazar e ir al estado 62
-
-    $default  reduce usando la regla 44 (expresion)
-
-
-estado 81
-
-   45 expresion: expresion OP_RESTA termino .
-   47 termino: termino . OP_MULT factor
-   48        | termino . OP_DIV factor
-
-    OP_MULT  desplazar e ir al estado 61
-    OP_DIV   desplazar e ir al estado 62
-
-    $default  reduce usando la regla 45 (expresion)
-
-
-estado 82
-
-   44 expresion: expresion . OP_SUM termino
-   45          | expresion . OP_RESTA termino
-   56 comparacion: expresion comparador expresion .
-
-    OP_SUM    desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
-
-    $default  reduce usando la regla 56 (comparacion)
-
-
-estado 83
 
    47 termino: termino OP_MULT factor .
 
@@ -1118,462 +1023,300 @@ estado 85
     ID       desplazar e ir al estado 1
     GET      desplazar e ir al estado 2
     DISPLAY  desplazar e ir al estado 3
-    FOR      desplazar e ir al estado 4
-    WHILE    desplazar e ir al estado 5
-    IF       desplazar e ir al estado 6
-    DIM      desplazar e ir al estado 7
+    EQUMAX   desplazar e ir al estado 4
+    EQUMIN   desplazar e ir al estado 5
+    WHILE    desplazar e ir al estado 6
+    IF       desplazar e ir al estado 7
+    ELSE     desplazar e ir al estado 79
+    DIM      desplazar e ir al estado 8
 
-    ID        [reduce usando la regla 18 (while)]
-    GET       [reduce usando la regla 18 (while)]
-    DISPLAY   [reduce usando la regla 18 (while)]
-    FOR       [reduce usando la regla 18 (while)]
-    WHILE     [reduce usando la regla 18 (while)]
-    IF        [reduce usando la regla 18 (while)]
-    DIM       [reduce usando la regla 18 (while)]
-    $default  reduce usando la regla 18 (while)
+    ID        [reduce usando la regla 15 (seleccion)]
+    GET       [reduce usando la regla 15 (seleccion)]
+    DISPLAY   [reduce usando la regla 15 (seleccion)]
+    EQUMAX    [reduce usando la regla 15 (seleccion)]
+    EQUMIN    [reduce usando la regla 15 (seleccion)]
+    WHILE     [reduce usando la regla 15 (seleccion)]
+    IF        [reduce usando la regla 15 (seleccion)]
+    ELSE      [reduce usando la regla 15 (seleccion)]
+    DIM       [reduce usando la regla 15 (seleccion)]
+    $default  reduce usando la regla 15 (seleccion)
 
-    sentencia    ir al estado 44
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    while        ir al estado 13
+    sentencia    ir al estado 40
+    asignacion   ir al estado 12
+    iteracion    ir al estado 13
     seleccion    ir al estado 14
     declaracion  ir al estado 15
     display      ir al estado 16
     get          ir al estado 17
     equmax       ir al estado 18
     equmin       ir al estado 19
-    for          ir al estado 20
 
 
-estado 86
+estado 75
 
-   54 condicion: condicion AND comparacion .
+   29 listaVarDec: listaVarDec COMA . ID
 
-    $default  reduce usando la regla 54 (condicion)
-
-
-estado 87
-
-   55 condicion: condicion OR comparacion .
-
-    $default  reduce usando la regla 55 (condicion)
+    ID  desplazar e ir al estado 80
 
 
-estado 88
+estado 76
 
-   25 equmax: IF EQUMAX PARA expresion . PYC CORCHA listaEqu CORCHC PARC
-   44 expresion: expresion . OP_SUM termino
-   45          | expresion . OP_RESTA termino
+   17 declaracion: DIM CORCHA listaVarDec CORCHC . AS CORCHA listaType CORCHC
 
-    PYC       desplazar e ir al estado 98
-    OP_SUM    desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
+    AS  desplazar e ir al estado 81
 
 
-estado 89
+estado 77
 
-   28 equmin: IF EQUMIN PARA expresion . PYC CORCHA listaEqu CORCHC PARC
-   44 expresion: expresion . OP_SUM termino
-   45          | expresion . OP_RESTA termino
+   21 equmax: EQUMAX PARA expresion PYC CORCHA . listaEqu CORCHC PARC
 
-    PYC       desplazar e ir al estado 99
-    OP_SUM    desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
+    ID     desplazar e ir al estado 82
+    CTE_E  desplazar e ir al estado 83
+    CTE_R  desplazar e ir al estado 84
+
+    listaEqu  ir al estado 85
+    itemEqu   ir al estado 86
 
 
-estado 90
+estado 78
 
-    3 programa: programa . sentencia
-   19 seleccion: IF condicion THEN programa .
-   20          | IF condicion THEN programa . ELSE programa
+   22 equmin: EQUMIN PARA expresion PYC CORCHA . listaEqu CORCHC PARC
+
+    ID     desplazar e ir al estado 82
+    CTE_E  desplazar e ir al estado 83
+    CTE_R  desplazar e ir al estado 84
+
+    listaEqu  ir al estado 87
+    itemEqu   ir al estado 86
+
+
+estado 79
+
+   16 seleccion: IF condicion THEN programa ELSE . programa
 
     ID       desplazar e ir al estado 1
     GET      desplazar e ir al estado 2
     DISPLAY  desplazar e ir al estado 3
-    FOR      desplazar e ir al estado 4
-    WHILE    desplazar e ir al estado 5
-    IF       desplazar e ir al estado 6
-    ELSE     desplazar e ir al estado 100
-    DIM      desplazar e ir al estado 7
+    EQUMAX   desplazar e ir al estado 4
+    EQUMIN   desplazar e ir al estado 5
+    WHILE    desplazar e ir al estado 6
+    IF       desplazar e ir al estado 7
+    DIM      desplazar e ir al estado 8
 
-    ID        [reduce usando la regla 19 (seleccion)]
-    GET       [reduce usando la regla 19 (seleccion)]
-    DISPLAY   [reduce usando la regla 19 (seleccion)]
-    FOR       [reduce usando la regla 19 (seleccion)]
-    WHILE     [reduce usando la regla 19 (seleccion)]
-    IF        [reduce usando la regla 19 (seleccion)]
-    ELSE      [reduce usando la regla 19 (seleccion)]
-    DIM       [reduce usando la regla 19 (seleccion)]
-    $default  reduce usando la regla 19 (seleccion)
-
-    sentencia    ir al estado 44
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    while        ir al estado 13
+    programa     ir al estado 88
+    sentencia    ir al estado 11
+    asignacion   ir al estado 12
+    iteracion    ir al estado 13
     seleccion    ir al estado 14
     declaracion  ir al estado 15
     display      ir al estado 16
     get          ir al estado 17
     equmax       ir al estado 18
     equmin       ir al estado 19
-    for          ir al estado 20
 
 
-estado 91
+estado 80
 
-   37 listaVarDec: listaVarDec COMA . ID
+   29 listaVarDec: listaVarDec COMA ID .
+
+    $default  reduce usando la regla 29 (listaVarDec)
 
     ID  desplazar e ir al estado 101
 
+estado 81
 
 estado 92
 
-   21 declaracion: DIM CORCHA listaVarDec CORCHC . AS CORCHA listaType CORCHC
-
-    AS  desplazar e ir al estado 102
+    CORCHA  desplazar e ir al estado 89
 
 
-estado 93
+estado 82
 
-   63 for: FOR ID IGUALFOR expresion TO . expresion CORCHA CTE_E CORCHC NEXT ID
-   64    | FOR ID IGUALFOR expresion TO . expresion CORCHA CORCHC NEXT ID
+   25 itemEqu: ID .
 
-    ID     desplazar e ir al estado 28
-    CTE_E  desplazar e ir al estado 29
-    CTE_R  desplazar e ir al estado 30
-    PARA   desplazar e ir al estado 33
-
-    expresion  ir al estado 103
-    termino    ir al estado 35
-    factor     ir al estado 36
+    $default  reduce usando la regla 25 (itemEqu)
 
 
-estado 94
+estado 83
 
-   27 equmax: FOR EQUMAX PARA expresion PYC . CORCHA listaEqu CORCHC PARC
+   26 itemEqu: CTE_E .
 
-    CORCHA  desplazar e ir al estado 104
-
-
-estado 95
-
-   30 equmin: FOR EQUMIN PARA expresion PYC . CORCHA listaEqu CORCHC PARC
-
-    CORCHA  desplazar e ir al estado 105
+    $default  reduce usando la regla 26 (itemEqu)
 
 
-estado 96
+estado 84
 
-   26 equmax: WHILE EQUMAX PARA expresion PYC . CORCHA listaEqu CORCHC PARC
+   27 itemEqu: CTE_R .
 
-    CORCHA  desplazar e ir al estado 106
-
-
-estado 97
-
-   29 equmin: WHILE EQUMIN PARA expresion PYC . CORCHA listaEqu CORCHC PARC
-
-    CORCHA  desplazar e ir al estado 107
+    $default  reduce usando la regla 27 (itemEqu)
 
 
-estado 98
+estado 85
 
-   25 equmax: IF EQUMAX PARA expresion PYC . CORCHA listaEqu CORCHC PARC
+   21 equmax: EQUMAX PARA expresion PYC CORCHA listaEqu . CORCHC PARC
+   24 listaEqu: listaEqu . COMA itemEqu
 
-    CORCHA  desplazar e ir al estado 108
-
-
-estado 99
-
-   28 equmin: IF EQUMIN PARA expresion PYC . CORCHA listaEqu CORCHC PARC
-
-    CORCHA  desplazar e ir al estado 109
+    COMA    desplazar e ir al estado 90
+    CORCHC  desplazar e ir al estado 91
 
 
-estado 100
+estado 86
+
+   23 listaEqu: itemEqu .
+
+    $default  reduce usando la regla 23 (listaEqu)
+
+
+estado 87
+
+   22 equmin: EQUMIN PARA expresion PYC CORCHA listaEqu . CORCHC PARC
+   24 listaEqu: listaEqu . COMA itemEqu
+
+    COMA    desplazar e ir al estado 90
+    CORCHC  desplazar e ir al estado 92
+
+
+estado 88
 
    20 seleccion: IF condicion THEN programa ELSE . programa
 
     ID       desplazar e ir al estado 1
     GET      desplazar e ir al estado 2
     DISPLAY  desplazar e ir al estado 3
-    FOR      desplazar e ir al estado 4
-    WHILE    desplazar e ir al estado 5
-    IF       desplazar e ir al estado 6
-    DIM      desplazar e ir al estado 7
+    EQUMAX   desplazar e ir al estado 4
+    EQUMIN   desplazar e ir al estado 5
+    WHILE    desplazar e ir al estado 6
+    IF       desplazar e ir al estado 7
+    DIM      desplazar e ir al estado 8
 
-    programa     ir al estado 110
-    sentencia    ir al estado 10
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    while        ir al estado 13
+    ID        [reduce usando la regla 16 (seleccion)]
+    GET       [reduce usando la regla 16 (seleccion)]
+    DISPLAY   [reduce usando la regla 16 (seleccion)]
+    EQUMAX    [reduce usando la regla 16 (seleccion)]
+    EQUMIN    [reduce usando la regla 16 (seleccion)]
+    WHILE     [reduce usando la regla 16 (seleccion)]
+    IF        [reduce usando la regla 16 (seleccion)]
+    DIM       [reduce usando la regla 16 (seleccion)]
+    $default  reduce usando la regla 16 (seleccion)
+
+    sentencia    ir al estado 40
+    asignacion   ir al estado 12
+    iteracion    ir al estado 13
     seleccion    ir al estado 14
     declaracion  ir al estado 15
     display      ir al estado 16
     get          ir al estado 17
     equmax       ir al estado 18
     equmin       ir al estado 19
-    for          ir al estado 20
+
+
+estado 89
+
+   37 listaVarDec: listaVarDec COMA ID .
+
+    INTEGER  desplazar e ir al estado 93
+    STRING   desplazar e ir al estado 94
+    REAL     desplazar e ir al estado 95
+
+    listaType  ir al estado 96
+    TYPE       ir al estado 97
+
+
+estado 90
+
+   24 listaEqu: listaEqu COMA . itemEqu
+
+    ID     desplazar e ir al estado 82
+    CTE_E  desplazar e ir al estado 83
+    CTE_R  desplazar e ir al estado 84
+
+    itemEqu  ir al estado 98
+
+
+estado 91
+
+   21 equmax: EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC . PARC
+
+    PARC  desplazar e ir al estado 99
+
+
+estado 92
+
+   22 equmin: EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC . PARC
+
+    PARC  desplazar e ir al estado 100
+
+
+estado 93
+
+   32 TYPE: INTEGER .
+
+    $default  reduce usando la regla 32 (TYPE)
+
+
+estado 94
+
+   33 TYPE: STRING .
+
+    $default  reduce usando la regla 33 (TYPE)
+
+
+estado 95
+
+   34 TYPE: REAL .
+
+    $default  reduce usando la regla 34 (TYPE)
+
+
+estado 96
+
+   17 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType . CORCHC
+   31 listaType: listaType . COMA TYPE
+
+    COMA    desplazar e ir al estado 101
+    CORCHC  desplazar e ir al estado 102
+
+
+estado 97
+
+   30 listaType: TYPE .
+
+    $default  reduce usando la regla 30 (listaType)
+
+
+estado 98
+
+   24 listaEqu: listaEqu COMA itemEqu .
+
+    $default  reduce usando la regla 24 (listaEqu)
+
+
+estado 99
+
+   21 equmax: EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC .
+
+    $default  reduce usando la regla 21 (equmax)
+
+
+estado 100
+
+   22 equmin: EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC .
+
+    $default  reduce usando la regla 22 (equmin)
 
 
 estado 101
 
-   37 listaVarDec: listaVarDec COMA ID .
+   31 listaType: listaType COMA . TYPE
 
-    $default  reduce usando la regla 37 (listaVarDec)
+    INTEGER  desplazar e ir al estado 93
+    STRING   desplazar e ir al estado 94
+    REAL     desplazar e ir al estado 95
+
+    TYPE  ir al estado 103
 
 
 estado 102
-
-   21 declaracion: DIM CORCHA listaVarDec CORCHC AS . CORCHA listaType CORCHC
-
-    CORCHA  desplazar e ir al estado 111
-
-
-estado 103
-
-   44 expresion: expresion . OP_SUM termino
-   45          | expresion . OP_RESTA termino
-   63 for: FOR ID IGUALFOR expresion TO expresion . CORCHA CTE_E CORCHC NEXT ID
-   64    | FOR ID IGUALFOR expresion TO expresion . CORCHA CORCHC NEXT ID
-
-    OP_SUM    desplazar e ir al estado 52
-    OP_RESTA  desplazar e ir al estado 53
-    CORCHA    desplazar e ir al estado 112
-
-
-estado 104
-
-   27 equmax: FOR EQUMAX PARA expresion PYC CORCHA . listaEqu CORCHC PARC
-
-    ID     desplazar e ir al estado 113
-    CTE_E  desplazar e ir al estado 114
-    CTE_R  desplazar e ir al estado 115
-
-    listaEqu  ir al estado 116
-    itemEqu   ir al estado 117
-
-
-estado 105
-
-   30 equmin: FOR EQUMIN PARA expresion PYC CORCHA . listaEqu CORCHC PARC
-
-    ID     desplazar e ir al estado 113
-    CTE_E  desplazar e ir al estado 114
-    CTE_R  desplazar e ir al estado 115
-
-    listaEqu  ir al estado 118
-    itemEqu   ir al estado 117
-
-
-estado 106
-
-   26 equmax: WHILE EQUMAX PARA expresion PYC CORCHA . listaEqu CORCHC PARC
-
-    ID     desplazar e ir al estado 113
-    CTE_E  desplazar e ir al estado 114
-    CTE_R  desplazar e ir al estado 115
-
-    listaEqu  ir al estado 119
-    itemEqu   ir al estado 117
-
-
-estado 107
-
-   29 equmin: WHILE EQUMIN PARA expresion PYC CORCHA . listaEqu CORCHC PARC
-
-    ID     desplazar e ir al estado 113
-    CTE_E  desplazar e ir al estado 114
-    CTE_R  desplazar e ir al estado 115
-
-    listaEqu  ir al estado 120
-    itemEqu   ir al estado 117
-
-
-estado 108
-
-   25 equmax: IF EQUMAX PARA expresion PYC CORCHA . listaEqu CORCHC PARC
-
-    ID     desplazar e ir al estado 113
-    CTE_E  desplazar e ir al estado 114
-    CTE_R  desplazar e ir al estado 115
-
-    listaEqu  ir al estado 121
-    itemEqu   ir al estado 117
-
-
-estado 109
-
-   28 equmin: IF EQUMIN PARA expresion PYC CORCHA . listaEqu CORCHC PARC
-
-    ID     desplazar e ir al estado 113
-    CTE_E  desplazar e ir al estado 114
-    CTE_R  desplazar e ir al estado 115
-
-    listaEqu  ir al estado 122
-    itemEqu   ir al estado 117
-
-
-estado 110
-
-    3 programa: programa . sentencia
-   20 seleccion: IF condicion THEN programa ELSE programa .
-
-    ID       desplazar e ir al estado 1
-    GET      desplazar e ir al estado 2
-    DISPLAY  desplazar e ir al estado 3
-    FOR      desplazar e ir al estado 4
-    WHILE    desplazar e ir al estado 5
-    IF       desplazar e ir al estado 6
-    DIM      desplazar e ir al estado 7
-
-    ID        [reduce usando la regla 20 (seleccion)]
-    GET       [reduce usando la regla 20 (seleccion)]
-    DISPLAY   [reduce usando la regla 20 (seleccion)]
-    FOR       [reduce usando la regla 20 (seleccion)]
-    WHILE     [reduce usando la regla 20 (seleccion)]
-    IF        [reduce usando la regla 20 (seleccion)]
-    DIM       [reduce usando la regla 20 (seleccion)]
-    $default  reduce usando la regla 20 (seleccion)
-
-    sentencia    ir al estado 44
-    asignacion   ir al estado 11
-    iteracion    ir al estado 12
-    while        ir al estado 13
-    seleccion    ir al estado 14
-    declaracion  ir al estado 15
-    display      ir al estado 16
-    get          ir al estado 17
-    equmax       ir al estado 18
-    equmin       ir al estado 19
-    for          ir al estado 20
-
-
-estado 111
-
-   21 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA . listaType CORCHC
-
-    INTEGER  desplazar e ir al estado 123
-    STRING   desplazar e ir al estado 124
-    REAL     desplazar e ir al estado 125
-
-    listaType  ir al estado 126
-    TYPE       ir al estado 127
-
-
-estado 112
-
-   63 for: FOR ID IGUALFOR expresion TO expresion CORCHA . CTE_E CORCHC NEXT ID
-   64    | FOR ID IGUALFOR expresion TO expresion CORCHA . CORCHC NEXT ID
-
-    CTE_E   desplazar e ir al estado 128
-    CORCHC  desplazar e ir al estado 129
-
-
-estado 113
-
-   33 itemEqu: ID .
-
-    $default  reduce usando la regla 33 (itemEqu)
-
-
-estado 114
-
-   34 itemEqu: CTE_E .
-
-    $default  reduce usando la regla 34 (itemEqu)
-
-
-estado 115
-
-   35 itemEqu: CTE_R .
-
-    $default  reduce usando la regla 35 (itemEqu)
-
-
-estado 116
-
-   27 equmax: FOR EQUMAX PARA expresion PYC CORCHA listaEqu . CORCHC PARC
-   32 listaEqu: listaEqu . COMA itemEqu
-
-    COMA    desplazar e ir al estado 130
-    CORCHC  desplazar e ir al estado 131
-
-
-estado 117
-
-   31 listaEqu: itemEqu .
-
-    $default  reduce usando la regla 31 (listaEqu)
-
-
-estado 118
-
-   30 equmin: FOR EQUMIN PARA expresion PYC CORCHA listaEqu . CORCHC PARC
-   32 listaEqu: listaEqu . COMA itemEqu
-
-    COMA    desplazar e ir al estado 130
-    CORCHC  desplazar e ir al estado 132
-
-
-estado 119
-
-   26 equmax: WHILE EQUMAX PARA expresion PYC CORCHA listaEqu . CORCHC PARC
-   32 listaEqu: listaEqu . COMA itemEqu
-
-    COMA    desplazar e ir al estado 130
-    CORCHC  desplazar e ir al estado 133
-
-
-estado 120
-
-   29 equmin: WHILE EQUMIN PARA expresion PYC CORCHA listaEqu . CORCHC PARC
-   32 listaEqu: listaEqu . COMA itemEqu
-
-    COMA    desplazar e ir al estado 130
-    CORCHC  desplazar e ir al estado 134
-
-
-estado 121
-
-   25 equmax: IF EQUMAX PARA expresion PYC CORCHA listaEqu . CORCHC PARC
-   32 listaEqu: listaEqu . COMA itemEqu
-
-    COMA    desplazar e ir al estado 130
-    CORCHC  desplazar e ir al estado 135
-
-
-estado 122
-
-   28 equmin: IF EQUMIN PARA expresion PYC CORCHA listaEqu . CORCHC PARC
-   32 listaEqu: listaEqu . COMA itemEqu
-
-    COMA    desplazar e ir al estado 130
-    CORCHC  desplazar e ir al estado 136
-
-
-estado 123
-
-   40 TYPE: INTEGER .
-
-    $default  reduce usando la regla 40 (TYPE)
-
-
-estado 124
-
-   41 TYPE: STRING .
-
-    $default  reduce usando la regla 41 (TYPE)
-
-
-estado 125
-
-   42 TYPE: REAL .
-
-    $default  reduce usando la regla 42 (TYPE)
-
-
-estado 126
 
    21 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType . CORCHC
    39 listaType: listaType . COMA TYPE
@@ -1582,184 +1325,8 @@ estado 126
     CORCHC  desplazar e ir al estado 138
 
 
-estado 127
+estado 103
 
-   38 listaType: TYPE .
+   31 listaType: listaType COMA TYPE .
 
-    $default  reduce usando la regla 38 (listaType)
-
-
-estado 128
-
-   63 for: FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E . CORCHC NEXT ID
-
-    CORCHC  desplazar e ir al estado 139
-
-
-estado 129
-
-   64 for: FOR ID IGUALFOR expresion TO expresion CORCHA CORCHC . NEXT ID
-
-    NEXT  desplazar e ir al estado 140
-
-
-estado 130
-
-   32 listaEqu: listaEqu COMA . itemEqu
-
-    ID     desplazar e ir al estado 113
-    CTE_E  desplazar e ir al estado 114
-    CTE_R  desplazar e ir al estado 115
-
-    itemEqu  ir al estado 141
-
-
-estado 131
-
-   27 equmax: FOR EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC . PARC
-
-    PARC  desplazar e ir al estado 142
-
-
-estado 132
-
-   30 equmin: FOR EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC . PARC
-
-    PARC  desplazar e ir al estado 143
-
-
-estado 133
-
-   26 equmax: WHILE EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC . PARC
-
-    PARC  desplazar e ir al estado 144
-
-
-estado 134
-
-   29 equmin: WHILE EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC . PARC
-
-    PARC  desplazar e ir al estado 145
-
-
-estado 135
-
-   25 equmax: IF EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC . PARC
-
-    PARC  desplazar e ir al estado 146
-
-
-estado 136
-
-   28 equmin: IF EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC . PARC
-
-    PARC  desplazar e ir al estado 147
-
-
-estado 137
-
-   39 listaType: listaType COMA . TYPE
-
-    INTEGER  desplazar e ir al estado 123
-    STRING   desplazar e ir al estado 124
-    REAL     desplazar e ir al estado 125
-
-    TYPE  ir al estado 148
-
-
-estado 138
-
-   21 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC .
-
-    $default  reduce usando la regla 21 (declaracion)
-
-
-estado 139
-
-   63 for: FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC . NEXT ID
-
-    NEXT  desplazar e ir al estado 149
-
-
-estado 140
-
-   64 for: FOR ID IGUALFOR expresion TO expresion CORCHA CORCHC NEXT . ID
-
-    ID  desplazar e ir al estado 150
-
-
-estado 141
-
-   32 listaEqu: listaEqu COMA itemEqu .
-
-    $default  reduce usando la regla 32 (listaEqu)
-
-
-estado 142
-
-   27 equmax: FOR EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC .
-
-    $default  reduce usando la regla 27 (equmax)
-
-
-estado 143
-
-   30 equmin: FOR EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC .
-
-    $default  reduce usando la regla 30 (equmin)
-
-
-estado 144
-
-   26 equmax: WHILE EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC .
-
-    $default  reduce usando la regla 26 (equmax)
-
-
-estado 145
-
-   29 equmin: WHILE EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC .
-
-    $default  reduce usando la regla 29 (equmin)
-
-
-estado 146
-
-   25 equmax: IF EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC .
-
-    $default  reduce usando la regla 25 (equmax)
-
-
-estado 147
-
-   28 equmin: IF EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC .
-
-    $default  reduce usando la regla 28 (equmin)
-
-
-estado 148
-
-   39 listaType: listaType COMA TYPE .
-
-    $default  reduce usando la regla 39 (listaType)
-
-
-estado 149
-
-   63 for: FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT . ID
-
-    ID  desplazar e ir al estado 151
-
-
-estado 150
-
-   64 for: FOR ID IGUALFOR expresion TO expresion CORCHA CORCHC NEXT ID .
-
-    $default  reduce usando la regla 64 (for)
-
-
-estado 151
-
-   63 for: FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID .
-
-    $default  reduce usando la regla 63 (for)
+    $default  reduce usando la regla 31 (listaType)

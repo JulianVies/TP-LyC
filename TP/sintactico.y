@@ -107,6 +107,8 @@
 %token FOR
 
 %token WHILE
+%token BEGINW
+%token ENDW
 %token THEN			
 %token IF			
 %token ELSE			
@@ -161,8 +163,8 @@ sentencia: asignacion { printf("Regla asignacion\n"); }
 		| declaracion { printf("Regla declaracion\n"); }
 		| display { printf("Regla display\n"); }
 		| get { printf("Regla get\n"); }
-		| equmax { printf("Regla equmax\n"); }
-		| equmin { printf("Regla equmin\n"); }
+		| equmax
+		| equmin
 		;
 
 asignacion: ID {BuscarEnLista(&lista_ts, yytext);} OP_ASIG tipoAsig;
@@ -173,7 +175,7 @@ iteracion: while { printf("Regla while\n"); }
 		|  for { printf("Regla for\n"); }
 		;
 
-while: WHILE condicion THEN programa;
+while: WHILE condicion BEGINW programa ENDW  ;
 
 seleccion: IF condicion THEN programa
         |  IF condicion THEN programa ELSE programa
@@ -210,9 +212,9 @@ display: DISPLAY ID
 
 get:GET	ID;
 
-equmax: EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC;
+equmax: EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmax\n"); };
 
-equmin: EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC;
+equmin: EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmin\n"); };
 
 listaEqu: itemEqu
 		| listaEqu COMA itemEqu

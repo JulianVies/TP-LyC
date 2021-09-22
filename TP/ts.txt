@@ -5,12 +5,12 @@ _3                                                   3
 beta                                string           -                                                                      
 b                                   real             -                                                                      
 a                                   integer          -                                                                      
+_2                                                   2                                                                      
 cotaRealMin                         real             -                                                                      
 cotaRealMax                         real             -                                                                      
 cotaIntMaxRompe                     integer          -                                                                      
 cotaIntMax                          integer          -                                                                      
 _214748364                                           214748364                                                              
-_3400000000000000000000000000000000                  34000000000000000000000000000000000                                    
 _cadena                                              cadena                              6                                  
 _10                                                  10                                                                     
 _100                                                 100                                                                    

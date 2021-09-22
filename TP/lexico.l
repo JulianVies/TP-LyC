@@ -31,6 +31,8 @@ COMENTARIO		\*\/.+\/\*
 
 
 "WHILE"			{return (WHILE);}
+"BEGINW"		{return (BEGINW);}
+"ENDW"			{return (ENDW);}
 "IF"			{return (IF);}
 "THEN"			{return (THEN);}
 "ELSE"			{return (ELSE);}

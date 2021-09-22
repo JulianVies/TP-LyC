@@ -1,6 +1,42 @@
-a1 := 3
-a2 := "sarasasarasa"
-a3 := 4
-a3 := 12321
-a4 := 12
+FOR varAasdasd = 60 TO 21 [ 3 ] NEXT varA
+FOR varA = 60 TO 21 [  ] NEXT varA
+*/pruebas asignacion .../*
+
+
 DIM [ a, b, beta ] AS [ integer, real, string]
+
+WHILE a > b BEGINW a:=2 ENDW
+
+DIM [ cotaIntMax, cotaIntMaxRompe, cotaRealMax,cotaRealMin ] AS [ integer, integer, real,real]
+cotaIntMax := 214748364
+*/cotaIntMaxRompe := 2147483648/*
+*/cotaRealMax := 3400000000000000000000000000000000000000.000000000/*
+*/cotaRealMaxRompe := 3400000000000000000000000000000000000000.0000000000/*
+
+*/pruebas iteracion .../*
+
+*/pruebas seleccion .../*
+
+*/pruebas declaracion .../*
+
+*/pruebas display/*
+DISPLAY a
+DISPLAY "cadena"
+*/DISPLAY 28/*
+
+*/pruebas get/*
+GET a
+*/GET "cadena"/*
+
+*/pruebas equmax/*
+WHILE EQUMAX(10+a; [100, a]) BEGINW a:=28 ENDW
+IF EQUMAX(10+101; [100, 111, a]) AND EQUMAX(10+101; [100, 111, a]) THEN a:=28
+*/WHILE EQUMAX(10+a; [100, 1+2]) THEN a:=28/*
+*/WHILE EQUMAX(10+a; [100, 1+a]) THEN a:=28/*
+
+*/pruebas equmin/*
+WHILE EQUMIN(10+a; [100, a]) BEGINW a:=28 ENDW
+IF EQUMIN(10+101; [100, 111, a]) AND EQUMAX(10+101; [100, 111, a]) THEN a:=28
+*/WHILE EQUMIN(10+a; [100, 1+2]) THEN a:=28/*
+*/WHILE EQUMIN(10+a; [100, 1+a]) THEN a:=28/*
+

@@ -40,7 +40,7 @@
 
 	void crear_lista(t_lista *p);
 	int insertarEnListaEnOrdenSinDuplicados(t_lista *l_ts, t_info *d, t_cmp);
-	int BuscarEnLista(t_lista *pl, char* cadena );
+	int BuscarEnLista(t_lista *pl, char* cadena);
 
 	void crear_ts(t_lista *l_ts);
 	int insertar_en_ts(t_lista *l_ts, t_info *d);
@@ -85,7 +85,9 @@
 
 	t_lista lista_ts;
 	t_info dato;
-	
+
+	t_lista lista_dup;
+
 	t_info_p info_p;
 	t_pila pilaVar;
 	t_pila pilaType;
@@ -102,8 +104,11 @@
 
 %token EQUMAX		
 %token EQUMIN		
+%token FOR
 
 %token WHILE
+%token BEGINW
+%token ENDW
 %token THEN			
 %token IF			
 %token ELSE			
@@ -133,74 +138,89 @@
 %token MAYOR 			
 %token DIFF		
 %token IGUAL
+%token IGUALFOR
 
 %token DIM		
 %token AS		
+%token TO
+%token NEXT
 
 %token INTEGER		
 %token STRING		
 %token REAL
 
 %%
-inicio: programa ;
+inicio: programa {printf("\nEnd programa.\n");}
+		;
 
 programa: sentencia 
         | programa sentencia 
 		;
 
-sentencia: asignacion
+sentencia: asignacion { printf("Regla asignacion\n"); }
         | iteracion
-        | seleccion 
-		| declaracion
-		| display
-		| get
+        | seleccion { printf("Regla seleccion\n"); }
+		| declaracion { printf("Regla declaracion\n"); }
+		| display { printf("Regla display\n"); }
+		| get { printf("Regla get\n"); }
 		| equmax
 		| equmin
 		;
 
-asignacion: ID OP_ASIG expresion;
+asignacion: ID {BuscarEnLista(&lista_ts, yytext);} OP_ASIG tipoAsig;
 
-iteracion: WHILE condicion THEN programa ;
+tipoAsig: expresion | CTE_S; 
+
+iteracion: while { printf("Regla while\n"); }
+		|  for { printf("Regla for\n"); }
+		;
+
+while: WHILE condicion BEGINW programa ENDW  ;
 
 seleccion: IF condicion THEN programa
         |  IF condicion THEN programa ELSE programa
 		;
 
 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC {
-	while(!pilaVacia(&pilaVar) || !pilaVacia(&pilaType)) {
+	while(!pilaVacia(&pilaVar) && !pilaVacia(&pilaType)) {
 		t_info_p variable;
 		desapilar(&pilaVar, &variable);
+
+		t_info info_dup;
+		strcpy(info_dup.nombre, variable.text);
+		strcpy(info_dup.tipodato, "");
+		strcpy(info_dup.valor, "");
+		strcpy(info_dup.longitud, "");
+		int respuesta = insertarEnListaEnOrdenSinDuplicados(&lista_dup, &info_dup, compararPorNombre);
+		if (respuesta == DUPLICADO) {
+			yyerror("Error Sintactico,Variable Duplicada en declaracion");
+		}
 
 		t_info_p tipo;
 		desapilar(&pilaType, &tipo);
 
 		nuevoSimbolo(variable.text,"-",tipo.text,-1);
 	}
+
+	if (!pilaVacia(&pilaVar) || !pilaVacia(&pilaType)) {
+		yyerror("Error Sintactico,Diferencia en declaracion de cantidad de IDs con Tipos");
+	}
 };
 
-display: DISPLAY factor;
+display: DISPLAY ID 
+		| DISPLAY CTE_S;
 
-get:GET	factor;
+get:GET	ID;
 
-equmax: IF EQUMAX PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC;
+equmax: EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmax\n"); };
 
-equmin: IF EQUMIN PARA expresionEqu PYC CORCHA listaEqu CORCHC PARC;
+equmin: EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmin\n"); };
 
-listaEqu: factorEqu
-		| listaEqu COMA factorEqu
+listaEqu: itemEqu
+		| listaEqu COMA itemEqu
 		;
 
-expresionEqu: terminoEqu
-        	| expresionEqu OP_SUM terminoEqu  
-        	| expresionEqu OP_RESTA terminoEqu  
-			;
-		
-terminoEqu: factorEqu 
-        	| terminoEqu OP_MULT factorEqu
-        	| terminoEqu OP_DIV factorEqu
-			;
-
-factorEqu: ID
+itemEqu: ID
 		| CTE_E
 		| CTE_R
 		;
@@ -229,14 +249,17 @@ factor: PARA expresion PARC
 		| ID
 		| CTE_E
 		| CTE_R
-		| CTE_S
 		;
 
 condicion: comparacion 
         |  condicion AND comparacion
-        |  condicion OR comparacion ;
+        |  condicion OR comparacion
+		;
 
-comparacion: expresion comparador expresion ;
+comparacion: expresion comparador expresion 
+		|  equmax
+		|  equmin
+		;
 
 comparador: MENOR_IGUAL			
 			| MAYOR_IGUAL			
@@ -245,6 +268,10 @@ comparador: MENOR_IGUAL
  			| DIFF		
 			| IGUAL
 			;
+
+for:	FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID 
+	| FOR ID IGUALFOR expresion TO expresion CORCHA CORCHC NEXT ID
+	;
 			
 
 
@@ -256,9 +283,12 @@ int main(int argc,char *argv[]){
   }
   else
   {
+	crear_lista(&lista_dup);
 	crearPila(&pilaVar);
 	crearPila(&pilaType);
+
 	yyparse();
+
 	mostrarPila(&pilaVar);
 	mostrarPila(&pilaType);
 	// t_lista* lista_ts;
@@ -273,7 +303,7 @@ int main(int argc,char *argv[]){
 int yywrap(){}
 
 int yyerror(char* mensaje){
-	printf("Error sintactico: %s\n", mensaje );
+	printf("%s\n", mensaje );
 	system ("Pause");
 	exit (1);
  }
@@ -374,14 +404,13 @@ int insertarEnListaEnOrdenSinDuplicados(t_lista *pl, t_info *d, t_cmp comparar){
     return 1;
 }
 
-int BuscarEnLista(t_lista *pl, char* cadena ){
+int BuscarEnLista(t_lista *pl, char* cadena){
     int cmp;
 
     while(*pl && (cmp=strcmp(cadena,(*pl)->info.nombre))!=0)
         pl=&(*pl)->pSig;
     if(cmp==0)
 	{	
-		printf("\nvariable declarada");
         return ID_EN_LISTA;
 	}
 	printf("\nVariable sin declarar: %s \n",cadena);

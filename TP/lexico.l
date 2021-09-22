@@ -36,6 +36,7 @@ COMENTARIO		\*\/.+\/\*
 "IF"			{return (IF);}
 "THEN"			{return (THEN);}
 "ELSE"			{return (ELSE);}
+"ENDIF"			{return (ENDIF);}
 
 "NOT"			{return (NOT);}
 "AND"			{return (AND);}

@@ -112,6 +112,7 @@
 %token THEN			
 %token IF			
 %token ELSE			
+%token ENDIF			
 
 %token NOT			
 %token AND			
@@ -177,8 +178,8 @@ iteracion: while { printf("Regla while\n"); }
 
 while: WHILE condicion BEGINW programa ENDW  ;
 
-seleccion: IF condicion THEN programa
-        |  IF condicion THEN programa ELSE programa
+seleccion: IF condicion THEN programa ENDIF
+        |  IF condicion THEN programa ELSE programa ENDIF
 		;
 
 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC {

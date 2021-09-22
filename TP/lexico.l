@@ -77,8 +77,7 @@ COMENTARIO		\*\/.+\/\*
 					if(strlen(yytext)<=200){
 						printf("COMENTARIO\n");
 					}else{
-						printf("Error lexico: Los comentarios deben ser de menos de 50 caracteres!");
-						return 1;
+						yyerror("Error Lexico,Los comentarios deben ser de menos de 50 caracteres!");
 					}
 				}
 
@@ -93,12 +92,11 @@ COMENTARIO		\*\/.+\/\*
 						nuevoSimbolo(stringConGuion,yytext,NULL,strlen(yytext));
 						return CTE_S;
 					}else{
-						printf("Error lexico: Los string deben ser de menos de 30 caracteres!");
-						return 1;
+						yyerror("Error Lexico,Los string deben ser de menos de 30 caracteres!");
 					}
 				}
 
-{CTE_E}			{
+{CTE_E}			{	
 					if(atoll(yytext)<=2147483647){	 //convierto a long, comparo con el max de int
 						entero = atoi(yytext);
 						char enteroConGuion[100];
@@ -106,37 +104,31 @@ COMENTARIO		\*\/.+\/\*
 						nuevoSimbolo(enteroConGuion,yytext,NULL,-1);
 						return CTE_E;
 					}else{
-						printf("Error lexico: tam de entero excedido!");
-						return 1;
+						yyerror("Error Lexico,tam de entero excedido!");
 					}
 
 				}
 {CTE_R}			{
-					if(atof(yytext)<=3.40282347e+38F){
+					if(atof(yytext)<=3.4e+38){
 						real = atof(yytext);
 						char realConGuion[100];
 						agregarGuion(yytext,realConGuion);
 						nuevoSimbolo(realConGuion,yytext,NULL,-1);
 						return CTE_R;
 					}else{
-						printf("Error lexico: tam de float excedido!");
-						return 1;
+						yyerror("Error Lexico,tam de float excedido!");
 					}
 
 				}
 
 {ID}			{
 						if(strlen(yytext)<=30){
-							// strcpy(dato.nombre, yytext);
-							// strcpy(dato.valor, "-");
-							// strcpy(dato.tipodato, "-");
-							// insertar_en_ts(&lista_ts, &dato);
 							return ID;
 						}else{
-							printf("Error lexico: Los ID deben ser de menos de 30 caracteres!");
-							return 1;
+							yyerror("Error Lexico,Los ID deben ser de menos de 30 caracteres!");
 						}
 				}
 
 \n
+\t
 %%

@@ -4,6 +4,12 @@ FOR varA = 60 TO 21 [  ] NEXT varA
 
 DIM [ a, b, beta ] AS [ integer, real, string]
 
+DIM [ cotaIntMax, cotaIntMaxRompe, cotaRealMax,cotaRealMin ] AS [ integer, integer, real,real]
+cotaIntMax := 214748364
+*/cotaIntMaxRompe := 2147483648/*
+cotaRealMax := 3400000000000000000000000000000000000000.000000000
+*/cotaRealMaxRompe := 3400000000000000000000000000000000000000.0000000000/*
+
 */pruebas iteracion .../*
 
 */pruebas seleccion .../*

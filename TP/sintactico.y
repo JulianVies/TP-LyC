@@ -148,28 +148,30 @@
 %token REAL
 
 %%
-inicio: programa ;
+inicio: programa {printf("\nEnd programa.\n");}
+		;
 
 programa: sentencia 
         | programa sentencia 
 		;
 
-sentencia: asignacion
+sentencia: asignacion { printf("Regla asignacion\n"); }
         | iteracion
-        | seleccion 
-		| declaracion
-		| display
-		| get
-		| equmax
-		| equmin
+        | seleccion { printf("Regla seleccion\n"); }
+		| declaracion { printf("Regla declaracion\n"); }
+		| display { printf("Regla display\n"); }
+		| get { printf("Regla get\n"); }
+		| equmax { printf("Regla equmax\n"); }
+		| equmin { printf("Regla equmin\n"); }
 		;
 
 asignacion: ID {BuscarEnLista(&lista_ts, yytext);} OP_ASIG tipoAsig;
 
 tipoAsig: expresion | CTE_S; 
 
-iteracion: while
-		|  for;
+iteracion: while { printf("Regla while\n"); }
+		|  for { printf("Regla for\n"); }
+		;
 
 while: WHILE condicion THEN programa;
 
@@ -189,7 +191,7 @@ declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC {
 		strcpy(info_dup.longitud, "");
 		int respuesta = insertarEnListaEnOrdenSinDuplicados(&lista_dup, &info_dup, compararPorNombre);
 		if (respuesta == DUPLICADO) {
-			yyerror("Variable Duplicada en declaracion");
+			yyerror("Error Sintactico,Variable Duplicada en declaracion");
 		}
 
 		t_info_p tipo;
@@ -199,7 +201,7 @@ declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC {
 	}
 
 	if (!pilaVacia(&pilaVar) || !pilaVacia(&pilaType)) {
-		yyerror("Diferencia en declaracion de cantidad de IDs con Tipos");
+		yyerror("Error Sintactico,Diferencia en declaracion de cantidad de IDs con Tipos");
 	}
 };
 
@@ -265,8 +267,9 @@ comparador: MENOR_IGUAL
 			| IGUAL
 			;
 
-for:	FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID {printf("for con step");}
-	| FOR ID IGUALFOR expresion TO expresion CORCHA CORCHC NEXT ID {printf("for sin step");};
+for:	FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID 
+	| FOR ID IGUALFOR expresion TO expresion CORCHA CORCHC NEXT ID
+	;
 			
 
 
@@ -298,7 +301,7 @@ int main(int argc,char *argv[]){
 int yywrap(){}
 
 int yyerror(char* mensaje){
-	printf("Error sintactico: %s\n", mensaje );
+	printf("%s\n", mensaje );
 	system ("Pause");
 	exit (1);
  }

@@ -177,8 +177,8 @@ iteracion: while { printf("Regla while\n"); }
 
 while: WHILE condicion BEGINW programa ENDW  ;
 
-seleccion: IF condicion THEN programa
-        |  IF condicion THEN programa ELSE programa
+seleccion: IF condicion THEN programa	{ printf("Regla IF\n"); }
+        |  IF condicion THEN programa ELSE programa		{ printf("Regla If con Else\n"); }
 		;
 
 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC {
@@ -252,8 +252,8 @@ factor: PARA expresion PARC
 		;
 
 condicion: comparacion 
-        |  condicion AND comparacion
-        |  condicion OR comparacion
+        |  condicion AND comparacion { printf("Regla condicion And\n"); }
+        |  condicion OR comparacion { printf("Regla condicion Or\n"); }
 		;
 
 comparacion: expresion comparador expresion 

@@ -5,7 +5,7 @@
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include <math.h>
-	#include "y.tab.h"
+	#include "sintactico.tab.h"
 %}
 %option noyywrap
 %option yylineno
@@ -27,9 +27,12 @@ COMENTARIO		\*\/.+\/\*
 
 "EQUMAX"		{return (EQUMAX);}
 "EQUMIN"		{return (EQUMIN);}
+"FOR"			{return (FOR);}
 
 
 "WHILE"			{return (WHILE);}
+"BEGINW"		{return (BEGINW);}
+"ENDW"			{return (ENDW);}
 "IF"			{return (IF);}
 "THEN"			{return (THEN);}
 "ELSE"			{return (ELSE);}
@@ -59,11 +62,14 @@ COMENTARIO		\*\/.+\/\*
 ">" 			{return (MAYOR);}
 "!="			{return (DIFF);}
 "=="			{return (IGUAL);}
+"="				{return (IGUALFOR);}
 
 
 
 "DIM"			{return (DIM);}
 "AS"			{return (AS);}
+"TO"			{return (TO);}
+"NEXT"			{return (NEXT);}
 
 "integer"		{return (INTEGER);}
 "string"		{return (STRING);}
@@ -72,10 +78,8 @@ COMENTARIO		\*\/.+\/\*
 {COMENTARIO}	{
 					if(strlen(yytext)<=200){
 						printf("COMENTARIO\n");
-						//aca no retorna token
 					}else{
-						printf("Error lexico: Los comentarios deben ser de menos de 50 caracteres!");
-						return 1;
+						yyerror("Error Lexico,Los comentarios deben ser de menos de 50 caracteres!");
 					}
 				}
 
@@ -83,65 +87,38 @@ COMENTARIO		\*\/.+\/\*
 {CTE_S}			{	
 					// se cambia 30 por 31 por que cuenta las comillas que valen por 2 caracteres 
 					// ( y 30 no es valido).
-					printf("%s",yytext);
 					if(strlen(yytext)<=31){
+						quitar_comillas(yytext);
+						char stringConGuion[100];
+						agregarGuion(yytext,stringConGuion);
+						nuevoSimbolo(stringConGuion,yytext,NULL,strlen(yytext));
 						return CTE_S;
-
-						// sacarComillas(yytext);
-						
-						// char stringConGuion[100];
-						// agregarGuion(yytext,stringConGuion);
-						
-						// //lista
-						// strcpy(dato.nombre, stringConGuion);
-						// strcpy(dato.valor, yytext);
-						// strcpy(dato.tipodato, "STRING"); //TODO: revisar si es necesario el tipo de dato en el lexico
-						// dato.longitud = strlen(yytext);
-						// insertar_en_ts(&lista_ts, &dato);
-
-
 					}else{
-						printf("Error lexico: Los string deben ser de menos de 30 caracteres!");
-						return 1;
+						yyerror("Error Lexico,Los string deben ser de menos de 30 caracteres!");
 					}
 				}
 
-{CTE_E}			{
+{CTE_E}			{	
 					if(atoll(yytext)<=2147483647){	 //convierto a long, comparo con el max de int
-							// entero = atoi(yytext);
-							return CTE_E;
-
-							// char enteroConGuion[100];
-							// agregarGuion(yytext,enteroConGuion);
-	
-							// //lista
-							// strcpy(dato.nombre, enteroConGuion);
-							// strcpy(dato.valor, yytext);
-							// strcpy(dato.tipodato, "CTE_E");
-							// insertar_en_ts(&lista_ts, &dato);
+						entero = atoi(yytext);
+						char enteroConGuion[100];
+						agregarGuion(yytext,enteroConGuion);
+						nuevoSimbolo(enteroConGuion,yytext,NULL,-1);
+						return CTE_E;
 					}else{
-						printf("Error lexico: tam de entero excedido!");
-						return 1;
+						yyerror("Error Lexico,tam de entero excedido!");
 					}
 
 				}
 {CTE_R}			{
-					if(atof(yytext)<=3.40282347e+38F){
-						// real = atof(yytext);
+					if(atof(yytext)<=3.4e+38){
+						real = atof(yytext);
+						char realConGuion[100];
+						agregarGuion(yytext,realConGuion);
+						nuevoSimbolo(realConGuion,yytext,NULL,-1);
 						return CTE_R;
-
-						// char realConGuion[100];
-						// agregarGuion(yytext,realConGuion);
-						// //lista
-
-						// strcpy(dato.nombre,realConGuion);
-						// strcpy(dato.valor, yytext);
-						// strcpy(dato.tipodato, "CTE_R");
-						// insertar_en_ts(&lista_ts, &dato);
-
 					}else{
-						printf("Error lexico: tam de float excedido!");
-						return 1;
+						yyerror("Error Lexico,tam de float excedido!");
 					}
 
 				}
@@ -149,16 +126,11 @@ COMENTARIO		\*\/.+\/\*
 {ID}			{
 						if(strlen(yytext)<=30){
 							return ID;
-
-							// strcpy(dato.nombre, yytext);
-							// strcpy(dato.valor, "-");
-							// strcpy(dato.tipodato, "-");
-							// insertar_en_ts(&lista_ts, &dato);
 						}else{
-							printf("Error lexico: Los ID deben ser de menos de 30 caracteres!");
-							return 1;
+							yyerror("Error Lexico,Los ID deben ser de menos de 30 caracteres!");
 						}
 				}
 
 \n
+\t
 %%

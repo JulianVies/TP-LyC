@@ -10,7 +10,7 @@
 	#define DUPLICADO 2
 	#define SIN_MEMORIA 3
 	#define ID_EN_LISTA 4
-	
+
 	int yyerror(char* mensaje);
 
 	extern char * yytext;
@@ -91,6 +91,49 @@
 	t_info_p info_p;
 	t_pila pilaVar;
 	t_pila pilaType;
+
+//TERCETOS
+
+	typedef struct
+{
+    int numeroTerceto;
+    char primerElemento[TAM];
+    char segundoElemento[TAM];
+    char tercerElemento[TAM];
+} t_info_terceto;
+
+typedef struct s_nodo_terceto
+{
+    t_info_terceto info;
+    struct s_nodo_terceto *pSig;
+} t_nodo_terceto;
+
+typedef t_nodo_terceto *t_lista_terceto;
+t_lista_terceto lista_terceto;
+t_info_terceto dato_terceto;
+int contadorTercetos = 0;
+
+
+
+// Variables auxiliares para tercetos //
+int _flagAnd = 0;
+int _aux;
+
+char* crearIndice(int); //Recibe un numero de terceto y lo convierte en un indice
+int crearTerceto(char*, char*, char*); //Se mandan los 3 strings, y se guarda el terceto creado en la lista
+                                        //La posicion en la lista se lo da contadorTercetos. Variable que aumenta en 1
+void guardarTercetosEnArchivo(t_lista_terceto *);
+char* negarBranch(char*);	//Recibe el tipo de BRANCH y lo invierte  	
+int verCompatible(char *,int, int);							   
+
+//INDICES
+int Eind;
+int Tind;
+int Find;
+
+/////////
+
+
 %}
 
 
@@ -167,7 +210,7 @@ sentencia: asignacion { printf("Regla asignacion\n"); }
 		| equmin
 		;
 
-asignacion: ID {BuscarEnLista(&lista_ts, yytext);} OP_ASIG tipoAsig;
+asignacion: ID {BuscarEnLista(&lista_ts, yytext);} OP_ASIG tipoAsig; 	
 
 tipoAsig: expresion | CTE_S; 
 
@@ -234,9 +277,9 @@ listaType: TYPE {strcpy(info_p.text, yytext); apilar(&pilaType, &info_p);}
 			;
 
 TYPE: INTEGER | STRING | REAL;
-		
-expresion: termino
-        | expresion OP_SUM termino       
+
+expresion: termino					
+        | expresion OP_SUM termino       {Tind = crearTerceto("+",crearIndice(Eind), crearIndice(Tind));}
         | expresion OP_RESTA termino  
 		;
 		
@@ -246,9 +289,9 @@ termino: factor
 		;
 		
 factor: PARA expresion PARC
-		| ID
-		| CTE_E
-		| CTE_R
+		| ID						     {Find = crearTerceto(yytext,"","");} 
+		| CTE_E							 {Find = crearTerceto(yytext,"","");} 
+		| CTE_R							 {Find = crearTerceto(yytext,"","");} 
 		;
 
 condicion: comparacion	{ printf("Regla condicion simple \n"); }
@@ -294,10 +337,13 @@ int main(int argc,char *argv[]){
 	mostrarPila(&pilaType);
 	// t_lista* lista_ts;
 	// crear_ts(lista_ts);
+	printf("numTerceto:\n %d",contadorTercetos);
 	grabar_lista(&lista_ts);
+	
 
   	fclose(yyin);
   }
+
   return 0;
 }
 
@@ -534,3 +580,58 @@ int mostrarPila(t_pila *p)
 }
 
 //---- Fin funciones de Pila ----
+
+
+void crear_lista_terceto(t_lista_terceto *p){
+	*p = NULL;
+}
+
+int insertar_en_lista_terceto(t_lista_terceto *p, const t_info_terceto *d)
+{
+    t_nodo_terceto* nue = (t_nodo_terceto *)malloc(sizeof(t_nodo_terceto));
+    if(!nue)
+        return SIN_MEMORIA;
+    nue->info = *d;
+    nue->pSig = NULL;
+    while(*p)
+        p = &(*p)->pSig;
+    *p = nue;
+    return 1;
+}
+
+char* crearIndice(int indice){
+	
+	char* resultado = (char*) malloc(sizeof(char)*7);
+	char numeroTexto [4];
+
+	strcpy(resultado,"[");
+	itoa(indice,numeroTexto,10);
+	strcat(resultado,numeroTexto);
+	strcat(resultado,"]");
+	return resultado;
+}
+
+
+int crearTerceto(char* primero, char* segundo, char* tercero){
+	t_info_terceto nuevo;
+	strcpy(nuevo.primerElemento,primero);
+	strcpy(nuevo.segundoElemento,segundo);
+	strcpy(nuevo.tercerElemento,tercero);
+	nuevo.numeroTerceto = contadorTercetos;
+	//printf("%d %s %s %s\n",nuevo.numeroTerceto,nuevo.primerElemento,nuevo.segundoElemento,nuevo.tercerElemento);
+	insertar_en_lista_terceto(&lista_terceto,&nuevo);
+  	contadorTercetos++;
+  	return nuevo.numeroTerceto;
+}
+
+void guardarTercetosEnArchivo(t_lista_terceto *pl){
+  FILE * pf = fopen("intermedia.txt","wt");
+
+  while(*pl) {
+		fprintf(pf,"%d (%s,%s,%s) \n", (*pl)->info.numeroTerceto, (*pl)->info.primerElemento, (*pl)->info.segundoElemento, (*pl)->info.tercerElemento);
+		pl=&(*pl)->pSig;
+  }
+  
+  fclose(pf);
+} 
+// -- fin funciones tercetos --

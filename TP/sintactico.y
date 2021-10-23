@@ -253,8 +253,8 @@ factor: PARA expresion PARC
 
 condicion: comparacion	{ printf("Regla condicion simple \n"); }
 		| NOT comparacion	{ printf("Regla condicion simple NOT\n"); }
-        |  comparacion AND comparacion { printf("Regla condicion multiple And\n"); }
-        |  comparacion OR comparacion { printf("Regla condicion multiple Or\n"); }
+        |  comparacion AND comparacion { printf("Regla condicion compuesta And\n"); }
+        |  comparacion OR comparacion { printf("Regla condicion compuesta Or\n"); }
 		;	
 
 comparacion: expresion comparador expresion 

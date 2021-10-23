@@ -251,10 +251,11 @@ factor: PARA expresion PARC
 		| CTE_R
 		;
 
-condicion: comparacion 
-        |  condicion AND comparacion { printf("Regla condicion And\n"); }
-        |  condicion OR comparacion { printf("Regla condicion Or\n"); }
-		;
+condicion: comparacion	{ printf("Regla condicion simple \n"); }
+		| NOT comparacion	{ printf("Regla condicion simple NOT\n"); }
+        |  comparacion AND comparacion { printf("Regla condicion multiple And\n"); }
+        |  comparacion OR comparacion { printf("Regla condicion multiple Or\n"); }
+		;	
 
 comparacion: expresion comparador expresion 
 		|  equmax

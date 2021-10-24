@@ -975,9 +975,9 @@ YY_RULE_SETUP
 #line 102 "lexico.l"
 {	
 					if(atoll(yytext)<=2147483647){	 //convierto a long, comparo con el max de int
-						entero = atoi(yytext);
 						char enteroConGuion[100];
 						agregarGuion(yytext,enteroConGuion);
+                    	yylval.int_val = atoi(yytext);
 						nuevoSimbolo(enteroConGuion,yytext,NULL,-1);
 						return CTE_E;
 					}else{
@@ -991,9 +991,9 @@ YY_RULE_SETUP
 #line 114 "lexico.l"
 {
 					if(atof(yytext)<=3.4e+38){
-						real = atof(yytext);
 						char realConGuion[100];
 						agregarGuion(yytext,realConGuion);
+						yylval.float_val = atof(yytext);
 						nuevoSimbolo(realConGuion,yytext,NULL,-1);
 						return CTE_R;
 					}else{
@@ -1007,6 +1007,7 @@ YY_RULE_SETUP
 #line 127 "lexico.l"
 {
 						if(strlen(yytext)<=30){
+							yylval.str_val = strdup(yytext);
 							return ID;
 						}else{
 							yyerror("Error Lexico,Los ID deben ser de menos de 30 caracteres!");
@@ -1015,20 +1016,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 135 "lexico.l"
+#line 136 "lexico.l"
 
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 136 "lexico.l"
+#line 137 "lexico.l"
 
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 137 "lexico.l"
+#line 138 "lexico.l"
 ECHO;
 	YY_BREAK
-#line 1032 "lex.yy.c"
+#line 1033 "lex.yy.c"
 			case YY_STATE_EOF(INITIAL):
 				yyterminate();
 
@@ -1912,4 +1913,4 @@ int main()
 	return 0;
 	}
 #endif
-#line 137 "lexico.l"
+#line 138 "lexico.l"

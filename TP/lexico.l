@@ -101,9 +101,9 @@ COMENTARIO		\*\/.+\/\*
 
 {CTE_E}			{	
 					if(atoll(yytext)<=2147483647){	 //convierto a long, comparo con el max de int
-						entero = atoi(yytext);
 						char enteroConGuion[100];
 						agregarGuion(yytext,enteroConGuion);
+                    	yylval.int_val = atoi(yytext);
 						nuevoSimbolo(enteroConGuion,yytext,NULL,-1);
 						return CTE_E;
 					}else{
@@ -113,9 +113,9 @@ COMENTARIO		\*\/.+\/\*
 				}
 {CTE_R}			{
 					if(atof(yytext)<=3.4e+38){
-						real = atof(yytext);
 						char realConGuion[100];
 						agregarGuion(yytext,realConGuion);
+						yylval.float_val = atof(yytext);
 						nuevoSimbolo(realConGuion,yytext,NULL,-1);
 						return CTE_R;
 					}else{
@@ -126,6 +126,7 @@ COMENTARIO		\*\/.+\/\*
 
 {ID}			{
 						if(strlen(yytext)<=30){
+							yylval.str_val = strdup(yytext);
 							return ID;
 						}else{
 							yyerror("Error Lexico,Los ID deben ser de menos de 30 caracteres!");

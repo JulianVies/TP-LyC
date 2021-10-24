@@ -2,4 +2,5 @@ NOMBRE                              TIPO DE DATO     VALOR                      
 b                                   integer          -                                                                      
 a                                   integer          -                                                                      
 _21474                                               21474                                                                  
-_1                                                   1                                                                      
+_12                                                  12                                                                     
+_2.5                                                 2.5                                                                    

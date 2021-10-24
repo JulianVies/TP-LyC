@@ -194,7 +194,11 @@ int crearTerceto(char*, char*, char*); //Se mandan los 3 strings, y se guarda el
                                         //La posicion en la lista se lo da contadorTercetos. Variable que aumenta en 1
 void guardarTercetosEnArchivo(t_lista_terceto *);
 char* negarBranch(char*);	//Recibe el tipo de BRANCH y lo invierte  	
-int verCompatible(char *,int, int);							   
+int verCompatible(char *,int, int);
+
+void ftoa(float n, char* res, int afterpoint);
+void reverse(char* str, int len);
+int intToStr(int x, char str[], int d);
 
 //INDICES
 int Eind;
@@ -284,7 +288,17 @@ int Find;
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+
+
+	int int_val;
+	double float_val;
+	char *str_val;
+
+
+
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -605,13 +619,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   198,   198,   201,   202,   205,   206,   207,   208,   209,
-     210,   211,   212,   215,   215,   217,   217,   219,   220,   223,
-     225,   226,   229,   255,   256,   258,   260,   262,   264,   265,
-     268,   269,   270,   273,   274,   277,   278,   281,   281,   281,
-     283,   284,   285,   288,   289,   290,   293,   294,   295,   296,
-     299,   300,   301,   302,   305,   306,   307,   310,   311,   312,
-     313,   314,   315,   318,   319
+       0,   207,   207,   210,   211,   214,   215,   216,   217,   218,
+     219,   220,   221,   224,   224,   230,   230,   232,   233,   236,
+     238,   239,   242,   268,   269,   271,   273,   275,   277,   278,
+     281,   282,   283,   286,   287,   290,   291,   294,   294,   294,
+     296,   297,   298,   301,   302,   303,   306,   307,   310,   315,
+     322,   323,   324,   325,   328,   329,   330,   333,   334,   335,
+     336,   337,   338,   341,   342
 };
 #endif
 
@@ -1634,6 +1648,13 @@ yyreduce:
     {BuscarEnLista(&lista_ts, yytext);;}
     break;
 
+  case 14:
+
+    {	
+				crearTerceto("=", (yyvsp[(1) - (4)].str_val), crearIndice(Eind));
+			;}
+    break;
+
   case 17:
 
     { printf("Regla while\n"); ;}
@@ -1745,17 +1766,27 @@ yyreduce:
 
   case 47:
 
-    {Find = crearTerceto(yytext,"","");;}
+    { 
+			Find = crearTerceto((yyvsp[(1) - (1)].str_val),"","");
+		;}
     break;
 
   case 48:
 
-    {Find = crearTerceto(yytext,"","");;}
+    {
+			char auxI[30];
+			itoa((yyvsp[(1) - (1)].int_val),auxI,10);
+			Find = crearTerceto(auxI,"","");
+			;}
     break;
 
   case 49:
 
-    {Find = crearTerceto(yytext,"","");;}
+    {
+			char* auxF;
+			ftoa((yyvsp[(1) - (1)].float_val),auxF,2);
+			Find = crearTerceto(auxF,"","");
+			;}
     break;
 
   case 50:
@@ -2302,10 +2333,10 @@ int mostrarListaTerceto(){
         return 0;
     while(aux->pSig!=NULL)
     {	
-        printf("\n->nro terceto : %d, 1er elemento: %s, 2do elemento: %s, 3er elemento : %s\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento);
-        aux = aux->pSig;
+        printf("\n[%d], (%s, %s, %s)\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento);
+		aux = aux->pSig;
     }
-    printf("\n-> 1er elemento: %s, 2do elemento: %s, 3er elemento : %s\n",aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento);
+	printf("\n[%d], (%s, %s, %s)\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento);
 }
 
 void guardarTercetosEnArchivo(t_lista_terceto *pl){
@@ -2319,3 +2350,63 @@ void guardarTercetosEnArchivo(t_lista_terceto *pl){
   fclose(pf);
 } 
 // -- fin funciones tercetos --
+
+
+void ftoa(float n, char* res, int afterpoint)
+{
+    // Extract integer part
+    int ipart = (int)n;
+  
+    // Extract floating part
+    float fpart = n - (float)ipart;
+  
+    // convert integer part to string
+    int i = intToStr(ipart, res, 0);
+  
+    // check for display option after point
+    if (afterpoint != 0) {
+        res[i] = '.'; // add dot
+  
+        // Get the value of fraction part upto given no.
+        // of points after dot. The third parameter 
+        // is needed to handle cases like 233.007
+        fpart = fpart * pow(10, afterpoint);
+  
+        intToStr((int)fpart, res + i + 1, afterpoint);
+    }
+}
+
+// Reverses a string 'str' of length 'len'
+void reverse(char* str, int len)
+{
+    int i = 0, j = len - 1, temp;
+    while (i < j) {
+        temp = str[i];
+        str[i] = str[j];
+        str[j] = temp;
+        i++;
+        j--;
+    }
+}
+
+// Converts a given integer x to string str[]. 
+// d is the number of digits required in the output. 
+// If d is more than the number of digits in x, 
+// then 0s are added at the beginning.
+int intToStr(int x, char str[], int d)
+{
+    int i = 0;
+    while (x) {
+        str[i++] = (x % 10) + '0';
+        x = x / 10;
+    }
+  
+    // If number of digits required is more, then
+    // add 0s at the beginning
+    while (i < d)
+        str[i++] = '0';
+  
+    reverse(str, i);
+    str[i] = '\0';
+    return i;
+}

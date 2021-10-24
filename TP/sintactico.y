@@ -125,7 +125,11 @@ int crearTerceto(char*, char*, char*); //Se mandan los 3 strings, y se guarda el
                                         //La posicion en la lista se lo da contadorTercetos. Variable que aumenta en 1
 void guardarTercetosEnArchivo(t_lista_terceto *);
 char* negarBranch(char*);	//Recibe el tipo de BRANCH y lo invierte  	
-int verCompatible(char *,int, int);							   
+int verCompatible(char *,int, int);
+
+void ftoa(float n, char* res, int afterpoint);
+void reverse(char* str, int len);
+int intToStr(int x, char str[], int d);
 
 //INDICES
 int Eind;
@@ -137,11 +141,16 @@ int Find;
 
 %}
 
+%union {
+	int int_val;
+	double float_val;
+	char *str_val;
+}
 
-%token ID
-%token CTE_S
-%token CTE_E
-%token CTE_R
+%token <str_val>ID
+%token <str_val>CTE_S
+%token <int_val>CTE_E
+%token <float_val>CTE_R
 
 %token GET			
 %token DISPLAY	
@@ -212,7 +221,11 @@ sentencia: asignacion { printf("Regla asignacion\n"); }
 		| equmin
 		;
 
-asignacion: ID {BuscarEnLista(&lista_ts, yytext);} OP_ASIG tipoAsig; 	
+asignacion: ID {BuscarEnLista(&lista_ts, yytext);} OP_ASIG tipoAsig 
+			{	
+				crearTerceto("=", $1, crearIndice(Eind));
+			}
+			; 	
 
 tipoAsig: expresion | CTE_S; 
 
@@ -291,9 +304,19 @@ termino: factor							{Tind=Find;}
 		;
 		
 factor: PARA expresion PARC
-		| ID						     {Find = crearTerceto(yytext,"","");} 
-		| CTE_E							 {Find = crearTerceto(yytext,"","");} 
-		| CTE_R							 {Find = crearTerceto(yytext,"","");} 
+		| ID 							 { 
+			Find = crearTerceto($1,"","");
+		} 
+		| CTE_E							 {
+			char auxI[30];
+			itoa($1,auxI,10);
+			Find = crearTerceto(auxI,"","");
+			} 
+		| CTE_R							 {
+			char* auxF;
+			ftoa($1,auxF,2);
+			Find = crearTerceto(auxF,"","");
+			} 
 		;
 
 condicion: comparacion	{ printf("Regla condicion simple \n"); }
@@ -633,10 +656,10 @@ int mostrarListaTerceto(){
         return 0;
     while(aux->pSig!=NULL)
     {	
-        printf("\n->nro terceto : %d, 1er elemento: %s, 2do elemento: %s, 3er elemento : %s\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento);
-        aux = aux->pSig;
+        printf("\n[%d], (%s, %s, %s)\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento);
+		aux = aux->pSig;
     }
-    printf("\n-> 1er elemento: %s, 2do elemento: %s, 3er elemento : %s\n",aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento);
+	printf("\n[%d], (%s, %s, %s)\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento);
 }
 
 void guardarTercetosEnArchivo(t_lista_terceto *pl){
@@ -650,3 +673,63 @@ void guardarTercetosEnArchivo(t_lista_terceto *pl){
   fclose(pf);
 } 
 // -- fin funciones tercetos --
+
+
+void ftoa(float n, char* res, int afterpoint)
+{
+    // Extract integer part
+    int ipart = (int)n;
+  
+    // Extract floating part
+    float fpart = n - (float)ipart;
+  
+    // convert integer part to string
+    int i = intToStr(ipart, res, 0);
+  
+    // check for display option after point
+    if (afterpoint != 0) {
+        res[i] = '.'; // add dot
+  
+        // Get the value of fraction part upto given no.
+        // of points after dot. The third parameter 
+        // is needed to handle cases like 233.007
+        fpart = fpart * pow(10, afterpoint);
+  
+        intToStr((int)fpart, res + i + 1, afterpoint);
+    }
+}
+
+// Reverses a string 'str' of length 'len'
+void reverse(char* str, int len)
+{
+    int i = 0, j = len - 1, temp;
+    while (i < j) {
+        temp = str[i];
+        str[i] = str[j];
+        str[j] = temp;
+        i++;
+        j--;
+    }
+}
+
+// Converts a given integer x to string str[]. 
+// d is the number of digits required in the output. 
+// If d is more than the number of digits in x, 
+// then 0s are added at the beginning.
+int intToStr(int x, char str[], int d)
+{
+    int i = 0;
+    while (x) {
+        str[i++] = (x % 10) + '0';
+        x = x / 10;
+    }
+  
+    // If number of digits required is more, then
+    // add 0s at the beginning
+    while (i < d)
+        str[i++] = '0';
+  
+    reverse(str, i);
+    str[i] = '\0';
+    return i;
+}

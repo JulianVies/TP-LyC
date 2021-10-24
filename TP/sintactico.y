@@ -74,6 +74,7 @@
 	void vaciarPila(t_pila *);
 	void mostrarNodo(t_info_p *);
 	int mostrarPila(t_pila *);
+	int mostrarListaTerceto();
 	int cargarInfo(t_info_p *);
 	//----Fin estructuras para la pila----
 
@@ -279,14 +280,14 @@ listaType: TYPE {strcpy(info_p.text, yytext); apilar(&pilaType, &info_p);}
 
 TYPE: INTEGER | STRING | REAL;
 
-expresion: termino					
-        | expresion OP_SUM termino       {Tind = crearTerceto("+",crearIndice(Eind), crearIndice(Tind));}
-        | expresion OP_RESTA termino  
+expresion: termino					{Eind = Tind;}
+        | expresion OP_SUM termino       {Eind = crearTerceto("+",crearIndice(Eind), crearIndice(Tind));}
+        | expresion OP_RESTA termino  	 {Eind=crearTerceto("-", crearIndice(Eind), crearIndice(Tind))}
 		;
 		
-termino: factor
-        | termino OP_MULT factor
-        | termino OP_DIV factor
+termino: factor							{Tind=Find;}
+        | termino OP_MULT factor        {Tind=crearTerceto("*", crearIndice(Tind), crearIndice(Find))}
+        | termino OP_DIV factor         {Tind=crearTerceto("/", crearIndice(Tind), crearIndice(Find))}
 		;
 		
 factor: PARA expresion PARC
@@ -331,14 +332,14 @@ int main(int argc,char *argv[]){
 	crear_lista(&lista_dup);
 	crearPila(&pilaVar);
 	crearPila(&pilaType);
-
 	yyparse();
 
 	mostrarPila(&pilaVar);
 	mostrarPila(&pilaType);
 	// t_lista* lista_ts;
 	// crear_ts(lista_ts);
-	printf("numTerceto:\n %d",contadorTercetos);
+	printf("cantidad de tercetos\t:\t%d",contadorTercetos);
+	mostrarListaTerceto();
 	grabar_lista(&lista_ts);
 	
 
@@ -474,7 +475,7 @@ void crear_ts(t_lista *l_ts){
 
 void grabar_lista(t_lista *pl){
 	FILE *pf;
-
+	
 	pf = fopen("ts.txt", "wt");
 	// Cabecera de la tabla
 	fprintf(pf,"%-35s %-16s %-35s %-35s", "NOMBRE", "TIPO DE DATO", "VALOR", "LONGITUD");
@@ -492,7 +493,7 @@ void grabar_lista(t_lista *pl){
 //---- Funciones de Pila ----
 
 void crearPila(t_pila *p)
-{
+{	
     *p=NULL;
 }
 
@@ -567,7 +568,7 @@ void mostrarNodo(t_info_p *d)
 }
 
 int mostrarPila(t_pila *p)
-{
+{	
     t_pila *aux;
     aux = p;
     if((*aux)==NULL)
@@ -623,6 +624,19 @@ int crearTerceto(char* primero, char* segundo, char* tercero){
 	insertar_en_lista_terceto(&lista_terceto,&nuevo);
   	contadorTercetos++;
   	return nuevo.numeroTerceto;
+}
+
+int mostrarListaTerceto(){
+	t_nodo_terceto *aux;
+    aux = lista_terceto;
+    if(aux==NULL)
+        return 0;
+    while(aux->pSig!=NULL)
+    {	
+        printf("\n->nro terceto : %d, 1er elemento: %s, 2do elemento: %s, 3er elemento : %s\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento);
+        aux = aux->pSig;
+    }
+    printf("\n-> 1er elemento: %s, 2do elemento: %s, 3er elemento : %s\n",aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento);
 }
 
 void guardarTercetosEnArchivo(t_lista_terceto *pl){

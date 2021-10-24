@@ -40,3 +40,12 @@ IF EQUMIN(10+101; [100, 111, a]) AND EQUMAX(10+101; [100, 111, a]) THEN a:=28
 */WHILE EQUMIN(10+a; [100, 1+2]) THEN a:=28/*
 */WHILE EQUMIN(10+a; [100, 1+a]) THEN a:=28/*
 
+*/pruebas seleccion/*
+IF EQUMIN(10+101; [100, 111, a]) THEN a:=28 ENDIF
+IF EQUMIN(10+101; [100, 111, a]) AND EQUMIN(10+101; [100, 111, a]) THEN a:=28 ELSE a:=28 ENDIF
+*/WHILE EQUMIN(10+a; [100, 1+2]) THEN a:=28/*
+*/WHILE EQUMIN(10+a; [100, 1+a]) THEN a:=28/*
+DIM [ a, b ] AS [ integer, integer]
+
+
+a := 21474 + 1

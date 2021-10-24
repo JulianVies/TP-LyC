@@ -1,20 +1,5 @@
 NOMBRE                              TIPO DE DATO     VALOR                               LONGITUD                           
-_60                                                  60                                                                     
-_21                                                  21                                                                     
-_3                                                   3                                                                      
-beta                                string           -                                                                      
-b                                   real             -                                                                      
+b                                   integer          -                                                                      
 a                                   integer          -                                                                      
-cotaRealMin                         real             -                                                                      
-cotaRealMax                         real             -                                                                      
-cotaIntMaxRompe                     integer          -                                                                      
-cotaIntMax                          integer          -                                                                      
-_214748364                                           214748364                                                              
-_3400000000000000000000000000000000                  34000000000000000000000000000000000                                    
-_2                                                   2                                                                      
-_cadena                                              cadena                              6                                  
-_10                                                  10                                                                     
-_100                                                 100                                                                    
-_28                                                  28                                                                     
-_101                                                 101                                                                    
-_111                                                 111                                                                    
+_21474                                               21474                                                                  
+_1                                                   1                                                                      

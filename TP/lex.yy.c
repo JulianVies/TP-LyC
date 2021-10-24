@@ -964,6 +964,7 @@ YY_RULE_SETUP
 						char stringConGuion[100];
 						agregarGuion(yytext,stringConGuion);
 						nuevoSimbolo(stringConGuion,yytext,NULL,strlen(yytext));
+						yylval.str_val = strdup(yytext);
 						return CTE_S;
 					}else{
 						yyerror("Error Lexico,Los string deben ser de menos de 30 caracteres!");
@@ -972,7 +973,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 102 "lexico.l"
+#line 103 "lexico.l"
 {	
 					if(atoll(yytext)<=2147483647){	 //convierto a long, comparo con el max de int
 						char enteroConGuion[100];
@@ -988,7 +989,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 114 "lexico.l"
+#line 115 "lexico.l"
 {
 					if(atof(yytext)<=3.4e+38){
 						char realConGuion[100];
@@ -1004,7 +1005,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 127 "lexico.l"
+#line 128 "lexico.l"
 {
 						if(strlen(yytext)<=30){
 							yylval.str_val = strdup(yytext);
@@ -1016,20 +1017,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 136 "lexico.l"
+#line 137 "lexico.l"
 
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 137 "lexico.l"
+#line 138 "lexico.l"
 
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 138 "lexico.l"
+#line 139 "lexico.l"
 ECHO;
 	YY_BREAK
-#line 1033 "lex.yy.c"
+#line 1034 "lex.yy.c"
 			case YY_STATE_EOF(INITIAL):
 				yyterminate();
 
@@ -1913,4 +1914,4 @@ int main()
 	return 0;
 	}
 #endif
-#line 138 "lexico.l"
+#line 139 "lexico.l"

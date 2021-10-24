@@ -221,13 +221,18 @@ sentencia: asignacion { printf("Regla asignacion\n"); }
 		| equmin
 		;
 
-asignacion: ID {BuscarEnLista(&lista_ts, yytext);} OP_ASIG tipoAsig 
+asignacion: ID  OP_ASIG expresion 
 			{	
+				BuscarEnLista(&lista_ts, $1);
 				crearTerceto("=", $1, crearIndice(Eind));
 			}
+			|
+			ID  OP_ASIG CTE_S 
+			{	
+				BuscarEnLista(&lista_ts, $1);
+				crearTerceto("=", $1, $3);
+			}
 			; 	
-
-tipoAsig: expresion | CTE_S; 
 
 iteracion: while { printf("Regla while\n"); }
 		|  for { printf("Regla for\n"); }
@@ -293,7 +298,7 @@ listaType: TYPE {strcpy(info_p.text, yytext); apilar(&pilaType, &info_p);}
 
 TYPE: INTEGER | STRING | REAL;
 
-expresion: termino					{Eind = Tind;}
+expresion: termino						 {Eind = Tind;}
         | expresion OP_SUM termino       {Eind = crearTerceto("+",crearIndice(Eind), crearIndice(Tind));}
         | expresion OP_RESTA termino  	 {Eind=crearTerceto("-", crearIndice(Eind), crearIndice(Tind))}
 		;
@@ -303,7 +308,7 @@ termino: factor							{Tind=Find;}
         | termino OP_DIV factor         {Tind=crearTerceto("/", crearIndice(Tind), crearIndice(Find))}
 		;
 		
-factor: PARA expresion PARC
+factor: PARA expresion PARC             {Find=Eind;}
 		| ID 							 { 
 			Find = crearTerceto($1,"","");
 		} 

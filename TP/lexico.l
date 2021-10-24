@@ -93,6 +93,7 @@ COMENTARIO		\*\/.+\/\*
 						char stringConGuion[100];
 						agregarGuion(yytext,stringConGuion);
 						nuevoSimbolo(stringConGuion,yytext,NULL,strlen(yytext));
+						yylval.str_val = strdup(yytext);
 						return CTE_S;
 					}else{
 						yyerror("Error Lexico,Los string deben ser de menos de 30 caracteres!");

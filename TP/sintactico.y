@@ -126,6 +126,8 @@ int crearTerceto(char*, char*, char*); //Se mandan los 3 strings, y se guarda el
 void guardarTercetosEnArchivo(t_lista_terceto *);
 char* negarBranch(char*);	//Recibe el tipo de BRANCH y lo invierte  	
 int verCompatible(char *,int, int);
+int buscarEnListaDeTercetosOrdenada(t_lista_terceto *, int);
+int modificarIndiceTercetoSalto(t_lista_terceto *, int, int);
 
 void ftoa(float n, char* res, int afterpoint);
 void reverse(char* str, int len);
@@ -139,8 +141,11 @@ int Tind;
 int Find;
 
 int CompInd;
+int CompBGE;
 int InitWhileInd;
 int FinWhileInd;
+int Salto1;
+int IndiceActual;
 
 int* PosReservada;
 
@@ -248,17 +253,23 @@ iteracion: while { printf("Regla while\n"); }
 		|  for { printf("Regla for\n"); }
 		;
 
-while: WHILE condicion  
+while: WHILE condicion
 		{ 
 			InitWhileInd = contadorTercetos + 1;
 			CompInd = crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
-			// printf("*%d*",*PosReservada);
-			// crearTerceto(comp, crearIndice(*PosReservada),"_");
+			CompBGE = crearTerceto("BGE","","");
+			Salto1 = CompBGE;
+		
+			//printf("*%d*",*PosReservada);
+			//crearTerceto(comp, crearIndice(*PosReservada),"_");
 		} 
-BEGINW programa ENDW  { 
-		// crearTerceto("BL",crearIndice(InitWhileInd),"_");
-		// *PosReservada = contadorTercetos
-	};
+BEGINW programa 
+		{
+			IndiceActual =  crearTerceto("BL",crearIndice(InitWhileInd),"_");
+			modificarIndiceTercetoSalto(lista_terceto, Salto1, IndiceActual + 1);
+			*PosReservada = contadorTercetos;
+		}
+ENDW  { };
 
 seleccion: IF condicion THEN programa	{ printf("Regla IF\n"); }
         |  IF condicion THEN programa ELSE programa		{ printf("Regla If con Else\n"); }
@@ -697,6 +708,45 @@ void guardarTercetosEnArchivo(t_lista_terceto *pl){
   
   fclose(pf);
 } 
+
+int buscarEnListaDeTercetosOrdenada(t_lista_terceto *pl, int indiceTerceto)
+{
+    int cmp;
+    t_nodo_terceto aux;
+    char segundoElem[TAM];
+    printf("-----------------INDICE TERCETO: %d\n",indiceTerceto);
+
+    while(pl && (cmp = indiceTerceto - (pl)->info.numeroTerceto) >0)
+        pl=&(pl)->pSig;
+    if(pl && cmp==0)
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
+int modificarIndiceTercetoSalto(t_lista_terceto *pl, int indiceTerceto, int indiceAColocar)
+{
+    int cmp;
+    t_nodo_terceto aux;
+    char segundoElem[TAM];
+    printf("-----------------INDICE TERCETO: %d\n",indiceTerceto);
+
+    while(pl && (cmp = indiceTerceto - (pl)->info.numeroTerceto) >0)
+        pl=&(pl)->pSig;
+    if(pl && cmp==0)
+    {
+        // Modifico terceto
+        aux=pl;
+        strcpy(aux->info.segundoElemento, crearIndice(indiceAColocar));
+
+        return 1;
+    }
+
+    return 0;
+}
+
 // -- fin funciones tercetos --
 
 

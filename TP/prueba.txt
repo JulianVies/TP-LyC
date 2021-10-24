@@ -2,6 +2,4 @@ DIM [ a, b ] AS [ integer, integer]
 
 a := 3
 
-
-
-WHILE a > 2 BEGINW b:=2 ENDW
+WHILE a > 2 BEGINW a:=2 ENDW

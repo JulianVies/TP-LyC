@@ -1,9 +1,7 @@
 DIM [ a, b ] AS [ integer, integer]
 
-a := 21474 + 12 + b + 2.5
+a := 3
 
-b :=  (3 + 2) * 1 
 
-DIM [ c ] AS [ string]
 
-c := "pruebastringpeso"
+WHILE a > 2 BEGINW b:=2 ENDW

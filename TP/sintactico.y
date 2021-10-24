@@ -133,10 +133,20 @@ int intToStr(int x, char str[], int d);
 
 //INDICES
 int Eind;
+int EindAux1;
+int EindAux2;
 int Tind;
 int Find;
 
+int CompInd;
+int InitWhileInd;
+int FinWhileInd;
+
+int* PosReservada;
+
 /////////
+
+char comp[3];
 
 
 %}
@@ -186,12 +196,12 @@ int Find;
 %token LLAVEA				
 %token LLAVEC				
 
-%token MENOR_IGUAL			
-%token MAYOR_IGUAL			
-%token MENOR				
-%token MAYOR 			
-%token DIFF		
-%token IGUAL
+%token <str_val>MENOR_IGUAL			
+%token <str_val>MAYOR_IGUAL			
+%token <str_val>MENOR				
+%token <str_val>MAYOR 			
+%token <str_val>DIFF		
+%token <str_val>IGUAL
 %token IGUALFOR
 
 %token DIM		
@@ -238,7 +248,17 @@ iteracion: while { printf("Regla while\n"); }
 		|  for { printf("Regla for\n"); }
 		;
 
-while: WHILE condicion BEGINW programa ENDW  ;
+while: WHILE condicion  
+		{ 
+			InitWhileInd = contadorTercetos + 1;
+			CompInd = crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
+			// printf("*%d*",*PosReservada);
+			// crearTerceto(comp, crearIndice(*PosReservada),"_");
+		} 
+BEGINW programa ENDW  { 
+		// crearTerceto("BL",crearIndice(InitWhileInd),"_");
+		// *PosReservada = contadorTercetos
+	};
 
 seleccion: IF condicion THEN programa	{ printf("Regla IF\n"); }
         |  IF condicion THEN programa ELSE programa		{ printf("Regla If con Else\n"); }
@@ -330,17 +350,17 @@ condicion: comparacion	{ printf("Regla condicion simple \n"); }
         |  comparacion OR comparacion { printf("Regla condicion compuesta Or\n"); }
 		;	
 
-comparacion: expresion comparador expresion 
+comparacion: expresion {EindAux1=Eind} comparador expresion {EindAux2=Eind}
 		|  equmax
 		|  equmin
 		;
 
-comparador: MENOR_IGUAL			
-			| MAYOR_IGUAL			
-			| MENOR				
-			| MAYOR 			
- 			| DIFF		
-			| IGUAL
+comparador: MENOR_IGUAL		{strcpy(comp, "BGT");}		
+			| MAYOR_IGUAL	 {strcpy(comp,"BLT");}		
+			| MENOR			{strcpy(comp, "BGE");}	
+			| MAYOR 		{strcpy(comp, "BLE");}	
+ 			| DIFF			{strcpy(comp, "BNE");}
+			| IGUAL			{strcpy(comp, "BEQ");}
 			;
 
 for:	FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID 

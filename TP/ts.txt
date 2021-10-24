@@ -1,11 +1,5 @@
 NOMBRE                              TIPO DE DATO     VALOR                               LONGITUD                           
 b                                   integer          -                                                                      
 a                                   integer          -                                                                      
-_21474                                               21474                                                                  
-_12                                                  12                                                                     
-_2.5                                                 2.5                                                                    
-_1                                                   1                                                                      
 _3                                                   3                                                                      
 _2                                                   2                                                                      
-c                                   string           -                                                                      
-_pruebastringpeso                                    pruebastringpeso                    16                                 

@@ -98,6 +98,9 @@
 	t_pila pilaForsCmp;
 	t_pila pilaForsFalse;
 
+	t_pila pilaIF;
+	t_pila pilaElse;
+
 
 
 //TERCETOS
@@ -241,8 +244,6 @@ sentencia: asignacion { printf("Regla asignacion\n"); }
 		| declaracion { printf("Regla declaracion\n"); }
 		| display { printf("Regla display\n"); }
 		| get { printf("Regla get\n"); }
-		| equmax
-		| equmin
 		;
 
 asignacion: ID  OP_ASIG expresion 
@@ -281,10 +282,26 @@ BEGINW programa
 			modificarIndiceTercetoSalto(&lista_terceto, whileFalseAux.posicion, IndiceActual + 1);
 			//*PosReservada = contadorTercetos;
 		}
-ENDW  { };
+ENDW;
 
-seleccion: IF condicion THEN programa	{ printf("Regla IF\n"); }
-        |  IF condicion THEN programa ELSE programa		{ printf("Regla If con Else\n"); }
+seleccion: IF condicion THEN programa ENDIF	{ printf("Regla IF\n"); 
+			t_info_p ifCmpAux;
+			desapilar(&pilaIF,&ifCmpAux);
+			modificarIndiceTercetoSalto(&lista_terceto, ifCmpAux.posicion, contadorTercetos);
+}
+        |  IF condicion THEN programa {			
+				t_info_p elseCmpAux;
+				desapilar(&pilaElse,&elseCmpAux);
+				modificarIndiceTercetoSalto(&lista_terceto, elseCmpAux.posicion  , contadorTercetos +1);
+				t_info_p elseInit;
+				elseInit.posicion = crearTerceto("BI","","");
+				apilar(&pilaElse,&elseInit);
+			} ELSE {
+			} programa ENDIF { printf("Regla If con Else\n"); 
+				t_info_p elseBranchAux;
+				desapilar(&pilaElse,&elseBranchAux);
+				modificarIndiceTercetoSalto(&lista_terceto, elseBranchAux.posicion, contadorTercetos);
+			}
 		;
 
 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC {
@@ -313,10 +330,10 @@ declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC {
 	}
 };
 
-display: DISPLAY ID 
-		| DISPLAY CTE_S;
+display: DISPLAY ID { crearTerceto("DISPLAY",$2,"");}
+		| DISPLAY CTE_S { crearTerceto("DISPLAY",$2,"");};
 
-get:GET	ID;
+get:GET	ID { crearTerceto("GET",$2,"");};
 
 equmax: EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmax\n"); };
 
@@ -367,7 +384,12 @@ factor: PARA expresion PARC             {Find=Eind;}
 			} 
 		;
 
-condicion: comparacion	{ printf("Regla condicion simple \n"); }
+condicion: comparacion	{ printf( "Regla condicion simple \n");
+			t_info_p ifCmp;
+			crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
+			ifCmp.posicion = crearTerceto(comp,"","");
+			apilar(&pilaIF,&ifCmp);
+}
 		| NOT comparacion	{ printf("Regla condicion simple NOT\n"); }
         |  comparacion AND comparacion { printf("Regla condicion compuesta And\n"); }
         |  comparacion OR comparacion { printf("Regla condicion compuesta Or\n"); }

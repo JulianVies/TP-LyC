@@ -55,6 +55,7 @@
 	typedef struct
 	{
 		char text[32];
+		int posicion;
 	}t_info_p;
 
 	typedef struct s_nodo_p
@@ -92,6 +93,15 @@
 	t_info_p info_p;
 	t_pila pilaVar;
 	t_pila pilaType;
+	t_pila pilaWhilesCmp;
+	t_pila pilaWhilesFalse;
+	t_pila pilaForsCmp;
+	t_pila pilaForsFalse;
+
+	t_pila pilaIF;
+	t_pila pilaElse;
+
+
 
 //TERCETOS
 
@@ -126,6 +136,8 @@ int crearTerceto(char*, char*, char*); //Se mandan los 3 strings, y se guarda el
 void guardarTercetosEnArchivo(t_lista_terceto *);
 char* negarBranch(char*);	//Recibe el tipo de BRANCH y lo invierte  	
 int verCompatible(char *,int, int);
+int buscarEnListaDeTercetosOrdenada(t_lista_terceto *, int);
+int modificarIndiceTercetoSalto(t_lista_terceto *, int, int);
 
 void ftoa(float n, char* res, int afterpoint);
 void reverse(char* str, int len);
@@ -133,11 +145,26 @@ int intToStr(int x, char str[], int d);
 
 //INDICES
 int Eind;
+int EindAux1;
+int EindAux2;
 int Tind;
 int Find;
 
+int CompInd;
+int whileFalseInd;
+int InitWhileInd;
+int FinWhileInd;
+// int InitForInd;
+// int FinForInd;
+int Salto1;
+int IndiceActual;
+
+int* PosReservada;
+
 /////////
 
+char comp[3];
+int saltoConst;
 
 %}
 
@@ -186,12 +213,12 @@ int Find;
 %token LLAVEA				
 %token LLAVEC				
 
-%token MENOR_IGUAL			
-%token MAYOR_IGUAL			
-%token MENOR				
-%token MAYOR 			
-%token DIFF		
-%token IGUAL
+%token <str_val>MENOR_IGUAL			
+%token <str_val>MAYOR_IGUAL			
+%token <str_val>MENOR				
+%token <str_val>MAYOR 			
+%token <str_val>DIFF		
+%token <str_val>IGUAL
 %token IGUALFOR
 
 %token DIM		
@@ -217,26 +244,64 @@ sentencia: asignacion { printf("Regla asignacion\n"); }
 		| declaracion { printf("Regla declaracion\n"); }
 		| display { printf("Regla display\n"); }
 		| get { printf("Regla get\n"); }
-		| equmax
-		| equmin
 		;
 
-asignacion: ID {BuscarEnLista(&lista_ts, yytext);} OP_ASIG tipoAsig 
+asignacion: ID  OP_ASIG expresion 
 			{	
-				crearTerceto("=", $1, crearIndice(Eind));
+				BuscarEnLista(&lista_ts, $1);
+				crearTerceto(":=", $1, crearIndice(Eind));
+			}
+			|
+			ID  OP_ASIG CTE_S 
+			{	
+				BuscarEnLista(&lista_ts, $1);
+				crearTerceto("=", $1, $3);
 			}
 			; 	
-
-tipoAsig: expresion | CTE_S; 
 
 iteracion: while { printf("Regla while\n"); }
 		|  for { printf("Regla for\n"); }
 		;
 
-while: WHILE condicion BEGINW programa ENDW  ;
+while: WHILE condicion
+		{ 	
+			t_info_p whileCmp;
+			InitWhileInd = crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
+			whileCmp.posicion = InitWhileInd;
+			apilar(&pilaWhilesCmp,&whileCmp);
+			whileFalseInd = crearTerceto("BGE","","");
+			whileCmp.posicion = whileFalseInd;
+			apilar(&pilaWhilesFalse,&whileCmp);
+		} 
+BEGINW programa 
+		{	t_info_p whileCmpAux;
+			desapilar(&pilaWhilesCmp,&whileCmpAux);
+			IndiceActual =  crearTerceto("BI",crearIndice(whileCmpAux.posicion),"");
+			t_info_p whileFalseAux;
+			desapilar(&pilaWhilesFalse,&whileFalseAux);
+			modificarIndiceTercetoSalto(&lista_terceto, whileFalseAux.posicion, IndiceActual + 1);
+			//*PosReservada = contadorTercetos;
+		}
+ENDW;
 
-seleccion: IF condicion THEN programa	{ printf("Regla IF\n"); }
-        |  IF condicion THEN programa ELSE programa		{ printf("Regla If con Else\n"); }
+seleccion: IF condicion THEN programa ENDIF	{ printf("Regla IF\n"); 
+			t_info_p ifCmpAux;
+			desapilar(&pilaIF,&ifCmpAux);
+			modificarIndiceTercetoSalto(&lista_terceto, ifCmpAux.posicion, contadorTercetos);
+}
+        |  IF condicion THEN programa {			
+				t_info_p elseCmpAux;
+				desapilar(&pilaElse,&elseCmpAux);
+				modificarIndiceTercetoSalto(&lista_terceto, elseCmpAux.posicion  , contadorTercetos +1);
+				t_info_p elseInit;
+				elseInit.posicion = crearTerceto("BI","","");
+				apilar(&pilaElse,&elseInit);
+			} ELSE {
+			} programa ENDIF { printf("Regla If con Else\n"); 
+				t_info_p elseBranchAux;
+				desapilar(&pilaElse,&elseBranchAux);
+				modificarIndiceTercetoSalto(&lista_terceto, elseBranchAux.posicion, contadorTercetos);
+			}
 		;
 
 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC {
@@ -265,10 +330,10 @@ declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC {
 	}
 };
 
-display: DISPLAY ID 
-		| DISPLAY CTE_S;
+display: DISPLAY ID { crearTerceto("DISPLAY",$2,"");}
+		| DISPLAY CTE_S { crearTerceto("DISPLAY",$2,"");};
 
-get:GET	ID;
+get:GET	ID { crearTerceto("GET",$2,"");};
 
 equmax: EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmax\n"); };
 
@@ -293,7 +358,7 @@ listaType: TYPE {strcpy(info_p.text, yytext); apilar(&pilaType, &info_p);}
 
 TYPE: INTEGER | STRING | REAL;
 
-expresion: termino					{Eind = Tind;}
+expresion: termino						 {Eind = Tind;}
         | expresion OP_SUM termino       {Eind = crearTerceto("+",crearIndice(Eind), crearIndice(Tind));}
         | expresion OP_RESTA termino  	 {Eind=crearTerceto("-", crearIndice(Eind), crearIndice(Tind))}
 		;
@@ -303,7 +368,7 @@ termino: factor							{Tind=Find;}
         | termino OP_DIV factor         {Tind=crearTerceto("/", crearIndice(Tind), crearIndice(Find))}
 		;
 		
-factor: PARA expresion PARC
+factor: PARA expresion PARC             {Find=Eind;}
 		| ID 							 { 
 			Find = crearTerceto($1,"","");
 		} 
@@ -319,28 +384,58 @@ factor: PARA expresion PARC
 			} 
 		;
 
-condicion: comparacion	{ printf("Regla condicion simple \n"); }
+condicion: comparacion	{ printf( "Regla condicion simple \n");
+			t_info_p ifCmp;
+			crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
+			ifCmp.posicion = crearTerceto(comp,"","");
+			apilar(&pilaIF,&ifCmp);
+}
 		| NOT comparacion	{ printf("Regla condicion simple NOT\n"); }
         |  comparacion AND comparacion { printf("Regla condicion compuesta And\n"); }
         |  comparacion OR comparacion { printf("Regla condicion compuesta Or\n"); }
 		;	
 
-comparacion: expresion comparador expresion 
+comparacion: expresion {EindAux1=Eind;} comparador expresion {EindAux2=Eind;}
 		|  equmax
 		|  equmin
 		;
 
-comparador: MENOR_IGUAL			
-			| MAYOR_IGUAL			
-			| MENOR				
-			| MAYOR 			
- 			| DIFF		
-			| IGUAL
+comparador: MENOR_IGUAL		{strcpy(comp, "BGT");}		
+			| MAYOR_IGUAL	 {strcpy(comp,"BLT");}		
+			| MENOR			{strcpy(comp, "BGE");}	
+			| MAYOR 		{strcpy(comp, "BLE");}	
+ 			| DIFF			{strcpy(comp, "BNE");}
+			| IGUAL			{strcpy(comp, "BEQ");}
 			;
 
-for:	FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID 
-	| FOR ID IGUALFOR expresion TO expresion CORCHA CORCHC NEXT ID
+for:FOR ID IGUALFOR expresion {EindAux1 = Eind;} TO expresion {EindAux2 = Eind;} salto {
+	t_info_p forCmp;
+	crearTerceto("=",$2,crearIndice(EindAux1));
+
+	forCmp.posicion = crearTerceto("cmp",$2,crearIndice(EindAux2));
+	apilar(&pilaForsCmp,&forCmp);
+	forCmp.posicion = crearTerceto("BGT","","");
+	apilar(&pilaForsFalse,&forCmp);
+	
+	} programa NEXT ID {
+		t_info_p forCmpAux;
+		int indiceAuxSalto;
+		char numeroTexto [4];
+		itoa(saltoConst,numeroTexto,10);
+		indiceAuxSalto = crearTerceto("+",$2,numeroTexto);
+		crearTerceto("=",$2,crearIndice(indiceAuxSalto));
+		desapilar(&pilaForsCmp,&forCmpAux);
+		IndiceActual =  crearTerceto("BI",crearIndice(forCmpAux.posicion),"");
+		t_info_p forFalseAux;
+		desapilar(&pilaForsFalse,&forFalseAux);
+		modificarIndiceTercetoSalto(&lista_terceto, forFalseAux.posicion, IndiceActual + 1);
+	}
 	;
+
+
+salto : CORCHA CORCHC { saltoConst = 1; }
+		| CORCHA CTE_E CORCHC  { saltoConst = $2; }
+		;
 			
 
 
@@ -355,6 +450,8 @@ int main(int argc,char *argv[]){
 	crear_lista(&lista_dup);
 	crearPila(&pilaVar);
 	crearPila(&pilaType);
+	crearPila(&pilaWhilesCmp);
+	crearPila(&pilaWhilesFalse);
 	yyparse();
 
 	mostrarPila(&pilaVar);
@@ -672,6 +769,42 @@ void guardarTercetosEnArchivo(t_lista_terceto *pl){
   
   fclose(pf);
 } 
+/*
+int buscarEnListaDeTercetosOrdenada(t_lista_terceto *pl, int indiceTerceto)
+{
+    int cmp;
+    t_nodo_terceto aux;
+    char segundoElem[TAM];
+    printf("-----------------INDICE TERCETO: %d\n",indiceTerceto);
+
+    while(pl && (cmp = indiceTerceto - (pl)->info.numeroTerceto) >0)
+        pl=&(pl)->pSig;
+    if(pl && cmp==0)
+    {
+        return 1;
+    }
+
+    return 0;
+}
+*/
+int modificarIndiceTercetoSalto(t_lista_terceto *pl, int indiceTerceto, int indiceAColocar)
+{
+    int cmp;
+    char segundoElem[TAM];
+	//itero hasta encontrar terceto a modificar
+	while(pl && (cmp = indiceTerceto - (*pl)->info.numeroTerceto) >0)
+        pl=&(*pl)->pSig;
+    if(pl && cmp==0)
+    {
+        // Modifico terceto
+        strcpy((*pl)->info.segundoElemento, crearIndice(indiceAColocar));
+        return 1;
+    }
+
+    return 0;
+}
+
+
 // -- fin funciones tercetos --
 
 

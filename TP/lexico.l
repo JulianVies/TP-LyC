@@ -105,7 +105,7 @@ COMENTARIO		\*\/.+\/\*
 						char enteroConGuion[100];
 						agregarGuion(yytext,enteroConGuion);
                     	yylval.int_val = atoi(yytext);
-						nuevoSimbolo(enteroConGuion,yytext,NULL,-1);
+						nuevoSimbolo(enteroConGuion,yytext,NULL,strlen(yylval.int_val));
 						return CTE_E;
 					}else{
 						yyerror("Error Lexico,tam de entero excedido!");
@@ -117,7 +117,7 @@ COMENTARIO		\*\/.+\/\*
 						char realConGuion[100];
 						agregarGuion(yytext,realConGuion);
 						yylval.float_val = atof(yytext);
-						nuevoSimbolo(realConGuion,yytext,NULL,-1);
+						nuevoSimbolo(realConGuion,yytext,NULL,strlen(yylval.float_val)-1);
 						return CTE_R;
 					}else{
 						yyerror("Error Lexico,tam de float excedido!");

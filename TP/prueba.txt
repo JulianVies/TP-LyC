@@ -1,2 +1,2 @@
 DIM [ a ] AS [ integer]
-FOR a = 1 TO 21 [ 3 ] a:=2 NEXT a
+FOR a = 1 TO 21 [ 3 ] FOR a = 1 TO 21 [ 3 ] a:=2 NEXT a NEXT a

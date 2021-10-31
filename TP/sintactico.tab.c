@@ -650,7 +650,7 @@ static const yytype_uint16 yyrline[] =
      329,   330,   331,   334,   335,   338,   339,   342,   342,   342,
      344,   345,   346,   349,   350,   351,   354,   355,   358,   363,
      370,   371,   372,   373,   376,   376,   377,   378,   381,   382,
-     383,   384,   385,   386,   389,   389,   389,   389,   402,   403
+     383,   384,   385,   386,   389,   389,   389,   389,   414,   415
 };
 #endif
 
@@ -1928,14 +1928,30 @@ yyreduce:
 
     {
 	t_info_p forCmp;
-	
 	crearTerceto("=",(yyvsp[(2) - (9)].str_val),crearIndice(EindAux1));
-	// printf("%d",InitforInd);
+
 	forCmp.posicion = crearTerceto("cmp",(yyvsp[(2) - (9)].str_val),crearIndice(EindAux2));
 	apilar(&pilaForsCmp,&forCmp);
 	forCmp.posicion = crearTerceto("BGT","","");
 	apilar(&pilaForsFalse,&forCmp);
+	
+	;}
+    break;
 
+  case 67:
+
+    {
+		t_info_p forCmpAux;
+		int indiceAuxSalto;
+		char numeroTexto [4];
+		itoa(saltoConst,numeroTexto,10);
+		indiceAuxSalto = crearTerceto("+",(yyvsp[(2) - (13)].str_val),numeroTexto);
+		crearTerceto("=",(yyvsp[(2) - (13)].str_val),crearIndice(indiceAuxSalto));
+		desapilar(&pilaForsCmp,&forCmpAux);
+		IndiceActual =  crearTerceto("BI",crearIndice(forCmpAux.posicion),"");
+		t_info_p forFalseAux;
+		desapilar(&pilaForsFalse,&forFalseAux);
+		modificarIndiceTercetoSalto(&lista_terceto, forFalseAux.posicion, IndiceActual + 1);
 	;}
     break;
 

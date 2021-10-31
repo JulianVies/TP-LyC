@@ -395,7 +395,20 @@ for:FOR ID IGUALFOR expresion {EindAux1 = Eind;} TO expresion {EindAux2 = Eind;}
 	forCmp.posicion = crearTerceto("BGT","","");
 	apilar(&pilaForsFalse,&forCmp);
 	
-	} programa NEXT ID
+	} programa NEXT ID {
+		t_info_p forCmpAux;
+		int indiceAuxSalto;
+		char numeroTexto [4];
+		itoa(saltoConst,numeroTexto,10);
+		indiceAuxSalto = crearTerceto("+",$2,numeroTexto);
+		crearTerceto("=",$2,crearIndice(indiceAuxSalto));
+		desapilar(&pilaForsCmp,&forCmpAux);
+		IndiceActual =  crearTerceto("BI",crearIndice(forCmpAux.posicion),"");
+		t_info_p forFalseAux;
+		desapilar(&pilaForsFalse,&forFalseAux);
+		modificarIndiceTercetoSalto(&lista_terceto, forFalseAux.posicion, IndiceActual + 1);
+	}
+	;
 
 
 salto : CORCHA CORCHC { saltoConst = 1; }

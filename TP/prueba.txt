@@ -1,5 +1,5 @@
 DIM [ a, b ] AS [ integer, integer]
 
-a := 3
+a := 44
 
-WHILE a > 2 BEGINW a:=2 ENDW
+WHILE a > 2 BEGINW a:=55 ENDW

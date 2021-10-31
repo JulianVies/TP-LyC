@@ -255,8 +255,7 @@ iteracion: while { printf("Regla while\n"); }
 
 while: WHILE condicion
 		{ 
-			InitWhileInd = contadorTercetos + 1;
-			crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
+			InitWhileInd = crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
 			whileFalseInd = crearTerceto("BGE","","");
 		
 			//printf("*%d*",*PosReservada);
@@ -264,7 +263,8 @@ while: WHILE condicion
 		} 
 BEGINW programa 
 		{
-			IndiceActual =  crearTerceto("BL",crearIndice(InitWhileInd),"");
+			IndiceActual =  crearTerceto("BI",crearIndice(InitWhileInd),"");
+			printf("indice actual %d\n",IndiceActual);
 			modificarIndiceTercetoSalto(&lista_terceto, whileFalseInd, IndiceActual + 1);
 			//*PosReservada = contadorTercetos;
 		}
@@ -728,18 +728,14 @@ int buscarEnListaDeTercetosOrdenada(t_lista_terceto *pl, int indiceTerceto)
 int modificarIndiceTercetoSalto(t_lista_terceto *pl, int indiceTerceto, int indiceAColocar)
 {
     int cmp;
-    t_nodo_terceto aux;
     char segundoElem[TAM];
-    printf("-----------------INDICE TERCETO: %d\n",indiceTerceto);
-
-    while(pl && (cmp = indiceTerceto - (pl)->info.numeroTerceto) >0)
-        pl=&(pl)->pSig;
+	//itero hasta encontrar terceto a modificar
+	while(pl && (cmp = indiceTerceto - (*pl)->info.numeroTerceto) >0)
+        pl=&(*pl)->pSig;
     if(pl && cmp==0)
     {
         // Modifico terceto
-        aux=pl;
-        strcpy(aux->info.segundoElemento, crearIndice(indiceAColocar));
-
+        strcpy((*pl)->info.segundoElemento, crearIndice(indiceAColocar));
         return 1;
     }
 

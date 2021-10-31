@@ -95,6 +95,10 @@
 	t_pila pilaType;
 	t_pila pilaWhilesCmp;
 	t_pila pilaWhilesFalse;
+	t_pila pilaForsCmp;
+	t_pila pilaForsFalse;
+
+
 
 //TERCETOS
 
@@ -147,6 +151,8 @@ int CompInd;
 int whileFalseInd;
 int InitWhileInd;
 int FinWhileInd;
+// int InitForInd;
+// int FinForInd;
 int Salto1;
 int IndiceActual;
 
@@ -155,7 +161,7 @@ int* PosReservada;
 /////////
 
 char comp[3];
-
+int saltoConst;
 
 %}
 
@@ -242,7 +248,7 @@ sentencia: asignacion { printf("Regla asignacion\n"); }
 asignacion: ID  OP_ASIG expresion 
 			{	
 				BuscarEnLista(&lista_ts, $1);
-				crearTerceto("=", $1, crearIndice(Eind));
+				crearTerceto(":=", $1, crearIndice(Eind));
 			}
 			|
 			ID  OP_ASIG CTE_S 
@@ -265,9 +271,6 @@ while: WHILE condicion
 			whileFalseInd = crearTerceto("BGE","","");
 			whileCmp.posicion = whileFalseInd;
 			apilar(&pilaWhilesFalse,&whileCmp);
-		
-			//printf("*%d*",*PosReservada);
-			//crearTerceto(comp, crearIndice(*PosReservada),"_");
 		} 
 BEGINW programa 
 		{	t_info_p whileCmpAux;
@@ -370,7 +373,7 @@ condicion: comparacion	{ printf("Regla condicion simple \n"); }
         |  comparacion OR comparacion { printf("Regla condicion compuesta Or\n"); }
 		;	
 
-comparacion: expresion {EindAux1=Eind} comparador expresion {EindAux2=Eind}
+comparacion: expresion {EindAux1=Eind;} comparador expresion {EindAux2=Eind;}
 		|  equmax
 		|  equmin
 		;
@@ -383,9 +386,21 @@ comparador: MENOR_IGUAL		{strcpy(comp, "BGT");}
 			| IGUAL			{strcpy(comp, "BEQ");}
 			;
 
-for:	FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID 
-	| FOR ID IGUALFOR expresion TO expresion CORCHA CORCHC NEXT ID
-	;
+for:FOR ID IGUALFOR expresion {EindAux1 = Eind;} TO expresion {EindAux2 = Eind;} salto {
+	t_info_p forCmp;
+	crearTerceto("=",$2,crearIndice(EindAux1));
+
+	forCmp.posicion = crearTerceto("cmp",$2,crearIndice(EindAux2));
+	apilar(&pilaForsCmp,&forCmp);
+	forCmp.posicion = crearTerceto("BGT","","");
+	apilar(&pilaForsFalse,&forCmp);
+	
+	} programa NEXT ID
+
+
+salto : CORCHA CORCHC { saltoConst = 1; }
+		| CORCHA CTE_E CORCHC  { saltoConst = $2; }
+		;
 			
 
 

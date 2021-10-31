@@ -101,23 +101,31 @@ Gramática
    61           | DIFF
    62           | IGUAL
 
-   63 for: FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID
-   64    | FOR ID IGUALFOR expresion TO expresion CORCHA CORCHC NEXT ID
+   63 $@4: /* vacío */
+
+   64 $@5: /* vacío */
+
+   65 $@6: /* vacío */
+
+   66 for: FOR ID IGUALFOR expresion $@4 TO expresion $@5 salto $@6 programa NEXT ID
+
+   67 salto: CORCHA CORCHC
+   68      | CORCHA CTE_E CORCHC
 
 
 Terminales con las reglas donde aparecen
 
 $end (0) 0
 error (256)
-ID (258) 12 13 22 24 29 32 33 46 63 64
+ID (258) 12 13 22 24 29 32 33 46 66
 CTE_S (259) 13 23
-CTE_E (260) 30 47 63
+CTE_E (260) 30 47 68
 CTE_R (261) 31 48
 GET (262) 24
 DISPLAY (263) 22 23
 EQUMAX (264) 25
 EQUMIN (265) 26
-FOR (266) 63 64
+FOR (266) 66
 WHILE (267) 18
 BEGINW (268) 18
 ENDW (269) 18
@@ -135,8 +143,8 @@ OP_SUM (280) 40
 OP_RESTA (281) 41
 OP_MULT (282) 43
 OP_DIV (283) 44
-CORCHA (284) 21 25 26 63 64
-CORCHC (285) 21 25 26 63 64
+CORCHA (284) 21 25 26 67 68
+CORCHC (285) 21 25 26 67 68
 PARA (286) 25 26 45
 PARC (287) 25 26 45
 LLAVEA (288)
@@ -147,11 +155,11 @@ MENOR (292) 59
 MAYOR (293) 60
 DIFF (294) 61
 IGUAL (295) 62
-IGUALFOR (296) 63 64
+IGUALFOR (296) 66
 DIM (297) 21
 AS (298) 21
-TO (299) 63 64
-NEXT (300) 63 64
+TO (299) 66
+NEXT (300) 66
 INTEGER (301) 36
 STRING (302) 37
 REAL (303) 38
@@ -164,7 +172,7 @@ $accept (49)
 inicio (50)
     en la izquierda: 1, en la derecha: 0
 programa (51)
-    en la izquierda: 2 3, en la derecha: 1 3 18 19 20
+    en la izquierda: 2 3, en la derecha: 1 3 18 19 20 66
 sentencia (52)
     en la izquierda: 4 5 6 7 8 9 10 11, en la derecha: 2 3
 asignacion (53)
@@ -201,7 +209,7 @@ TYPE (68)
     en la izquierda: 36 37 38, en la derecha: 34 35
 expresion (69)
     en la izquierda: 39 40 41, en la derecha: 12 25 26 40 41 45 54
-    63 64
+    66
 termino (70)
     en la izquierda: 42 43 44, en la derecha: 39 40 41 43 44
 factor (71)
@@ -215,7 +223,15 @@ $@3 (74)
 comparador (75)
     en la izquierda: 57 58 59 60 61 62, en la derecha: 54
 for (76)
-    en la izquierda: 63 64, en la derecha: 15
+    en la izquierda: 66, en la derecha: 15
+$@4 (77)
+    en la izquierda: 63, en la derecha: 66
+$@5 (78)
+    en la izquierda: 64, en la derecha: 66
+$@6 (79)
+    en la izquierda: 65, en la derecha: 66
+salto (80)
+    en la izquierda: 67 68, en la derecha: 66
 
 
 estado 0
@@ -287,8 +303,7 @@ estado 5
 
 estado 6
 
-   63 for: FOR . ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID
-   64    | FOR . ID IGUALFOR expresion TO expresion CORCHA CORCHC NEXT ID
+   66 for: FOR . ID IGUALFOR expresion $@4 TO expresion $@5 salto $@6 programa NEXT ID
 
     ID  desplazar e ir al estado 29
 
@@ -524,8 +539,7 @@ estado 28
 
 estado 29
 
-   63 for: FOR ID . IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID
-   64    | FOR ID . IGUALFOR expresion TO expresion CORCHA CORCHC NEXT ID
+   66 for: FOR ID . IGUALFOR expresion $@4 TO expresion $@5 salto $@6 programa NEXT ID
 
     IGUALFOR  desplazar e ir al estado 50
 
@@ -726,8 +740,7 @@ estado 49
 
 estado 50
 
-   63 for: FOR ID IGUALFOR . expresion TO expresion CORCHA CTE_E CORCHC NEXT ID
-   64    | FOR ID IGUALFOR . expresion TO expresion CORCHA CORCHC NEXT ID
+   66 for: FOR ID IGUALFOR . expresion $@4 TO expresion $@5 salto $@6 programa NEXT ID
 
     ID     desplazar e ir al estado 30
     CTE_E  desplazar e ir al estado 31
@@ -929,12 +942,14 @@ estado 66
 
    40 expresion: expresion . OP_SUM termino
    41          | expresion . OP_RESTA termino
-   63 for: FOR ID IGUALFOR expresion . TO expresion CORCHA CTE_E CORCHC NEXT ID
-   64    | FOR ID IGUALFOR expresion . TO expresion CORCHA CORCHC NEXT ID
+   66 for: FOR ID IGUALFOR expresion . $@4 TO expresion $@5 salto $@6 programa NEXT ID
 
     OP_SUM    desplazar e ir al estado 53
     OP_RESTA  desplazar e ir al estado 54
-    TO        desplazar e ir al estado 87
+
+    $default  reduce usando la regla 63 ($@4)
+
+    $@4  ir al estado 87
 
 
 estado 67
@@ -1162,17 +1177,9 @@ estado 86
 
 estado 87
 
-   63 for: FOR ID IGUALFOR expresion TO . expresion CORCHA CTE_E CORCHC NEXT ID
-   64    | FOR ID IGUALFOR expresion TO . expresion CORCHA CORCHC NEXT ID
+   66 for: FOR ID IGUALFOR expresion $@4 . TO expresion $@5 salto $@6 programa NEXT ID
 
-    ID     desplazar e ir al estado 30
-    CTE_E  desplazar e ir al estado 31
-    CTE_R  desplazar e ir al estado 32
-    PARA   desplazar e ir al estado 34
-
-    expresion  ir al estado 99
-    termino    ir al estado 38
-    factor     ir al estado 39
+    TO  desplazar e ir al estado 99
 
 
 estado 88
@@ -1308,14 +1315,16 @@ estado 98
 
 estado 99
 
-   40 expresion: expresion . OP_SUM termino
-   41          | expresion . OP_RESTA termino
-   63 for: FOR ID IGUALFOR expresion TO expresion . CORCHA CTE_E CORCHC NEXT ID
-   64    | FOR ID IGUALFOR expresion TO expresion . CORCHA CORCHC NEXT ID
+   66 for: FOR ID IGUALFOR expresion $@4 TO . expresion $@5 salto $@6 programa NEXT ID
 
-    OP_SUM    desplazar e ir al estado 53
-    OP_RESTA  desplazar e ir al estado 54
-    CORCHA    desplazar e ir al estado 106
+    ID     desplazar e ir al estado 30
+    CTE_E  desplazar e ir al estado 31
+    CTE_R  desplazar e ir al estado 32
+    PARA   desplazar e ir al estado 34
+
+    expresion  ir al estado 106
+    termino    ir al estado 38
+    factor     ir al estado 39
 
 
 estado 100
@@ -1403,11 +1412,16 @@ estado 105
 
 estado 106
 
-   63 for: FOR ID IGUALFOR expresion TO expresion CORCHA . CTE_E CORCHC NEXT ID
-   64    | FOR ID IGUALFOR expresion TO expresion CORCHA . CORCHC NEXT ID
+   40 expresion: expresion . OP_SUM termino
+   41          | expresion . OP_RESTA termino
+   66 for: FOR ID IGUALFOR expresion $@4 TO expresion . $@5 salto $@6 programa NEXT ID
 
-    CTE_E   desplazar e ir al estado 116
-    CORCHC  desplazar e ir al estado 117
+    OP_SUM    desplazar e ir al estado 53
+    OP_RESTA  desplazar e ir al estado 54
+
+    $default  reduce usando la regla 64 ($@5)
+
+    $@5  ir al estado 116
 
 
 estado 107
@@ -1443,8 +1457,8 @@ estado 111
    21 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType . CORCHC
    35 listaType: listaType . COMA TYPE
 
-    COMA    desplazar e ir al estado 118
-    CORCHC  desplazar e ir al estado 119
+    COMA    desplazar e ir al estado 117
+    CORCHC  desplazar e ir al estado 118
 
 
 estado 112
@@ -1477,19 +1491,14 @@ estado 115
 
 estado 116
 
-   63 for: FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E . CORCHC NEXT ID
+   66 for: FOR ID IGUALFOR expresion $@4 TO expresion $@5 . salto $@6 programa NEXT ID
 
-    CORCHC  desplazar e ir al estado 120
+    CORCHA  desplazar e ir al estado 119
+
+    salto  ir al estado 120
 
 
 estado 117
-
-   64 for: FOR ID IGUALFOR expresion TO expresion CORCHA CORCHC . NEXT ID
-
-    NEXT  desplazar e ir al estado 121
-
-
-estado 118
 
    35 listaType: listaType COMA . TYPE
 
@@ -1497,53 +1506,128 @@ estado 118
     STRING   desplazar e ir al estado 109
     REAL     desplazar e ir al estado 110
 
-    TYPE  ir al estado 122
+    TYPE  ir al estado 121
 
 
-estado 119
+estado 118
 
    21 declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC .
 
     $default  reduce usando la regla 21 (declaracion)
 
 
+estado 119
+
+   67 salto: CORCHA . CORCHC
+   68      | CORCHA . CTE_E CORCHC
+
+    CTE_E   desplazar e ir al estado 122
+    CORCHC  desplazar e ir al estado 123
+
+
 estado 120
 
-   63 for: FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC . NEXT ID
+   66 for: FOR ID IGUALFOR expresion $@4 TO expresion $@5 salto . $@6 programa NEXT ID
 
-    NEXT  desplazar e ir al estado 123
+    $default  reduce usando la regla 65 ($@6)
+
+    $@6  ir al estado 124
 
 
 estado 121
-
-   64 for: FOR ID IGUALFOR expresion TO expresion CORCHA CORCHC NEXT . ID
-
-    ID  desplazar e ir al estado 124
-
-
-estado 122
 
    35 listaType: listaType COMA TYPE .
 
     $default  reduce usando la regla 35 (listaType)
 
 
+estado 122
+
+   68 salto: CORCHA CTE_E . CORCHC
+
+    CORCHC  desplazar e ir al estado 125
+
+
 estado 123
 
-   63 for: FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT . ID
+   67 salto: CORCHA CORCHC .
 
-    ID  desplazar e ir al estado 125
+    $default  reduce usando la regla 67 (salto)
 
 
 estado 124
 
-   64 for: FOR ID IGUALFOR expresion TO expresion CORCHA CORCHC NEXT ID .
+   66 for: FOR ID IGUALFOR expresion $@4 TO expresion $@5 salto $@6 . programa NEXT ID
 
-    $default  reduce usando la regla 64 (for)
+    ID       desplazar e ir al estado 1
+    GET      desplazar e ir al estado 2
+    DISPLAY  desplazar e ir al estado 3
+    EQUMAX   desplazar e ir al estado 4
+    EQUMIN   desplazar e ir al estado 5
+    FOR      desplazar e ir al estado 6
+    WHILE    desplazar e ir al estado 7
+    IF       desplazar e ir al estado 8
+    DIM      desplazar e ir al estado 9
+
+    programa     ir al estado 126
+    sentencia    ir al estado 12
+    asignacion   ir al estado 13
+    iteracion    ir al estado 14
+    while        ir al estado 15
+    seleccion    ir al estado 16
+    declaracion  ir al estado 17
+    display      ir al estado 18
+    get          ir al estado 19
+    equmax       ir al estado 20
+    equmin       ir al estado 21
+    for          ir al estado 22
 
 
 estado 125
 
-   63 for: FOR ID IGUALFOR expresion TO expresion CORCHA CTE_E CORCHC NEXT ID .
+   68 salto: CORCHA CTE_E CORCHC .
 
-    $default  reduce usando la regla 63 (for)
+    $default  reduce usando la regla 68 (salto)
+
+
+estado 126
+
+    3 programa: programa . sentencia
+   66 for: FOR ID IGUALFOR expresion $@4 TO expresion $@5 salto $@6 programa . NEXT ID
+
+    ID       desplazar e ir al estado 1
+    GET      desplazar e ir al estado 2
+    DISPLAY  desplazar e ir al estado 3
+    EQUMAX   desplazar e ir al estado 4
+    EQUMIN   desplazar e ir al estado 5
+    FOR      desplazar e ir al estado 6
+    WHILE    desplazar e ir al estado 7
+    IF       desplazar e ir al estado 8
+    DIM      desplazar e ir al estado 9
+    NEXT     desplazar e ir al estado 127
+
+    sentencia    ir al estado 45
+    asignacion   ir al estado 13
+    iteracion    ir al estado 14
+    while        ir al estado 15
+    seleccion    ir al estado 16
+    declaracion  ir al estado 17
+    display      ir al estado 18
+    get          ir al estado 19
+    equmax       ir al estado 20
+    equmin       ir al estado 21
+    for          ir al estado 22
+
+
+estado 127
+
+   66 for: FOR ID IGUALFOR expresion $@4 TO expresion $@5 salto $@6 programa NEXT . ID
+
+    ID  desplazar e ir al estado 128
+
+
+estado 128
+
+   66 for: FOR ID IGUALFOR expresion $@4 TO expresion $@5 salto $@6 programa NEXT ID .
+
+    $default  reduce usando la regla 66 (for)

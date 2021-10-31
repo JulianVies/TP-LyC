@@ -1,2 +1,2 @@
-DIM [ a] AS [ integer]
-WHILE a > 2 BEGINW a:=2 WHILE a > 2 BEGINW a:=55 ENDW ENDW
+DIM [ a ] AS [ integer]
+FOR a = 1 TO 21 [ 3 ] a:=2 NEXT a

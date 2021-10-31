@@ -49,3 +49,9 @@ DIM [ a, b ] AS [ integer, integer]
 
 
 a := 21474 + 1
+
+
+
+DIM [ a] AS [ integer]
+
+WHILE a+2 > 2 BEGINW a:=2+2+2+2+2 WHILE a > 2 BEGINW a:=55 ENDW ENDW

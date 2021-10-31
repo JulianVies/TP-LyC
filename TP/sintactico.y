@@ -141,7 +141,7 @@ int Tind;
 int Find;
 
 int CompInd;
-int CompBGE;
+int whileFalseInd;
 int InitWhileInd;
 int FinWhileInd;
 int Salto1;
@@ -256,18 +256,17 @@ iteracion: while { printf("Regla while\n"); }
 while: WHILE condicion
 		{ 
 			InitWhileInd = contadorTercetos + 1;
-			CompInd = crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
-			CompBGE = crearTerceto("BGE","","");
-			Salto1 = CompBGE;
+			crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
+			whileFalseInd = crearTerceto("BGE","","");
 		
 			//printf("*%d*",*PosReservada);
 			//crearTerceto(comp, crearIndice(*PosReservada),"_");
 		} 
 BEGINW programa 
 		{
-			IndiceActual =  crearTerceto("BL",crearIndice(InitWhileInd),"_");
-			modificarIndiceTercetoSalto(lista_terceto, Salto1, IndiceActual + 1);
-			*PosReservada = contadorTercetos;
+			IndiceActual =  crearTerceto("BL",crearIndice(InitWhileInd),"");
+			modificarIndiceTercetoSalto(&lista_terceto, whileFalseInd, IndiceActual + 1);
+			//*PosReservada = contadorTercetos;
 		}
 ENDW  { };
 
@@ -708,7 +707,7 @@ void guardarTercetosEnArchivo(t_lista_terceto *pl){
   
   fclose(pf);
 } 
-
+/*
 int buscarEnListaDeTercetosOrdenada(t_lista_terceto *pl, int indiceTerceto)
 {
     int cmp;
@@ -725,7 +724,7 @@ int buscarEnListaDeTercetosOrdenada(t_lista_terceto *pl, int indiceTerceto)
 
     return 0;
 }
-
+*/
 int modificarIndiceTercetoSalto(t_lista_terceto *pl, int indiceTerceto, int indiceAColocar)
 {
     int cmp;
@@ -746,6 +745,7 @@ int modificarIndiceTercetoSalto(t_lista_terceto *pl, int indiceTerceto, int indi
 
     return 0;
 }
+
 
 // -- fin funciones tercetos --
 

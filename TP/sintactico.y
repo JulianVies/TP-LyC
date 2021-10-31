@@ -55,6 +55,7 @@
 	typedef struct
 	{
 		char text[32];
+		int posicion;
 	}t_info_p;
 
 	typedef struct s_nodo_p
@@ -92,6 +93,8 @@
 	t_info_p info_p;
 	t_pila pilaVar;
 	t_pila pilaType;
+	t_pila pilaWhilesCmp;
+	t_pila pilaWhilesFalse;
 
 //TERCETOS
 
@@ -254,18 +257,25 @@ iteracion: while { printf("Regla while\n"); }
 		;
 
 while: WHILE condicion
-		{ 
+		{ 	
+			t_info_p whileCmp;
 			InitWhileInd = crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
+			whileCmp.posicion = InitWhileInd;
+			apilar(&pilaWhilesCmp,&whileCmp);
 			whileFalseInd = crearTerceto("BGE","","");
+			whileCmp.posicion = whileFalseInd;
+			apilar(&pilaWhilesFalse,&whileCmp);
 		
 			//printf("*%d*",*PosReservada);
 			//crearTerceto(comp, crearIndice(*PosReservada),"_");
 		} 
 BEGINW programa 
-		{
-			IndiceActual =  crearTerceto("BI",crearIndice(InitWhileInd),"");
-			printf("indice actual %d\n",IndiceActual);
-			modificarIndiceTercetoSalto(&lista_terceto, whileFalseInd, IndiceActual + 1);
+		{	t_info_p whileCmpAux;
+			desapilar(&pilaWhilesCmp,&whileCmpAux);
+			IndiceActual =  crearTerceto("BI",crearIndice(whileCmpAux.posicion),"");
+			t_info_p whileFalseAux;
+			desapilar(&pilaWhilesFalse,&whileFalseAux);
+			modificarIndiceTercetoSalto(&lista_terceto, whileFalseAux.posicion, IndiceActual + 1);
 			//*PosReservada = contadorTercetos;
 		}
 ENDW  { };
@@ -390,6 +400,8 @@ int main(int argc,char *argv[]){
 	crear_lista(&lista_dup);
 	crearPila(&pilaVar);
 	crearPila(&pilaType);
+	crearPila(&pilaWhilesCmp);
+	crearPila(&pilaWhilesFalse);
 	yyparse();
 
 	mostrarPila(&pilaVar);

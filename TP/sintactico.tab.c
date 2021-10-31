@@ -124,6 +124,7 @@
 	typedef struct
 	{
 		char text[32];
+		int posicion;
 	}t_info_p;
 
 	typedef struct s_nodo_p
@@ -161,6 +162,8 @@
 	t_info_p info_p;
 	t_pila pilaVar;
 	t_pila pilaType;
+	t_pila pilaWhilesCmp;
+	t_pila pilaWhilesFalse;
 
 //TERCETOS
 
@@ -635,13 +638,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   222,   222,   225,   226,   229,   230,   231,   232,   233,
-     234,   235,   236,   239,   245,   252,   253,   257,   265,   256,
-     273,   274,   277,   303,   304,   306,   308,   310,   312,   313,
-     316,   317,   318,   321,   322,   325,   326,   329,   329,   329,
-     331,   332,   333,   336,   337,   338,   341,   342,   345,   350,
-     357,   358,   359,   360,   363,   363,   364,   365,   368,   369,
-     370,   371,   372,   373,   376,   377
+       0,   225,   225,   228,   229,   232,   233,   234,   235,   236,
+     237,   238,   239,   242,   248,   255,   256,   260,   273,   259,
+     283,   284,   287,   313,   314,   316,   318,   320,   322,   323,
+     326,   327,   328,   331,   332,   335,   336,   339,   339,   339,
+     341,   342,   343,   346,   347,   348,   351,   352,   355,   360,
+     367,   368,   369,   370,   373,   373,   374,   375,   378,   379,
+     380,   381,   382,   383,   386,   387
 };
 #endif
 
@@ -1686,9 +1689,14 @@ yyreduce:
 
   case 17:
 
-    { 
+    { 	
+			t_info_p whileCmp;
 			InitWhileInd = crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
+			whileCmp.posicion = InitWhileInd;
+			apilar(&pilaWhilesCmp,&whileCmp);
 			whileFalseInd = crearTerceto("BGE","","");
+			whileCmp.posicion = whileFalseInd;
+			apilar(&pilaWhilesFalse,&whileCmp);
 		
 			//printf("*%d*",*PosReservada);
 			//crearTerceto(comp, crearIndice(*PosReservada),"_");
@@ -1697,10 +1705,12 @@ yyreduce:
 
   case 18:
 
-    {
-			IndiceActual =  crearTerceto("BI",crearIndice(InitWhileInd),"");
-			printf("indice actual %d\n",IndiceActual);
-			modificarIndiceTercetoSalto(&lista_terceto, whileFalseInd, IndiceActual + 1);
+    {	t_info_p whileCmpAux;
+			desapilar(&pilaWhilesCmp,&whileCmpAux);
+			IndiceActual =  crearTerceto("BI",crearIndice(whileCmpAux.posicion),"");
+			t_info_p whileFalseAux;
+			desapilar(&pilaWhilesFalse,&whileFalseAux);
+			modificarIndiceTercetoSalto(&lista_terceto, whileFalseAux.posicion, IndiceActual + 1);
 			//*PosReservada = contadorTercetos;
 		;}
     break;
@@ -2122,6 +2132,8 @@ int main(int argc,char *argv[]){
 	crear_lista(&lista_dup);
 	crearPila(&pilaVar);
 	crearPila(&pilaType);
+	crearPila(&pilaWhilesCmp);
+	crearPila(&pilaWhilesFalse);
 	yyparse();
 
 	mostrarPila(&pilaVar);

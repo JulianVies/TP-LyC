@@ -1,6 +1,4 @@
 NOMBRE                              TIPO DE DATO     VALOR                               LONGITUD                           
-b                                   integer          -                                                                      
 a                                   integer          -                                                                      
-_44                                                  44                                                                     
 _2                                                   2                                                                      
 _55                                                  55                                                                     

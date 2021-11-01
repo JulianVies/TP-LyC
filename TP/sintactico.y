@@ -166,6 +166,11 @@ int* PosReservada;
 char comp[3];
 int saltoConst;
 
+int indVal;
+int indItem;
+int indMax;
+int indMin;
+char compEqu[3];
 %}
 
 %union {
@@ -335,17 +340,34 @@ display: DISPLAY ID { crearTerceto("DISPLAY",$2,"");}
 
 get:GET	ID { crearTerceto("GET",$2,"");};
 
-equmax: EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmax\n"); };
+equmax: EQUMAX {strcpy(compEqu, "BLE");} PARA expresion {indVal=Eind;} PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmax\n"); indMax=crearTerceto("@Val","","");};
 
-equmin: EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmin\n"); };
+equmin: EQUMIN {strcpy(compEqu, "BGE");} PARA expresion {indVal=Eind;} PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmin\n"); indMin=crearTerceto("@Val","","");};
 
-listaEqu: itemEqu
-		| listaEqu COMA itemEqu
+listaEqu: itemEqu {crearTerceto(":=", "@Val", crearIndice(indItem));}
+		| listaEqu COMA itemEqu { 
+			int indAux;
+			indAux = crearTerceto(":=", "@Aux", crearIndice(indItem));
+			crearTerceto("CMP", "@Aux", "@Val");
+			char textoIndAux[10];
+			itoa(indAux+4,textoIndAux,10);
+			crearTerceto(compEqu, textoIndAux, "");
+			crearTerceto(":=", "@Val","@Aux"); }
 		;
 
-itemEqu: ID
-		| CTE_E
-		| CTE_R
+itemEqu: ID 							 { 
+			indItem = crearTerceto($1,"","");
+		} 
+		| CTE_E							 {
+			char auxI[30];
+			itoa($1,auxI,10);
+			indItem = crearTerceto(auxI,"","");
+			} 
+		| CTE_R							 {
+			char auxF[30];
+			ftoa($1,auxF,2);
+			indItem = crearTerceto(auxF,"","");
+			} 
 		;
 
 listaVarDec: ID {strcpy(info_p.text, yytext); apilar(&pilaVar, &info_p);}
@@ -378,7 +400,7 @@ factor: PARA expresion PARC             {Find=Eind;}
 			Find = crearTerceto(auxI,"","");
 			} 
 		| CTE_R							 {
-			char* auxF;
+			char auxF[30];
 			ftoa($1,auxF,2);
 			Find = crearTerceto(auxF,"","");
 			} 
@@ -396,23 +418,23 @@ condicion: comparacion	{ printf( "Regla condicion simple \n");
 		;	
 
 comparacion: expresion {EindAux1=Eind;} comparador expresion {EindAux2=Eind;}
-		|  equmax
-		|  equmin
+		|  equmax {EindAux1=indVal; EindAux2=indMax; strcpy(comp, "BNE");}
+		|  equmin {EindAux1=indVal; EindAux2=indMin; strcpy(comp, "BNE");}
 		;
 
 comparador: MENOR_IGUAL		{strcpy(comp, "BGT");}		
 			| MAYOR_IGUAL	 {strcpy(comp,"BLT");}		
 			| MENOR			{strcpy(comp, "BGE");}	
 			| MAYOR 		{strcpy(comp, "BLE");}	
- 			| DIFF			{strcpy(comp, "BNE");}
-			| IGUAL			{strcpy(comp, "BEQ");}
+ 			| DIFF			{strcpy(comp, "BEQ");}
+			| IGUAL			{strcpy(comp, "BNE");}
 			;
 
 for:FOR ID IGUALFOR expresion {EindAux1 = Eind;} TO expresion {EindAux2 = Eind;} salto {
 	t_info_p forCmp;
 	crearTerceto("=",$2,crearIndice(EindAux1));
 
-	forCmp.posicion = crearTerceto("cmp",$2,crearIndice(EindAux2));
+	forCmp.posicion = crearTerceto("CMP",$2,crearIndice(EindAux2));
 	apilar(&pilaForsCmp,&forCmp);
 	forCmp.posicion = crearTerceto("BGT","","");
 	apilar(&pilaForsFalse,&forCmp);

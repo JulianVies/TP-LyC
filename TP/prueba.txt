@@ -1,3 +1,3 @@
-DIM [ a ] AS [ integer]
+DIM [ a, b ] AS [ integer, integer]
 
-IF a > 2 THEN DISPLAY B ELSE DISPLAY B ENDIF
+IF EQUMIN(a+1; [10.1, b,40]) THEN DISPLAY B ENDIF

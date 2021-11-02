@@ -483,6 +483,7 @@ int main(int argc,char *argv[]){
 	printf("cantidad de tercetos\t:\t%d",contadorTercetos);
 	mostrarListaTerceto();
 	grabar_lista(&lista_ts);
+	guardarTercetosEnArchivo(&lista_terceto);
 	
 
   	fclose(yyin);

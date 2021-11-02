@@ -1,3 +1,0 @@
-NOMBRE                              TIPO DE DATO     VALOR                               LONGITUD                           
-a                                   integer          -                                                                      
-_2                                                   2                                                                      

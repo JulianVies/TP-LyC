@@ -135,6 +135,9 @@ char* getCodOp(char*);
 char * buscaDatoEnTerceto(int datoUNODOSTRES, int i);
 void generaSegmDatosAsm(FILE* pf_asm,t_lista *pl);
 
+
+void generarListaEtiquetas(int[] lista_etiquetas);
+
 /**** Fin assembler ****/
 
 
@@ -920,7 +923,6 @@ void genera_asm()
 	char aux[10];
 	
 	int lista_etiquetas[1000];
-	int cant_etiquetas = 0;
 	char etiqueta_aux[10];
 
 	char ult_op1_cmp[30];
@@ -938,6 +940,7 @@ void genera_asm()
 	 fprintf(pf_asm, ".MODEL	LARGE \n");
 	 fprintf(pf_asm, ".386\n");
 	 fprintf(pf_asm, ".STACK 200h \n");
+	//  generamos bloque data
 	 generaSegmDatosAsm(pf_asm,&lista_ts);
 	 fprintf(pf_asm, ".CODE \n");
 	 fprintf(pf_asm, "MAIN:\n");
@@ -949,6 +952,15 @@ void genera_asm()
     fprintf(pf_asm, "\t MOV ES,AX \n");
     fprintf(pf_asm, "\t FNINIT \n");;
     fprintf(pf_asm, "\n");
+	int i, j;
+	int opSimple,  // Formato terceto (x,  ,  ) 
+		opUnaria,  // Formato terceto (x, x,  )
+		opBinaria; // Formato terceto (x, x, x)
+	int agregar_etiqueta_final_nro = -1;
+
+	generarListaEtiquetas(lista_etiquetas);
+
+	
 
 	// int i, j;
 	// int opSimple,  // Formato terceto (x,  ,  ) 
@@ -1151,32 +1163,31 @@ void genera_asm()
 }
 
 char * buscaDatoEnTerceto(int datoUNODOSTRES, int i){
-	// char  auxilia1[5]={'\0','\0','\0','\0','\0'};
-	// char * parentecisCierra;
-	// char * parentecisHabre;
-	// int num;
-	// int num2;
-	// if(datoUNODOSTRES==1){
-	// 	if(strstr(tercetos[i].uno,"]")){
-	// 		parentecisHabre  = (strstr(tercetos[i].uno,"[")+1);
-	// 		parentecisCierra = strstr(tercetos[i].uno,"]");
-	// 		num = (int) &(*parentecisCierra);
-	// 		num2 = (int) &(*parentecisHabre);
-	// 		//*(auxilia1) = '\0';
-	// 		strncpy(auxilia1,parentecisHabre,(num-num2));
-	// 		return tercetos[(atoi(auxilia1))].uno;
-	// 	}
-	// 	else return tercetos[i].uno;
-	// }
+	char  auxilia1[5]={'\0','\0','\0','\0','\0'};
+	char * parentecisCierra;
+	char * parentecisHabre;
+	int num;
+	int num2;
+	if(datoUNODOSTRES==1){
+		if(strstr(tercetos[i].uno,"]")){
+			parentecisHabre  = (strstr(tercetos[i].uno,"[")+1);
+			parentecisCierra = strstr(tercetos[i].uno,"]");
+			num = (int) &(*parentecisCierra);
+			num2 = (int) &(*parentecisHabre);
+			//*(auxilia1) = '\0';
+			strncpy(auxilia1,parentecisHabre,(num-num2));
+			return tercetos[(atoi(auxilia1))].uno;
+		}
+		else return tercetos[i].uno;
+	}
 }
 
+// sirve para agregar @ como variable assembler
 char* getNombreAsm(char *cte_o_id) {
 	char* nombreAsm = (char*) malloc(sizeof(char)*200);
 	nombreAsm[0] = '\0';
 	strcat(nombreAsm, "@"); // prefijo agregado
 	strcat(nombreAsm, cte_o_id); // agrego nombre
-	
-	
 	return nombreAsm;
 }
 
@@ -1272,4 +1283,38 @@ void generaSegmDatosAsm(FILE* pf_asm,t_lista *pl)
 	}
 
 	fclose(pf);
+}
+
+void generarListaEtiquetas(int[] lista_etiquetas)
+{
+	// Guardo todos los tercetos donde tendria que poner etiquetas
+	int cant_etiquetas = 0;
+	t_nodo_terceto *auxNodoTerceto;
+    auxNodoTerceto = lista_terceto;
+    if(auxNodoTerceto==NULL)
+        return;
+    while(auxNodoTerceto->pSig!=NULL)
+    {	
+		if (strcmp(auxNodoTerceto->info.segundoElemento, "") != 0 && strcmp(auxNodoTerceto->info.tercerElemento, "") ==0)
+		{
+			if (strcmp(auxNodoTerceto->info.primerElemento, "GET") != 0 && strcmp(auxNodoTerceto->info.primerElemento, "DISPLAY") != 0)
+			{
+				int found = -1;
+				int j;
+				for (j = 1; j<=cant_etiquetas; j++)
+				{
+					if (lista_etiquetas[j] == atoi(auxNodoTerceto->info.segundoElemento))
+					{
+						found = 1;
+					}
+				}
+				if (found == -1) 
+				{
+					cant_etiquetas++;
+					lista_etiquetas[cant_etiquetas] = atoi(auxNodoTerceto->info.segundoElemento);
+				}
+			}
+		}
+		auxNodoTerceto = auxNodoTerceto->pSig;
+    }
 }

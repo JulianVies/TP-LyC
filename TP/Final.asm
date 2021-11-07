@@ -9,10 +9,8 @@ include number.asm
 	@c db 30 dup (?),"$"	;Declaracion de Variable String
 	@b dd ?	 ; Declaracion de Variable Numerica
 	@a dd ?	 ; Declaracion de Variable Numerica
-	@_1 dd 1.0	;Declaracion de Constant Number
-	@_10.1 dd 10.1	;Declaracion de Constant Number
-	@_40 dd 40.0	;Declaracion de Constant Number
 	@_21474 dd 21474.0	;Declaracion de Constant Number
+	@_1 dd 1.0	;Declaracion de Constant Number
 	@_2 dd 2.0	;Declaracion de Constant Number
 	@_ctestring db ctestring, "$", 30 dup (?)	;Declaracion de Constant String
 	@_2.5 dd 2.5	;Declaracion de Constant Number

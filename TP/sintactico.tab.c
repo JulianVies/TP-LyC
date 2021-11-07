@@ -2782,6 +2782,7 @@ void genera_asm()
 	 fprintf(pf_asm, ".MODEL	LARGE \n");
 	 fprintf(pf_asm, ".386\n");
 	 fprintf(pf_asm, ".STACK 200h \n");
+	//  generamos bloque data
 	 generaSegmDatosAsm(pf_asm,&lista_ts);
 	 fprintf(pf_asm, ".CODE \n");
 	 fprintf(pf_asm, "MAIN:\n");
@@ -2793,6 +2794,41 @@ void genera_asm()
     fprintf(pf_asm, "\t MOV ES,AX \n");
     fprintf(pf_asm, "\t FNINIT \n");;
     fprintf(pf_asm, "\n");
+	int i, j;
+	int opSimple,  // Formato terceto (x,  ,  ) 
+		opUnaria,  // Formato terceto (x, x,  )
+		opBinaria; // Formato terceto (x, x, x)
+	int agregar_etiqueta_final_nro = -1;
+
+	// Guardo todos los tercetos donde tendria que poner etiquetas
+	t_nodo_terceto *auxNodoTerceto;
+    auxNodoTerceto = lista_terceto;
+    if(auxNodoTerceto==NULL)
+        return;
+    while(auxNodoTerceto->pSig!=NULL)
+    {	
+		if (strcmp(auxNodoTerceto->info.segundoElemento, "") != 0 && strcmp(auxNodoTerceto->info.tercerElemento, "") ==0)
+		{
+			if (strcmp(auxNodoTerceto->info.primerElemento, "GET") != 0 && strcmp(auxNodoTerceto->info.primerElemento, "DISPLAY") != 0)
+			{
+				int found = -1;
+				int j;
+				for (j = 1; j<=cant_etiquetas; j++)
+				{
+					if (lista_etiquetas[j] == atoi(auxNodoTerceto->info.segundoElemento))
+					{
+						found = 1;
+					}
+				}
+				if (found == -1) 
+				{
+					cant_etiquetas++;
+					lista_etiquetas[cant_etiquetas] = atoi(auxNodoTerceto->info.segundoElemento);
+				}
+			}
+		}
+		auxNodoTerceto = auxNodoTerceto->pSig;
+    }
 
 	// int i, j;
 	// int opSimple,  // Formato terceto (x,  ,  ) 
@@ -2995,32 +3031,31 @@ void genera_asm()
 }
 
 char * buscaDatoEnTerceto(int datoUNODOSTRES, int i){
-	// char  auxilia1[5]={'\0','\0','\0','\0','\0'};
-	// char * parentecisCierra;
-	// char * parentecisHabre;
-	// int num;
-	// int num2;
-	// if(datoUNODOSTRES==1){
-	// 	if(strstr(tercetos[i].uno,"]")){
-	// 		parentecisHabre  = (strstr(tercetos[i].uno,"[")+1);
-	// 		parentecisCierra = strstr(tercetos[i].uno,"]");
-	// 		num = (int) &(*parentecisCierra);
-	// 		num2 = (int) &(*parentecisHabre);
-	// 		//*(auxilia1) = '\0';
-	// 		strncpy(auxilia1,parentecisHabre,(num-num2));
-	// 		return tercetos[(atoi(auxilia1))].uno;
-	// 	}
-	// 	else return tercetos[i].uno;
-	// }
+	char  auxilia1[5]={'\0','\0','\0','\0','\0'};
+	char * parentecisCierra;
+	char * parentecisHabre;
+	int num;
+	int num2;
+	if(datoUNODOSTRES==1){
+		if(strstr(tercetos[i].uno,"]")){
+			parentecisHabre  = (strstr(tercetos[i].uno,"[")+1);
+			parentecisCierra = strstr(tercetos[i].uno,"]");
+			num = (int) &(*parentecisCierra);
+			num2 = (int) &(*parentecisHabre);
+			//*(auxilia1) = '\0';
+			strncpy(auxilia1,parentecisHabre,(num-num2));
+			return tercetos[(atoi(auxilia1))].uno;
+		}
+		else return tercetos[i].uno;
+	}
 }
 
+// sirve para agregar @ como variable assembler
 char* getNombreAsm(char *cte_o_id) {
 	char* nombreAsm = (char*) malloc(sizeof(char)*200);
 	nombreAsm[0] = '\0';
 	strcat(nombreAsm, "@"); // prefijo agregado
 	strcat(nombreAsm, cte_o_id); // agrego nombre
-	
-	
 	return nombreAsm;
 }
 
@@ -3112,41 +3147,8 @@ void generaSegmDatosAsm(FILE* pf_asm,t_lista *pl)
 		else{
 			printf("tipo sin identificar");
 		}
-		// fprintf(pf,"\n%-35s %-16s %-35s %-35s", (*pl)->info.nombre, (*pl)->info.tipodato, (*pl)->info.valor, (*pl)->info.longitud);
 		pl=&(*pl)->pSig;
 	}
 
 	fclose(pf);
-
-
-	// inicio funcion copiada
-	// int i;
-
-	
-
-	// for(i=0; i<cant_reg; i++)
-	// {
-	// 	struct registro_ts reg = tabla_simbolos[i];
-	// 	int tipo = tipoDeDato(i);
-	// 	if(strcmpi(reg.tipo, "FLOAT") == 0 || strcmpi(reg.tipo, "INT") == 0)
-	// 	{
-	// 		fprintf(pf_asm, "\t%s dd ?\t ; Declaracion de Variable Numerica\n", getNombreAsm(reg.nombre));
-	// 	}
-	// 	else if(strcmpi(reg.tipo, "STRING") == 0)
-	// 	{
-	// 		fprintf(pf_asm, "\t%s db 30 dup (?),\"$\"\t;Declaracion de Variable String\n", getNombreAsm(reg.nombre));
-	// 	}
-	// 	else if(strcmpi(reg.tipo, "CTE_STRING") == 0)
-	// 	{
-	// 		fprintf(pf_asm, "\t%s db %s, \"$\", 30 dup (?)\t;Declaracion de Constant String\n", getNombreAsm(reg.nombre), reg.valor);
-	// 	}
-	// 	else if(strcmpi(reg.tipo, "CTE_INT") == 0 || strcmpi(reg.tipo, "CTE_FLOAT") == 0)
-	// 	{
-	// 		if(strstr(reg.valor,".")){
-	// 			fprintf(pf_asm, "\t%s dd %s\t;Declaracion de Constant Number\n", getNombreAsm(reg.nombre), reg.valor);
-	// 		}else{
-	// 			fprintf(pf_asm, "\t%s dd %s.0\t;Declaracion de Constant Number\n", getNombreAsm(reg.nombre), reg.valor);
-	// 		}
-	// 	}
-	// }
 }

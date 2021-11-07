@@ -1,29 +1,8 @@
-
-*/Seleccion/*
-
-DIM [ a, b ] AS [ integer, integer]
+DIM [ a, b, c, d ] AS [ integer, integer, string, real]
 
 IF EQUMIN(a+1; [10.1, b,40]) THEN DISPLAY B ENDIF
 
-*/Asignacion/*
 a := 21474 + 1
-
-*/While, while anidado/*
-WHILE a > b BEGINW a:=2 ENDW
-WHILE a+2 > 2 BEGINW a:=2+2 WHILE a > 2 BEGINW a:=55 ENDW ENDW
-
-*/For/*
-
-FOR varB = 1 TO 21 [3] a :=b NEXT varc
-FOR varA = 1 TO 21 [] a :=b NEXT varA
-
-
-*/get, display/*
-GET a
-DISPLAY a
-DISPLAY "cadena"
-
-*/equmax, equmin/*
-
-IF EQUMAX(10+101; [100, 111, a]) THEN a:=28 ENDIF
-IF EQUMIN(10+101; [100, 111, a]) THEN a:=28 ENDIF
+b := 2
+c := "ctestring"
+d := 2.5

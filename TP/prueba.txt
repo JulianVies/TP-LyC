@@ -4,3 +4,6 @@ a := 21474 + 1
 b := 2
 c := "ctestring"
 d := 2.5
+IF a<b THEN DISPLAY B ENDIF
+IF a<b THEN DISPLAY B ENDIF
+c := "ctestrinng"

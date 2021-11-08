@@ -3,8 +3,4 @@ d                                   real             -
 c                                   string           -                                                                      
 b                                   integer          -                                                                      
 a                                   integer          -                                                                      
-_21474                              CTE_E            21474                               5                                  
-_1                                  CTE_E            1                                   1                                  
-_2                                  CTE_E            2                                   1                                  
-_ctestring                          CTE_S            ctestring                           9                                  
-_2.5                                CTE_R            2.5                                 2                                  
+_prueba                             CTE_S            prueba                              6                                  

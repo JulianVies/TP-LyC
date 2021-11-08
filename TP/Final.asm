@@ -9,12 +9,7 @@ include number.asm
 	@c db 30 dup (?),"$"	;Declaracion de Variable String
 	@b dd ?	 ; Declaracion de Variable Numerica
 	@a dd ?	 ; Declaracion de Variable Numerica
-	@_21474 dd 21474.0	;Declaracion de Constant Number
-	@_1 dd 1.0	;Declaracion de Constant Number
-	@_2 dd 2.0	;Declaracion de Constant Number
-	@_ctestring db ctestring, "$", 30 dup (?)	;Declaracion de Constant String
-	@_2.5 dd 2.5	;Declaracion de Constant Number
-	@_ctestrinng db ctestrinng, "$", 30 dup (?)	;Declaracion de Constant String
+	@_prueba db prueba, "$", 30 dup (?)	;Declaracion de Constant String
 .CODE 
 MAIN:
 
@@ -24,6 +19,10 @@ MAIN:
 	 MOV ES,AX 
 	 FNINIT 
 
+	 DisplayString @c 
+	 newLine 
+	 DisplayString @prueba 
+	 newLine 
 	 mov AX, 4C00h 	 ; Genera la interrupcion 21h
 	 int 21h 	 ; Genera la interrupcion 21h
 END MAIN

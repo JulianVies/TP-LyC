@@ -41,6 +41,7 @@
 	void crear_lista(t_lista *p);
 	int insertarEnListaEnOrdenSinDuplicados(t_lista *l_ts, t_info *d, t_cmp);
 	int BuscarEnLista(t_lista *pl, char* cadena);
+	char* BuscarEnListaYDevolverTipo(t_lista *pl, char* cadena);
 
 	void crear_ts(t_lista *l_ts);
 	int insertar_en_ts(t_lista *l_ts, t_info *d);
@@ -128,7 +129,7 @@ int contadorTercetos = 0;
 /**** Inicio assembler ****/
 char lista_operandos_assembler[100][100];
 int cant_op = 0;
-
+int cant_etiquetas;
 void genera_asm();
 char* getNombreAsm(char *cte_o_id);
 char* getCodOp(char*);
@@ -628,6 +629,17 @@ int BuscarEnLista(t_lista *pl, char* cadena){
 	printf("\nVariable sin declarar: %s \n",cadena);
     exit(1);
 }
+char* BuscarEnListaYDevolverTipo(t_lista *pl, char* cadena){
+    int cmp;
+
+    while(*pl && (cmp=strcmp(cadena,(*pl)->info.nombre))!=0)
+        pl=&(*pl)->pSig;
+	if ( cmp == 0)
+    	return (*pl)->info.tipodato;
+	else
+		return "";
+	
+}
 
 void crear_ts(t_lista *l_ts){
 	crear_lista(l_ts);
@@ -949,7 +961,8 @@ void genera_asm()
     fprintf(pf_asm, "\t FNINIT \n");;
     fprintf(pf_asm, "\n");
 
-	int cant_etiquetas = generarListaEtiquetas(lista_etiquetas);
+	cant_etiquetas = generarListaEtiquetas(lista_etiquetas);
+	int agregar_etiqueta_final_nro = 0;
 
 	// Armo el assembler
 	t_nodo_terceto *auxNodo;
@@ -1171,53 +1184,55 @@ int escribirTercetoEnAsm(FILE* pf_asm, int lista_etiquetas[], t_nodo_terceto *au
 	
 	// Formato terceto Unario (x, x,  ) | Saltos, write, read
 
-	if (strcmp("", auxNodo->info.terceroElemento) == 0) { 
+	if (strcmp("", auxNodo->info.tercerElemento) == 0) { 
 		
 		
 		if (strcmp("DISPLAY", auxNodo->info.primerElemento) == 0) 
 		{	
-			char* tipoDato = auxNodo->info.tipodato;
+			// paso auxNodo->info.segundoElemento y obtengo t_nodo
+			printf("nombre : %s\n",auxNodo->info.segundoElemento);
+			char* tipoDato = BuscarEnListaYDevolverTipo(&lista_ts,auxNodo->info.segundoElemento);
+			printf("tipo dato :*%s*\n",tipoDato);
 			if (strcmpi(tipoDato, "real") == 0) 
-			{
-				fprintf(pf_asm, "\t DisplayFloat %s,2 \n", getNombreAsm(auxNodo->info.nombre));
+			{	
+				fprintf(pf_asm, "\t DisplayFloat %s,2 \n", getNombreAsm(auxNodo->info.segundoElemento));
 			}
 			else if (strcmpi(tipoDato, "integer") == 0) 
 			{
-				fprintf(pf_asm, "\t DisplayFloat %s,2 \n", getNombreAsm(auxNodo->info.nombre));
-			} else 
-			{
-				fprintf(pf_asm, "\t DisplayString %s \n", getNombreAsm(auxNodo->info.nombre));
+				fprintf(pf_asm, "\t DisplayInteger %s \n", getNombreAsm(auxNodo->info.segundoElemento));
+			} else{
+				fprintf(pf_asm, "\t DisplayString %s \n", getNombreAsm(auxNodo->info.segundoElemento));
 			}
 			// Siempre inserto nueva linea despues de mostrar msj
 			fprintf(pf_asm, "\t newLine \n");
 		}
 		else if (strcmp("GET", auxNodo->info.primerElemento) == 0) 
-		{
-			char* tipoDato = auxNodo->info.tipodato;
+		{	
+			// deberiamos buscar tipo de dato en lista de ts pasando nombre de elemento del terceto
+			// BuscarEnLista()
+			char* tipoDato = BuscarEnListaYDevolverTipo(&lista_ts,auxNodo->info.segundoElemento);
+
 			if (strcmpi(tipoDato, "real") == 0) 
-			{
-				fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.nombre));
-			} 
+			{	
+				fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.segundoElemento));
+			}
 			else if (strcmpi(tipoDato, "integer") == 0) 
 			{
-				// pongo getfloat para manejar todo con fld en las operaciones
-				fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.nombre));
-			}	
-			else 
-			{
-				fprintf(pf_asm, "\t GetString %s\n", getNombreAsm(auxNodo->info.nombre));
+				fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.segundoElemento));
+			} else{
+				fprintf(pf_asm, "\t GetString %s\n", getNombreAsm(auxNodo->info.segundoElemento));
 			}
 		}
 		else // saltos
 		{
-			char *codigo = getCodOp(auxNodo->info.primerElemento);
-			sprintf(etiqueta_aux, "ETIQ_%d", sacarValorDeEtiqueta(auxNodo->info.segundoElemento));
-			if (atoi(tercetos[i].dos) >= terceto_index) 
-			{
-				agregar_etiqueta_final_nro = sacarValorDeEtiqueta(auxNodo->info.segundoElemento);
-			}
-			fflush(pf_asm); 
-			fprintf(pf_asm, "\t %s %s \t;Si cumple la condicion salto a la etiqueta\n", codigo, etiqueta_aux);
+			// char *codigo = getCodOp(auxNodo->info.primerElemento);
+			// sprintf(etiqueta_aux, "ETIQ_%d", sacarValorDeEtiqueta(auxNodo->info.segundoElemento));
+			// if (atoi(auxNodo->info.segundoElemento) >= terceto_index) 
+			// {
+			// 	agregar_etiqueta_final_nro = sacarValorDeEtiqueta(auxNodo->info.segundoElemento);
+			// }
+			// fflush(pf_asm); 
+			// fprintf(pf_asm, "\t %s %s \t;Si cumple la condicion salto a la etiqueta\n", codigo, etiqueta_aux);
 		}
 		return agregar_etiqueta_final_nro;
 	}

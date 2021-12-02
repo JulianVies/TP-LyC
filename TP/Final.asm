@@ -5,16 +5,9 @@ include number.asm
 .STACK 200h 
 
 .DATA 
-	@d dd ?	 ; Declaracion de Variable Numerica
-	@c db 30 dup (?),"$"	;Declaracion de Variable String
 	@b dd ?	 ; Declaracion de Variable Numerica
 	@a dd ?	 ; Declaracion de Variable Numerica
-	@_21474 dd 21474.0	;Declaracion de Constant Number
-	@_1 dd 1.0	;Declaracion de Constant Number
 	@_2 dd 2.0	;Declaracion de Constant Number
-	@_ctestring db ctestring, "$", 30 dup (?)	;Declaracion de Constant String
-	@_2.5 dd 2.5	;Declaracion de Constant Number
-	@_ctestrinng db ctestrinng, "$", 30 dup (?)	;Declaracion de Constant String
 .CODE 
 MAIN:
 

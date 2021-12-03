@@ -167,7 +167,7 @@
 	t_pila pilaForsCmp;
 	t_pila pilaForsFalse;
 
-	t_pila pilaIF;
+	t_pila pilaComp;
 	t_pila pilaElse;
 
 
@@ -671,14 +671,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   256,   256,   264,   265,   268,   269,   270,   271,   272,
-     273,   276,   282,   289,   290,   294,   304,   293,   314,   319,
-     326,   319,   334,   360,   361,   363,   365,   365,   365,   367,
-     367,   367,   369,   370,   380,   383,   388,   395,   396,   399,
-     400,   403,   403,   403,   405,   406,   407,   410,   411,   412,
-     415,   416,   419,   424,   431,   437,   438,   439,   442,   442,
-     443,   444,   447,   448,   449,   450,   451,   452,   455,   455,
-     455,   455,   480,   481
+       0,   256,   256,   262,   263,   266,   267,   268,   269,   270,
+     271,   274,   280,   287,   288,   292,   299,   291,   309,   315,
+     325,   315,   333,   359,   360,   362,   364,   364,   364,   366,
+     366,   366,   368,   369,   379,   382,   387,   394,   395,   398,
+     399,   402,   402,   402,   404,   405,   406,   409,   410,   411,
+     414,   415,   418,   423,   430,   436,   437,   438,   441,   441,
+     442,   443,   446,   447,   448,   449,   450,   451,   454,   454,
+     454,   454,   479,   480
 };
 #endif
 
@@ -1675,20 +1675,13 @@ yyreduce:
 
     {
 	//genera_asm();
-	printf("\nEnd programa.\n");
-	printf("\nFunciona!!!!\n");
-	
+	printf("\nEnd programa.\n");	
 	;}
     break;
 
   case 5:
 
     { printf("Regla asignacion\n"); ;}
-    break;
-
-  case 7:
-
-    { printf("Regla seleccion\n"); ;}
     break;
 
   case 8:
@@ -1736,12 +1729,9 @@ yyreduce:
 
     { 	
 			t_info_p whileCmp;
-			InitWhileInd = crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
-			whileCmp.posicion = InitWhileInd;
+			verTope(&pilaComp,&whileCmp);
+			whileCmp.posicion--;
 			apilar(&pilaWhilesCmp,&whileCmp);
-			whileFalseInd = crearTerceto("BG...E","","");
-			whileCmp.posicion = whileFalseInd;
-			apilar(&pilaWhilesFalse,&whileCmp);
 		;}
     break;
 
@@ -1751,7 +1741,7 @@ yyreduce:
 			desapilar(&pilaWhilesCmp,&whileCmpAux);
 			IndiceActual =  crearTerceto("BI",crearIndice(whileCmpAux.posicion),"");
 			t_info_p whileFalseAux;
-			desapilar(&pilaWhilesFalse,&whileFalseAux);
+			desapilar(&pilaComp,&whileFalseAux);
 			modificarIndiceTercetoSalto(&lista_terceto, whileFalseAux.posicion, IndiceActual + 1);
 			//*PosReservada = contadorTercetos;
 		;}
@@ -1759,9 +1749,10 @@ yyreduce:
 
   case 18:
 
-    { printf("Regla IF\n"); 
+    { printf("Regla If\n");
 			t_info_p ifCmpAux;
-			desapilar(&pilaIF,&ifCmpAux);
+			desapilar(&pilaComp,&ifCmpAux);
+			printf("Desapilar primer branch: %d",ifCmpAux.posicion);
 			modificarIndiceTercetoSalto(&lista_terceto, ifCmpAux.posicion, contadorTercetos);
 ;}
     break;
@@ -1769,12 +1760,15 @@ yyreduce:
   case 19:
 
     {			
-				t_info_p elseCmpAux;
-				desapilar(&pilaElse,&elseCmpAux);
-				modificarIndiceTercetoSalto(&lista_terceto, elseCmpAux.posicion  , contadorTercetos +1);
-				t_info_p elseInit;
-				elseInit.posicion = crearTerceto("BI","","");
-				apilar(&pilaElse,&elseInit);
+				//Creo BI y apilo en pila else
+				t_info_p elseBI;
+				elseBI.posicion = crearTerceto("BI","","");
+				apilar(&pilaElse,&elseBI);
+
+				//Modifico el branch del comparador con BI+1
+				t_info_p CmpAux;
+				desapilar(&pilaComp,&CmpAux);
+				modificarIndiceTercetoSalto(&lista_terceto, CmpAux.posicion, contadorTercetos);
 			;}
     break;
 
@@ -1992,10 +1986,10 @@ yyreduce:
   case 54:
 
     { printf( "Regla condicion simple \n");
-			t_info_p ifCmp;
+			t_info_p SaltoComp;
 			crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
-			ifCmp.posicion = crearTerceto(comp,"","");
-			apilar(&pilaIF,&ifCmp);
+			SaltoComp.posicion = crearTerceto(comp,"","");
+			apilar(&pilaComp,&SaltoComp);
 ;}
     break;
 

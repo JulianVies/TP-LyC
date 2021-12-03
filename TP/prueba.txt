@@ -1,9 +1,4 @@
 
-<<<<<<< HEAD
-DISPLAY c
-DISPLAY "prueba"
-GET a
-=======
 */Seleccion/*
 
 DIM [ a, b ] AS [ integer, integer]
@@ -32,4 +27,3 @@ DISPLAY "cadena"
 
 IF EQUMAX(10+101; [100, 111, a]) THEN a:=28 ENDIF
 IF EQUMIN(10+101; [100, 111, a]) THEN a:=28 ENDIF
->>>>>>> f0087812aaef3b2ef8b51d68b558d585d8ea0340

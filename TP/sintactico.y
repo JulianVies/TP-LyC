@@ -129,13 +129,8 @@ int contadorTercetos = 0;
 /**** Inicio assembler ****/
 char lista_operandos_assembler[100][100];
 int cant_op = 0;
-<<<<<<< HEAD
-int cant_etiquetas;
-void genera_asm();
-=======
 
 //void genera_asm();
->>>>>>> f0087812aaef3b2ef8b51d68b558d585d8ea0340
 char* getNombreAsm(char *cte_o_id);
 char* getCodOp(char*);
 char * buscaDatoEnTerceto(int datoUNODOSTRES, int i);
@@ -939,142 +934,6 @@ int intToStr(int x, char str[], int d)
 // 	char* file_asm = "Final.asm";
 // 	FILE* pf_asm;
 	
-<<<<<<< HEAD
-	int lista_etiquetas[1000];
-	char etiqueta_aux[10];
-
-	if((pf_asm = fopen(file_asm, "w")) == NULL)
-	{
-		printf("Error al generar el asembler \n");
-		exit(1);
-	}
-	 /* generamos el principio del assembler, que siempre es igual */
-
-	fprintf(pf_asm, "include macros2.asm\n");
-	fprintf(pf_asm, "include number.asm\n");
-	fprintf(pf_asm, ".MODEL	LARGE \n");
-	fprintf(pf_asm, ".386\n");
-	fprintf(pf_asm, ".STACK 200h \n");
-	//  generamos bloque data
-	generaSegmDatosAsm(pf_asm,&lista_ts);
-	fprintf(pf_asm, ".CODE \n");
-	fprintf(pf_asm, "MAIN:\n");
-	fprintf(pf_asm, "\n");
-
-    fprintf(pf_asm, "\n");
-    fprintf(pf_asm, "\t MOV AX,@DATA 	;inicializa el segmento de datos\n");
-    fprintf(pf_asm, "\t MOV DS,AX \n");
-    fprintf(pf_asm, "\t MOV ES,AX \n");
-    fprintf(pf_asm, "\t FNINIT \n");;
-    fprintf(pf_asm, "\n");
-
-	cant_etiquetas = generarListaEtiquetas(lista_etiquetas);
-	int agregar_etiqueta_final_nro = 0;
-
-	// Armo el assembler
-	t_nodo_terceto *auxNodo;
-    auxNodo = lista_terceto;
-    if(auxNodo==NULL)
-    	exit(1);
-    while(auxNodo->pSig!=NULL)
-	{
-		agregar_etiqueta_final_nro = escribirTercetoEnAsm(pf_asm, lista_etiquetas, auxNodo, etiqueta_aux);
-		auxNodo = auxNodo->pSig;
-	}
-	agregar_etiqueta_final_nro = escribirTercetoEnAsm(pf_asm, lista_etiquetas, auxNodo, etiqueta_aux);
-
-	if(agregar_etiqueta_final_nro != -1) {
-		sprintf(etiqueta_aux, "ETIQ_%d", agregar_etiqueta_final_nro);
-		fprintf(pf_asm, "%s: \n", etiqueta_aux);
-	}
-
-	/*generamos el final */
-	fprintf(pf_asm, "\t mov AX, 4C00h \t ; Genera la interrupcion 21h\n");
-	fprintf(pf_asm, "\t int 21h \t ; Genera la interrupcion 21h\n");
-	fprintf(pf_asm, "END MAIN\n");
-	fclose(pf_asm);
-}
-
-char * buscaDatoEnTerceto(int datoUNODOSTRES, int i){
-	/*char  auxilia1[5]={'\0','\0','\0','\0','\0'};
-	char * parentecisCierra;
-	char * parentecisHabre;
-	int num;
-	int num2;
-	if(datoUNODOSTRES==1){
-		if(strstr(tercetos[i].uno,"]")){
-			parentecisHabre  = (strstr(tercetos[i].uno,"[")+1);
-			parentecisCierra = strstr(tercetos[i].uno,"]");
-			num = (int) &(*parentecisCierra);
-			num2 = (int) &(*parentecisHabre);
-			//*(auxilia1) = '\0';
-			strncpy(auxilia1,parentecisHabre,(num-num2));
-			return tercetos[(atoi(auxilia1))].uno;
-		}
-		else return tercetos[i].uno;
-	}*/
-}
-
-// sirve para agregar @ como variable assembler
-char* getNombreAsm(char *cte_o_id) {
-	char* nombreAsm = (char*) malloc(sizeof(char)*200);
-	nombreAsm[0] = '\0';
-	strcat(nombreAsm, "@"); // prefijo agregado
-	strcat(nombreAsm, cte_o_id); // agrego nombre
-	return nombreAsm;
-}
-
-char* getCodOp(char* token)
-{
-	if(!strcmp(token, "+"))
-	{
-		return "FADD";
-	}
-	else if(!strcmp(token, "="))
-	{
-		return "MOV";
-	}
-	else if(!strcmp(token, "-"))
-	{
-		return "FSUB";
-	}
-	else if(!strcmp(token, "*"))
-	{
-		return "FMUL";
-	}
-	else if(!strcmp(token, "/"))
-	{
-		return "FDIV";
-	}
-	else if(!strcmp(token, "BNE"))
-	{
-		return "JNE";
-	}
-	else if(!strcmp(token, "BEQ"))
-	{
-		return "JE";
-	}
-	else if(!strcmp(token, "BGE"))
-	{
-		return "JNA";
-	}
-	else if(!strcmp(token, "BGT"))
-	{
-		return "JNAE";
-	}
-	else if(!strcmp(token, "BLE"))
-	{
-		return "JNB";
-	}
-	else if(!strcmp(token, "BLT"))
-	{
-		return "JNBE";
-	}
-	else if (!strcmp(token, "BI")) {
-		return "JMP";
-	}
-}
-=======
 // 	int lista_etiquetas[1000];
 // 	char etiqueta_aux[10];
 
@@ -1209,7 +1068,6 @@ char* getCodOp(char* token)
 // 		return "JMP";
 // 	}
 // }
->>>>>>> f0087812aaef3b2ef8b51d68b558d585d8ea0340
 
 
 /*
@@ -1327,60 +1185,6 @@ char* getCodOp(char* token)
 	
 // 	// Formato terceto Unario (x, x,  ) | Saltos, write, read
 
-<<<<<<< HEAD
-	if (strcmp("", auxNodo->info.tercerElemento) == 0) { 
-		
-		
-		if (strcmp("DISPLAY", auxNodo->info.primerElemento) == 0) 
-		{	
-			// paso auxNodo->info.segundoElemento y obtengo t_nodo
-			printf("nombre : %s\n",auxNodo->info.segundoElemento);
-			char* tipoDato = BuscarEnListaYDevolverTipo(&lista_ts,auxNodo->info.segundoElemento);
-			printf("tipo dato :*%s*\n",tipoDato);
-			if (strcmpi(tipoDato, "real") == 0) 
-			{	
-				fprintf(pf_asm, "\t DisplayFloat %s,2 \n", getNombreAsm(auxNodo->info.segundoElemento));
-			}
-			else if (strcmpi(tipoDato, "integer") == 0) 
-			{
-				fprintf(pf_asm, "\t DisplayInteger %s \n", getNombreAsm(auxNodo->info.segundoElemento));
-			} else{
-				fprintf(pf_asm, "\t DisplayString %s \n", getNombreAsm(auxNodo->info.segundoElemento));
-			}
-			// Siempre inserto nueva linea despues de mostrar msj
-			fprintf(pf_asm, "\t newLine \n");
-		}
-		else if (strcmp("GET", auxNodo->info.primerElemento) == 0) 
-		{	
-			// deberiamos buscar tipo de dato en lista de ts pasando nombre de elemento del terceto
-			// BuscarEnLista()
-			char* tipoDato = BuscarEnListaYDevolverTipo(&lista_ts,auxNodo->info.segundoElemento);
-
-			if (strcmpi(tipoDato, "real") == 0) 
-			{	
-				fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.segundoElemento));
-			}
-			else if (strcmpi(tipoDato, "integer") == 0) 
-			{
-				fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.segundoElemento));
-			} else{
-				fprintf(pf_asm, "\t GetString %s\n", getNombreAsm(auxNodo->info.segundoElemento));
-			}
-		}
-		else // saltos
-		{
-			// char *codigo = getCodOp(auxNodo->info.primerElemento);
-			// sprintf(etiqueta_aux, "ETIQ_%d", sacarValorDeEtiqueta(auxNodo->info.segundoElemento));
-			// if (atoi(auxNodo->info.segundoElemento) >= terceto_index) 
-			// {
-			// 	agregar_etiqueta_final_nro = sacarValorDeEtiqueta(auxNodo->info.segundoElemento);
-			// }
-			// fflush(pf_asm); 
-			// fprintf(pf_asm, "\t %s %s \t;Si cumple la condicion salto a la etiqueta\n", codigo, etiqueta_aux);
-		}
-		return agregar_etiqueta_final_nro;
-	}
-=======
 // 	if (strcmp("", auxNodo->info.terceroElemento) == 0) { 
 		
 		
@@ -1431,7 +1235,6 @@ char* getCodOp(char* token)
 // 		}
 // 		return agregar_etiqueta_final_nro;
 // 	}
->>>>>>> f0087812aaef3b2ef8b51d68b558d585d8ea0340
 
 
 	/*

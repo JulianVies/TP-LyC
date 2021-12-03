@@ -1,2 +1,2 @@
-0 (DISPLAY,c,) 
-1 (DISPLAY,prueba,) 
+0 (DISPLAY,a,) 
+1 (DISPLAY,cadena,) 

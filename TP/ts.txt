@@ -3,4 +3,4 @@ d                                   real             -
 c                                   string           -                                                                      
 b                                   integer          -                                                                      
 a                                   integer          -                                                                      
-_prueba                             CTE_S            prueba                              6                                  
+_cadena                             CTE_S            cadena                              6                                  

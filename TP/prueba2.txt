@@ -27,3 +27,6 @@ DISPLAY "cadena"
 
 IF EQUMAX(10+101; [100, 111, a]) THEN a:=28 ENDIF
 IF EQUMIN(10+101; [100, 111, a]) THEN a:=28 ENDIF
+
+*/Nuevas pruebas/*
+IF a > b THEN IF a == b THEN a:=2 ENDIF ENDIF

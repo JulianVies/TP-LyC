@@ -98,7 +98,7 @@
 	t_pila pilaForsCmp;
 	t_pila pilaForsFalse;
 
-	t_pila pilaIF;
+	t_pila pilaComp;
 	t_pila pilaElse;
 
 
@@ -265,7 +265,7 @@ programa: sentencia
 
 sentencia: asignacion { printf("Regla asignacion\n"); }
         | iteracion
-        | seleccion { printf("Regla seleccion\n"); }
+        | seleccion
 		| declaracion { printf("Regla declaracion\n"); }
 		| display { printf("Regla display\n"); }
 		| get { printf("Regla get\n"); }
@@ -291,36 +291,37 @@ iteracion: while { printf("Regla while\n"); }
 while: WHILE condicion
 		{ 	
 			t_info_p whileCmp;
-			InitWhileInd = crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
-			whileCmp.posicion = InitWhileInd;
+			verTope(&pilaComp,&whileCmp);
+			whileCmp.posicion--;
 			apilar(&pilaWhilesCmp,&whileCmp);
-			whileFalseInd = crearTerceto("BGE","","");
-			whileCmp.posicion = whileFalseInd;
-			apilar(&pilaWhilesFalse,&whileCmp);
 		} 
 BEGINW programa 
 		{	t_info_p whileCmpAux;
 			desapilar(&pilaWhilesCmp,&whileCmpAux);
 			IndiceActual =  crearTerceto("BI",crearIndice(whileCmpAux.posicion),"");
 			t_info_p whileFalseAux;
-			desapilar(&pilaWhilesFalse,&whileFalseAux);
+			desapilar(&pilaComp,&whileFalseAux);
 			modificarIndiceTercetoSalto(&lista_terceto, whileFalseAux.posicion, IndiceActual + 1);
 			//*PosReservada = contadorTercetos;
 		}
 ENDW;
 
-seleccion: IF condicion THEN programa ENDIF	{ printf("Regla IF\n"); 
+seleccion: IF condicion THEN programa ENDIF	{ printf("Regla If\n");
 			t_info_p ifCmpAux;
-			desapilar(&pilaIF,&ifCmpAux);
+			desapilar(&pilaComp,&ifCmpAux);
+			printf("Desapilar primer branch: %d",ifCmpAux.posicion);
 			modificarIndiceTercetoSalto(&lista_terceto, ifCmpAux.posicion, contadorTercetos);
 }
         |  IF condicion THEN programa {			
-				t_info_p elseCmpAux;
-				desapilar(&pilaElse,&elseCmpAux);
-				modificarIndiceTercetoSalto(&lista_terceto, elseCmpAux.posicion  , contadorTercetos +1);
-				t_info_p elseInit;
-				elseInit.posicion = crearTerceto("BI","","");
-				apilar(&pilaElse,&elseInit);
+				//Creo BI y apilo en pila else
+				t_info_p elseBI;
+				elseBI.posicion = crearTerceto("BI","","");
+				apilar(&pilaElse,&elseBI);
+
+				//Modifico el branch del comparador con BI+1
+				t_info_p CmpAux;
+				desapilar(&pilaComp,&CmpAux);
+				modificarIndiceTercetoSalto(&lista_terceto, CmpAux.posicion, contadorTercetos);
 			} ELSE {
 			} programa ENDIF { printf("Regla If con Else\n"); 
 				t_info_p elseBranchAux;
@@ -427,10 +428,10 @@ factor: PARA expresion PARC             {Find=Eind;}
 		;
 
 condicion: comparacion	{ printf( "Regla condicion simple \n");
-			t_info_p ifCmp;
+			t_info_p SaltoComp;
 			crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
-			ifCmp.posicion = crearTerceto(comp,"","");
-			apilar(&pilaIF,&ifCmp);
+			SaltoComp.posicion = crearTerceto(comp,"","");
+			apilar(&pilaComp,&SaltoComp);
 }
 		| NOT comparacion	{ printf("Regla condicion simple NOT\n"); }
         |  comparacion AND comparacion { printf("Regla condicion compuesta And\n"); }

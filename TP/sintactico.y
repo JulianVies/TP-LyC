@@ -255,9 +255,7 @@ char compEqu[3];
 %%
 inicio: programa {
 	//genera_asm();
-	printf("\nEnd programa.\n");
-	printf("\nFunciona!!!!\n");
-	
+	printf("\nEnd programa.\n");	
 	}
 		;
 

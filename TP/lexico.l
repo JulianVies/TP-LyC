@@ -10,15 +10,21 @@
 %option noyywrap
 %option yylineno
 
-DIGITO			[0-9]
-LETRA			[a-zA-Z]
+DIGITO					[0-9]
+LETRA					[a-zA-Z]
+SIMBOLOEXTRA			[" "|"#"|"%"|"?"|"¿"|","|";"|"!"|"¡"|"@"|"."|":"|"_"|'\-'|'/'|"="|"“"|"”"|"("|")"]
+CARACTERESCOMENTARIO	[" "|"#"|"%"|"?"|"¿"|"°"|","|";"|"!"|"¡"|"\\"|"@"|"."|":"|"_"|'\-'|'+'|'*'|'/'|"["|'\]'|'{'|'}'|"="|"“"|"”"|"("|")"]
 
 ID				{LETRA}({LETRA}|{DIGITO}|_)*
 CTE_E		    {DIGITO}+
 CTE_R		    {DIGITO}+"."{DIGITO}*|{DIGITO}*"."{DIGITO}+
-CTE_S		    \"[^\"]*\"
 
-COMENTARIO		\*\/.+\/\*	
+/*CTE_S		    \"[^\"]*\"	*/
+CTE_S		\"({LETRA}|{DIGITO}|{SIMBOLOEXTRA})*\"
+
+/*COMENTARIO		\*\/.+\/\*	*/
+COMENTARIO		\*\/({LETRA}|{DIGITO}|{CARACTERESCOMENTARIO})*\/\*
+
 
 %%
 
@@ -136,4 +142,6 @@ COMENTARIO		\*\/.+\/\*
 
 \n
 \t
+" "
+. {printf("Caracter invalido!!\n");}
 %%

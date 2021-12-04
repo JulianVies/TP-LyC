@@ -10,15 +10,21 @@
 %option noyywrap
 %option yylineno
 
-DIGITO			[0-9]
-LETRA			[a-zA-Z]
+DIGITO					[0-9]
+LETRA					[a-zA-Z]
+SIMBOLOEXTRA			[" "|"#"|"%"|"?"|"¿"|","|";"|"!"|"¡"|"@"|"."|":"|"_"|'\-'|'/'|"="|"“"|"”"|"("|")"]
+CARACTERESCOMENTARIO	[" "|"#"|"%"|"?"|"¿"|"°"|","|";"|"!"|"¡"|"\\"|"@"|"."|":"|"_"|'\-'|'+'|'*'|'/'|"["|'\]'|'{'|'}'|"="|"“"|"”"|"("|")"]
 
 ID				{LETRA}({LETRA}|{DIGITO}|_)*
 CTE_E		    {DIGITO}+
 CTE_R		    {DIGITO}+"."{DIGITO}*|{DIGITO}*"."{DIGITO}+
-CTE_S		    \"[^\"]*\"
 
-COMENTARIO		\*\/.+\/\*	
+/*CTE_S		    \"[^\"]*\"	*/
+CTE_S		\"({LETRA}|{DIGITO}|{SIMBOLOEXTRA})*\"
+
+/*COMENTARIO		\*\/.+\/\*	*/
+COMENTARIO		\*\/({LETRA}|{DIGITO}|{CARACTERESCOMENTARIO})*\/\*
+
 
 %%
 
@@ -92,7 +98,7 @@ COMENTARIO		\*\/.+\/\*
 						quitar_comillas(yytext);
 						char stringConGuion[100];
 						agregarGuion(yytext,stringConGuion);
-						nuevoSimbolo(stringConGuion,yytext,NULL,strlen(yytext));
+						nuevoSimbolo(stringConGuion,yytext,"CTE_S",strlen(yytext));
 						yylval.str_val = strdup(yytext);
 						return CTE_S;
 					}else{
@@ -105,7 +111,7 @@ COMENTARIO		\*\/.+\/\*
 						char enteroConGuion[100];
 						agregarGuion(yytext,enteroConGuion);
                     	yylval.int_val = atoi(yytext);
-						nuevoSimbolo(enteroConGuion,yytext,NULL,-1);
+						nuevoSimbolo(enteroConGuion,yytext,"CTE_E",strlen(yytext));
 						return CTE_E;
 					}else{
 						yyerror("Error Lexico,tam de entero excedido!");
@@ -117,7 +123,7 @@ COMENTARIO		\*\/.+\/\*
 						char realConGuion[100];
 						agregarGuion(yytext,realConGuion);
 						yylval.float_val = atof(yytext);
-						nuevoSimbolo(realConGuion,yytext,NULL,-1);
+						nuevoSimbolo(realConGuion,yytext,"CTE_R",strlen(yytext)-1);
 						return CTE_R;
 					}else{
 						yyerror("Error Lexico,tam de float excedido!");
@@ -136,4 +142,6 @@ COMENTARIO		\*\/.+\/\*
 
 \n
 \t
+" "
+. {printf("Caracter invalido!!\n");}
 %%

@@ -110,6 +110,7 @@
 	void crear_lista(t_lista *p);
 	int insertarEnListaEnOrdenSinDuplicados(t_lista *l_ts, t_info *d, t_cmp);
 	int BuscarEnLista(t_lista *pl, char* cadena);
+	char* BuscarEnListaYDevolverTipo(t_lista *pl, char* cadena);
 
 	void crear_ts(t_lista *l_ts);
 	int insertar_en_ts(t_lista *l_ts, t_info *d);
@@ -167,7 +168,7 @@
 	t_pila pilaForsCmp;
 	t_pila pilaForsFalse;
 
-	t_pila pilaIF;
+	t_pila pilaComp;
 	t_pila pilaElse;
 
 
@@ -180,6 +181,7 @@
     char primerElemento[TAM];
     char segundoElemento[TAM];
     char tercerElemento[TAM];
+	char tipodato[TAM];
 } t_info_terceto;
 
 typedef struct s_nodo_terceto
@@ -192,6 +194,24 @@ typedef t_nodo_terceto *t_lista_terceto;
 t_lista_terceto lista_terceto;
 t_info_terceto dato_terceto;
 int contadorTercetos = 0;
+
+
+/**** Inicio assembler ****/
+char lista_operandos_assembler[100][100];
+int cant_op = 0;
+
+void genera_asm();
+char* getNombreAsm(char *cte_o_id);
+char* getCodOp(char*);
+char * buscaDatoEnTerceto(int datoUNODOSTRES, int i);
+void generaSegmDatosAsm(FILE* pf_asm,t_lista *pl);
+int sacarValorDeEtiqueta(char *etiqueta);
+
+
+int generarListaEtiquetas(int lista_etiquetas[]);
+int escribirTercetoEnAsm(FILE* pf_asm, int lista_etiquetas[], t_nodo_terceto *auxNodo, char etiqueta_aux[]);
+int cant_etiquetas = 0;
+/**** Fin assembler ****/
 
 
 
@@ -207,6 +227,8 @@ char* negarBranch(char*);	//Recibe el tipo de BRANCH y lo invierte
 int verCompatible(char *,int, int);
 int buscarEnListaDeTercetosOrdenada(t_lista_terceto *, int);
 int modificarIndiceTercetoSalto(t_lista_terceto *, int, int);
+int modificarIndiceTercetoTipo(t_lista_terceto *, int, char*);
+
 
 void ftoa(float n, char* res, int afterpoint);
 void reverse(char* str, int len);
@@ -235,6 +257,11 @@ int* PosReservada;
 char comp[3];
 int saltoConst;
 
+int indVal;
+int indItem;
+int indMax;
+int indMin;
+char compEqu[3];
 
 
 
@@ -549,16 +576,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  40
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   142
+#define YYLAST   138
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  49
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  34
+#define YYNNTS  38
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  69
+#define YYNRULES  73
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  131
+#define YYNSTATES  135
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -610,11 +637,12 @@ static const yytype_uint8 yyprhs[] =
 {
        0,     0,     3,     5,     7,    10,    12,    14,    16,    18,
       20,    22,    26,    30,    32,    34,    35,    36,    44,    50,
-      51,    52,    62,    71,    74,    77,    80,    89,    98,   100,
-     104,   106,   108,   110,   112,   116,   118,   122,   124,   126,
-     128,   130,   134,   138,   140,   144,   148,   152,   154,   156,
-     158,   160,   163,   167,   171,   172,   177,   179,   181,   183,
-     185,   187,   189,   191,   193,   194,   195,   196,   210,   213
+      51,    52,    62,    71,    74,    77,    80,    81,    82,    93,
+      94,    95,   106,   108,   112,   114,   116,   118,   120,   124,
+     126,   130,   132,   134,   136,   138,   142,   146,   148,   152,
+     156,   160,   162,   164,   166,   168,   171,   175,   179,   180,
+     185,   187,   189,   191,   193,   195,   197,   199,   201,   202,
+     203,   204,   218,   221
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -622,38 +650,40 @@ static const yytype_int8 yyrhs[] =
 {
       50,     0,    -1,    51,    -1,    52,    -1,    51,    52,    -1,
       53,    -1,    54,    -1,    58,    -1,    61,    -1,    62,    -1,
-      63,    -1,     3,    22,    71,    -1,     3,    22,     4,    -1,
-      55,    -1,    78,    -1,    -1,    -1,    12,    74,    56,    13,
-      51,    57,    14,    -1,    16,    74,    15,    51,    18,    -1,
-      -1,    -1,    16,    74,    15,    51,    59,    17,    60,    51,
-      18,    -1,    42,    29,    68,    30,    43,    29,    69,    30,
+      63,    -1,     3,    22,    75,    -1,     3,    22,     4,    -1,
+      55,    -1,    82,    -1,    -1,    -1,    12,    78,    56,    13,
+      51,    57,    14,    -1,    16,    78,    15,    51,    18,    -1,
+      -1,    -1,    16,    78,    15,    51,    59,    17,    60,    51,
+      18,    -1,    42,    29,    72,    30,    43,    29,    73,    30,
       -1,     8,     3,    -1,     8,     4,    -1,     7,     3,    -1,
-       9,    31,    71,    24,    29,    66,    30,    32,    -1,    10,
-      31,    71,    24,    29,    66,    30,    32,    -1,    67,    -1,
-      66,    23,    67,    -1,     3,    -1,     5,    -1,     6,    -1,
-       3,    -1,    68,    23,     3,    -1,    70,    -1,    69,    23,
-      70,    -1,    46,    -1,    47,    -1,    48,    -1,    72,    -1,
-      71,    25,    72,    -1,    71,    26,    72,    -1,    73,    -1,
-      72,    27,    73,    -1,    72,    28,    73,    -1,    31,    71,
-      32,    -1,     3,    -1,     5,    -1,     6,    -1,    75,    -1,
-      19,    75,    -1,    75,    20,    75,    -1,    75,    21,    75,
-      -1,    -1,    71,    76,    77,    71,    -1,    64,    -1,    65,
-      -1,    35,    -1,    36,    -1,    37,    -1,    38,    -1,    39,
-      -1,    40,    -1,    -1,    -1,    -1,    11,     3,    41,    71,
-      79,    44,    71,    80,    82,    81,    51,    45,     3,    -1,
-      29,    30,    -1,    29,     5,    30,    -1
+      -1,    -1,     9,    65,    31,    75,    66,    24,    29,    70,
+      30,    32,    -1,    -1,    -1,    10,    68,    31,    75,    69,
+      24,    29,    70,    30,    32,    -1,    71,    -1,    70,    23,
+      71,    -1,     3,    -1,     5,    -1,     6,    -1,     3,    -1,
+      72,    23,     3,    -1,    74,    -1,    73,    23,    74,    -1,
+      46,    -1,    47,    -1,    48,    -1,    76,    -1,    75,    25,
+      76,    -1,    75,    26,    76,    -1,    77,    -1,    76,    27,
+      77,    -1,    76,    28,    77,    -1,    31,    75,    32,    -1,
+       3,    -1,     5,    -1,     6,    -1,    79,    -1,    19,    79,
+      -1,    79,    20,    79,    -1,    79,    21,    79,    -1,    -1,
+      75,    80,    81,    75,    -1,    64,    -1,    67,    -1,    35,
+      -1,    36,    -1,    37,    -1,    38,    -1,    39,    -1,    40,
+      -1,    -1,    -1,    -1,    11,     3,    41,    75,    83,    44,
+      75,    84,    86,    85,    51,    45,     3,    -1,    29,    30,
+      -1,    29,     5,    30,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   234,   234,   237,   238,   241,   242,   243,   244,   245,
-     246,   249,   255,   262,   263,   267,   277,   266,   287,   292,
-     299,   292,   307,   333,   334,   336,   338,   340,   342,   343,
-     346,   347,   348,   351,   352,   355,   356,   359,   359,   359,
-     361,   362,   363,   366,   367,   368,   371,   372,   375,   380,
-     387,   393,   394,   395,   398,   398,   399,   400,   403,   404,
-     405,   406,   407,   408,   411,   411,   411,   411,   436,   437
+       0,   261,   261,   267,   268,   271,   272,   273,   274,   275,
+     276,   279,   285,   292,   293,   297,   304,   296,   314,   320,
+     330,   320,   338,   364,   369,   374,   376,   376,   376,   378,
+     378,   378,   380,   381,   391,   394,   399,   406,   407,   410,
+     411,   414,   414,   414,   416,   417,   418,   421,   422,   423,
+     426,   427,   430,   435,   442,   448,   449,   450,   453,   453,
+     454,   455,   458,   459,   460,   461,   462,   463,   466,   466,
+     466,   466,   491,   492
 };
 #endif
 
@@ -671,9 +701,10 @@ static const char *const yytname[] =
   "INTEGER", "STRING", "REAL", "$accept", "inicio", "programa",
   "sentencia", "asignacion", "iteracion", "while", "$@1", "$@2",
   "seleccion", "$@3", "$@4", "declaracion", "display", "get", "equmax",
-  "equmin", "listaEqu", "itemEqu", "listaVarDec", "listaType", "TYPE",
-  "expresion", "termino", "factor", "condicion", "comparacion", "$@5",
-  "comparador", "for", "$@6", "$@7", "$@8", "salto", 0
+  "$@5", "$@6", "equmin", "$@7", "$@8", "listaEqu", "itemEqu",
+  "listaVarDec", "listaType", "TYPE", "expresion", "termino", "factor",
+  "condicion", "comparacion", "$@9", "comparador", "for", "$@10", "$@11",
+  "$@12", "salto", 0
 };
 #endif
 
@@ -695,11 +726,12 @@ static const yytype_uint8 yyr1[] =
 {
        0,    49,    50,    51,    51,    52,    52,    52,    52,    52,
       52,    53,    53,    54,    54,    56,    57,    55,    58,    59,
-      60,    58,    61,    62,    62,    63,    64,    65,    66,    66,
-      67,    67,    67,    68,    68,    69,    69,    70,    70,    70,
-      71,    71,    71,    72,    72,    72,    73,    73,    73,    73,
-      74,    74,    74,    74,    76,    75,    75,    75,    77,    77,
-      77,    77,    77,    77,    79,    80,    81,    78,    82,    82
+      60,    58,    61,    62,    62,    63,    65,    66,    64,    68,
+      69,    67,    70,    70,    71,    71,    71,    72,    72,    73,
+      73,    74,    74,    74,    75,    75,    75,    76,    76,    76,
+      77,    77,    77,    77,    78,    78,    78,    78,    80,    79,
+      79,    79,    81,    81,    81,    81,    81,    81,    83,    84,
+      85,    82,    86,    86
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -707,11 +739,12 @@ static const yytype_uint8 yyr2[] =
 {
        0,     2,     1,     1,     2,     1,     1,     1,     1,     1,
        1,     3,     3,     1,     1,     0,     0,     7,     5,     0,
-       0,     9,     8,     2,     2,     2,     8,     8,     1,     3,
-       1,     1,     1,     1,     3,     1,     3,     1,     1,     1,
-       1,     3,     3,     1,     3,     3,     3,     1,     1,     1,
-       1,     2,     3,     3,     0,     4,     1,     1,     1,     1,
-       1,     1,     1,     1,     0,     0,     0,    13,     2,     3
+       0,     9,     8,     2,     2,     2,     0,     0,    10,     0,
+       0,    10,     1,     3,     1,     1,     1,     1,     3,     1,
+       3,     1,     1,     1,     1,     3,     3,     1,     3,     3,
+       3,     1,     1,     1,     1,     2,     3,     3,     0,     4,
+       1,     1,     1,     1,     1,     1,     1,     1,     0,     0,
+       0,    13,     2,     3
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -721,57 +754,57 @@ static const yytype_uint8 yydefact[] =
 {
        0,     0,     0,     0,     0,     0,     0,     0,     0,     2,
        3,     5,     6,    13,     7,     8,     9,    10,    14,     0,
-      25,    23,    24,     0,    47,    48,    49,     0,     0,     0,
-       0,    56,    57,    54,    40,    43,    15,    50,     0,     0,
-       1,     4,    12,    11,     0,     0,     0,    51,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,    33,     0,
-      64,     0,     0,    46,    41,    42,    58,    59,    60,    61,
-      62,    63,     0,    44,    45,     0,    52,    53,    19,     0,
-       0,     0,     0,     0,    55,    16,    18,     0,    34,     0,
-       0,     0,     0,     0,    20,     0,    65,    30,    31,    32,
-       0,    28,     0,    17,     0,    37,    38,    39,     0,    35,
-       0,     0,     0,     0,     0,     0,    22,     0,    66,    29,
-      26,    27,    21,    36,     0,    68,     0,    69,     0,     0,
-      67
+      25,    23,    24,     0,    51,    52,    53,    26,    29,     0,
+       0,    60,    61,    58,    44,    47,    15,    54,     0,     0,
+       1,     4,    12,    11,     0,     0,     0,    55,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,    37,     0,
+      68,     0,     0,    50,    45,    46,    62,    63,    64,    65,
+      66,    67,     0,    48,    49,     0,    56,    57,    19,     0,
+       0,     0,    27,    30,    59,    16,    18,     0,    38,     0,
+       0,     0,     0,     0,    20,     0,    69,     0,     0,    17,
+       0,    41,    42,    43,     0,    39,     0,     0,     0,     0,
+       0,    22,     0,    70,    34,    35,    36,     0,    32,     0,
+      21,    40,     0,    72,     0,     0,     0,     0,    73,     0,
+      33,    28,    31,     0,    71
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
       -1,     8,     9,    10,    11,    12,    13,    54,    93,    14,
-      87,   104,    15,    16,    17,    31,    32,   100,   101,    59,
-     108,   109,    33,    34,    35,    36,    37,    51,    72,    18,
-      81,   110,   126,   118
+      87,   100,    15,    16,    17,    31,    45,    91,    32,    46,
+      92,   117,   118,    59,   104,   105,    33,    34,    35,    36,
+      37,    51,    72,    18,    81,   106,   124,   113
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -56
+#define YYPACT_NINF -55
 static const yytype_int16 yypact[] =
 {
-      67,   -19,     5,    56,    14,    36,    36,    -8,    19,    67,
-     -56,   -56,   -56,   -56,   -56,   -56,   -56,   -56,   -56,    87,
-     -56,   -56,   -56,    -6,   -56,   -56,   -56,     0,    12,    79,
-       1,   -56,   -56,    55,    99,   -56,   -56,    83,     8,    34,
-     -56,   -56,   -56,    55,     1,     1,     1,   -56,   -10,     1,
-       1,    76,     1,     1,    49,    79,    79,    67,   -56,    35,
-      55,    82,    96,   -56,    99,    99,   -56,   -56,   -56,   -56,
-     -56,   -56,     1,   -56,   -56,    67,   -56,   -56,    22,    65,
-      54,    33,    57,    88,    55,    67,   -56,   111,   -56,   102,
-       1,    93,    93,    86,   -56,    77,    55,   -56,   -56,   -56,
-      43,   -56,    71,   -56,    67,   -56,   -56,   -56,    72,   -56,
-     103,    93,   104,   105,    45,    77,   -56,     6,   -56,   -56,
-     -56,   -56,   -56,   -56,   108,   -56,    67,   -56,     2,   132,
-     -56
+      71,     0,    10,    13,    28,    -1,    -1,     7,    53,    71,
+     -55,   -55,   -55,   -55,   -55,   -55,   -55,   -55,   -55,    34,
+     -55,   -55,   -55,    57,   -55,   -55,   -55,   -55,   -55,    58,
+      85,   -55,   -55,    16,    30,   -55,   -55,    60,    56,    82,
+     -55,   -55,   -55,    16,    85,    70,    81,   -55,    67,    85,
+      85,    68,    85,    85,    62,    58,    58,    71,   -55,     4,
+      16,    85,    85,   -55,    30,    30,   -55,   -55,   -55,   -55,
+     -55,   -55,    85,   -55,   -55,    71,   -55,   -55,    17,   114,
+      78,    79,    16,    16,    16,    71,   -55,   105,   -55,    95,
+      85,   101,   102,   113,   -55,    63,    16,    99,   100,   -55,
+      71,   -55,   -55,   -55,    43,   -55,   103,    91,    91,    44,
+      63,   -55,     2,   -55,   -55,   -55,   -55,    54,   -55,    72,
+     -55,   -55,   104,   -55,    71,    91,    98,   106,   -55,     3,
+     -55,   -55,   -55,   128,   -55
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-     -56,   -56,   -55,    -9,   -56,   -56,   -56,   -56,   -56,   -56,
-     -56,   -56,   -56,   -56,   -56,   -56,   -56,    47,    29,   -56,
-     -56,    26,   -18,    80,    81,   136,    -5,   -56,   -56,   -56,
-     -56,   -56,   -56,   -56
+     -55,   -55,   -54,    -9,   -55,   -55,   -55,   -55,   -55,   -55,
+     -55,   -55,   -55,   -55,   -55,   -55,   -55,   -55,   -55,   -55,
+     -55,    25,    11,   -55,   -55,    27,   -18,    65,    66,   129,
+      -6,   -55,   -55,   -55,   -55,   -55,   -55,   -55
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -781,40 +814,38 @@ static const yytype_int16 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-      41,    43,    78,    19,    24,     1,    25,    26,    20,     2,
-       3,   124,    48,     4,     5,    49,    50,    23,     6,    40,
-      85,    39,    63,    57,    47,     1,    60,    61,    62,     2,
-       3,    45,    30,     4,     5,    44,   125,    58,     6,    24,
-      86,    25,    26,    46,     7,    27,    28,   129,     1,   114,
-      76,    77,     2,     3,    84,    29,     4,     5,    79,    21,
-      22,     6,    75,   122,     7,    80,   111,    30,    88,    41,
-       1,   128,    96,   112,     2,     3,    41,    90,     4,     5,
-      49,    50,    24,     6,    25,    26,    91,     7,    27,    28,
-      24,    42,    25,    26,   111,   115,    97,    89,    98,    99,
-     103,   113,   116,    55,    56,    41,    82,    49,    50,     7,
-      30,    66,    67,    68,    69,    70,    71,    92,    30,    41,
-      83,    49,    50,   105,   106,   107,    52,    53,    94,    64,
-      65,    95,   117,    73,    74,   130,   120,   121,   127,   102,
-     119,   123,    38
+      41,    43,    24,    78,    25,    26,     1,   122,    27,    28,
+       2,     3,    48,    20,     4,     5,    21,    22,    29,     6,
+       1,    85,    19,    47,     2,     3,    60,    79,     4,     5,
+      30,    23,   123,     6,    80,    86,    39,    24,    42,    25,
+      26,    49,    50,    82,    83,     7,   109,     1,   133,    76,
+      77,     2,     3,    40,    84,     4,     5,    52,    53,     7,
+       6,    24,   120,    25,    26,    30,   110,    27,    28,    41,
+     129,    57,    96,   111,     1,    75,    41,   125,     2,     3,
+      55,    56,     4,     5,   126,    58,     7,     6,    24,    30,
+      25,    26,    49,    50,   114,   125,   115,   116,    44,    63,
+      41,    61,   127,    66,    67,    68,    69,    70,    71,   101,
+     102,   103,    62,     7,    64,    65,    30,    88,    73,    74,
+      41,    89,    94,    90,    95,    97,    98,    99,   107,   108,
+     131,   134,   112,   119,   128,    38,   130,   121,   132
 };
 
 static const yytype_uint8 yycheck[] =
 {
-       9,    19,    57,    22,     3,     3,     5,     6,     3,     7,
-       8,     5,    30,    11,    12,    25,    26,     3,    16,     0,
-      75,    29,    32,    15,    29,     3,    44,    45,    46,     7,
-       8,    31,    31,    11,    12,    41,    30,     3,    16,     3,
-      18,     5,     6,    31,    42,     9,    10,    45,     3,   104,
-      55,    56,     7,     8,    72,    19,    11,    12,    23,     3,
-       4,    16,    13,    18,    42,    30,    23,    31,     3,    78,
-       3,   126,    90,    30,     7,     8,    85,    44,    11,    12,
-      25,    26,     3,    16,     5,     6,    29,    42,     9,    10,
-       3,     4,     5,     6,    23,    23,     3,    43,     5,     6,
-      14,    30,    30,    20,    21,   114,    24,    25,    26,    42,
-      31,    35,    36,    37,    38,    39,    40,    29,    31,   128,
-      24,    25,    26,    46,    47,    48,    27,    28,    17,    49,
-      50,    29,    29,    52,    53,     3,    32,    32,    30,    92,
-     111,   115,     6
+       9,    19,     3,    57,     5,     6,     3,     5,     9,    10,
+       7,     8,    30,     3,    11,    12,     3,     4,    19,    16,
+       3,    75,    22,    29,     7,     8,    44,    23,    11,    12,
+      31,     3,    30,    16,    30,    18,    29,     3,     4,     5,
+       6,    25,    26,    61,    62,    42,   100,     3,    45,    55,
+      56,     7,     8,     0,    72,    11,    12,    27,    28,    42,
+      16,     3,    18,     5,     6,    31,    23,     9,    10,    78,
+     124,    15,    90,    30,     3,    13,    85,    23,     7,     8,
+      20,    21,    11,    12,    30,     3,    42,    16,     3,    31,
+       5,     6,    25,    26,     3,    23,     5,     6,    41,    32,
+     109,    31,    30,    35,    36,    37,    38,    39,    40,    46,
+      47,    48,    31,    42,    49,    50,    31,     3,    52,    53,
+     129,    43,    17,    44,    29,    24,    24,    14,    29,    29,
+      32,     3,    29,   108,    30,     6,   125,   110,    32
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -822,19 +853,19 @@ static const yytype_uint8 yycheck[] =
 static const yytype_uint8 yystos[] =
 {
        0,     3,     7,     8,    11,    12,    16,    42,    50,    51,
-      52,    53,    54,    55,    58,    61,    62,    63,    78,    22,
+      52,    53,    54,    55,    58,    61,    62,    63,    82,    22,
        3,     3,     4,     3,     3,     5,     6,     9,    10,    19,
-      31,    64,    65,    71,    72,    73,    74,    75,    74,    29,
-       0,    52,     4,    71,    41,    31,    31,    75,    71,    25,
-      26,    76,    27,    28,    56,    20,    21,    15,     3,    68,
-      71,    71,    71,    32,    72,    72,    35,    36,    37,    38,
-      39,    40,    77,    73,    73,    13,    75,    75,    51,    23,
-      30,    79,    24,    24,    71,    51,    18,    59,     3,    43,
-      44,    29,    29,    57,    17,    29,    71,     3,     5,     6,
-      66,    67,    66,    14,    60,    46,    47,    48,    69,    70,
-      80,    23,    30,    30,    51,    23,    30,    29,    82,    67,
-      32,    32,    18,    70,     5,    30,    81,    30,    51,    45,
-       3
+      31,    64,    67,    75,    76,    77,    78,    79,    78,    29,
+       0,    52,     4,    75,    41,    65,    68,    79,    75,    25,
+      26,    80,    27,    28,    56,    20,    21,    15,     3,    72,
+      75,    31,    31,    32,    76,    76,    35,    36,    37,    38,
+      39,    40,    81,    77,    77,    13,    79,    79,    51,    23,
+      30,    83,    75,    75,    75,    51,    18,    59,     3,    43,
+      44,    66,    69,    57,    17,    29,    75,    24,    24,    14,
+      60,    46,    47,    48,    73,    74,    84,    29,    29,    51,
+      23,    30,    29,    86,     3,     5,     6,    70,    71,    70,
+      18,    74,     5,    30,    85,    23,    30,    30,    30,    51,
+      71,    32,    32,    45,     3
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1647,17 +1678,15 @@ yyreduce:
     {
         case 2:
 
-    {printf("\nEnd programa.\n");;}
+    {
+	genera_asm();
+	printf("\nEnd programa.\n");	
+	;}
     break;
 
   case 5:
 
     { printf("Regla asignacion\n"); ;}
-    break;
-
-  case 7:
-
-    { printf("Regla seleccion\n"); ;}
     break;
 
   case 8:
@@ -1705,12 +1734,9 @@ yyreduce:
 
     { 	
 			t_info_p whileCmp;
-			InitWhileInd = crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
-			whileCmp.posicion = InitWhileInd;
+			verTope(&pilaComp,&whileCmp);
+			whileCmp.posicion--;
 			apilar(&pilaWhilesCmp,&whileCmp);
-			whileFalseInd = crearTerceto("BGE","","");
-			whileCmp.posicion = whileFalseInd;
-			apilar(&pilaWhilesFalse,&whileCmp);
 		;}
     break;
 
@@ -1720,7 +1746,7 @@ yyreduce:
 			desapilar(&pilaWhilesCmp,&whileCmpAux);
 			IndiceActual =  crearTerceto("BI",crearIndice(whileCmpAux.posicion),"");
 			t_info_p whileFalseAux;
-			desapilar(&pilaWhilesFalse,&whileFalseAux);
+			desapilar(&pilaComp,&whileFalseAux);
 			modificarIndiceTercetoSalto(&lista_terceto, whileFalseAux.posicion, IndiceActual + 1);
 			//*PosReservada = contadorTercetos;
 		;}
@@ -1728,9 +1754,10 @@ yyreduce:
 
   case 18:
 
-    { printf("Regla IF\n"); 
+    { printf("Regla If\n");
 			t_info_p ifCmpAux;
-			desapilar(&pilaIF,&ifCmpAux);
+			desapilar(&pilaComp,&ifCmpAux);
+			printf("Desapilar primer branch: %d",ifCmpAux.posicion);
 			modificarIndiceTercetoSalto(&lista_terceto, ifCmpAux.posicion, contadorTercetos);
 ;}
     break;
@@ -1738,12 +1765,15 @@ yyreduce:
   case 19:
 
     {			
-				t_info_p elseCmpAux;
-				desapilar(&pilaElse,&elseCmpAux);
-				modificarIndiceTercetoSalto(&lista_terceto, elseCmpAux.posicion  , contadorTercetos +1);
-				t_info_p elseInit;
-				elseInit.posicion = crearTerceto("BI","","");
-				apilar(&pilaElse,&elseInit);
+				//Creo BI y apilo en pila else
+				t_info_p elseBI;
+				elseBI.posicion = crearTerceto("BI","","");
+				apilar(&pilaElse,&elseBI);
+
+				//Modifico el branch del comparador con BI+1
+				t_info_p CmpAux;
+				desapilar(&pilaComp,&CmpAux);
+				modificarIndiceTercetoSalto(&lista_terceto, CmpAux.posicion, contadorTercetos);
 			;}
     break;
 
@@ -1793,12 +1823,19 @@ yyreduce:
 
   case 23:
 
-    { crearTerceto("DISPLAY",(yyvsp[(2) - (2)].str_val),"");;}
+    { 
+	int indiceTerceto=crearTerceto("DISPLAY",(yyvsp[(2) - (2)].str_val),"");
+	char* tipo = BuscarEnListaYDevolverTipo(&lista_ts,(yyvsp[(2) - (2)].str_val));
+	modificarIndiceTercetoTipo(&lista_terceto, indiceTerceto, tipo);
+;}
     break;
 
   case 24:
 
-    { crearTerceto("DISPLAY",(yyvsp[(2) - (2)].str_val),"");;}
+    {
+			int indiceTerceto=crearTerceto("DISPLAY",(yyvsp[(2) - (2)].str_val),"");
+			modificarIndiceTercetoTipo(&lista_terceto, indiceTerceto, "string");
+		;}
     break;
 
   case 25:
@@ -1808,77 +1845,139 @@ yyreduce:
 
   case 26:
 
-    { printf("Regla equmax\n"); ;}
+    {strcpy(compEqu, "BLE");;}
     break;
 
   case 27:
 
-    { printf("Regla equmin\n"); ;}
+    {indVal=Eind;;}
+    break;
+
+  case 28:
+
+    { printf("Regla equmax\n"); indMax=crearTerceto("@Val","","");;}
+    break;
+
+  case 29:
+
+    {strcpy(compEqu, "BGE");;}
+    break;
+
+  case 30:
+
+    {indVal=Eind;;}
+    break;
+
+  case 31:
+
+    { printf("Regla equmin\n"); indMin=crearTerceto("@Val","","");;}
+    break;
+
+  case 32:
+
+    {crearTerceto(":=", "@Val", crearIndice(indItem));;}
     break;
 
   case 33:
 
-    {strcpy(info_p.text, yytext); apilar(&pilaVar, &info_p);;}
+    { 
+			int indAux;
+			indAux = crearTerceto(":=", "@Aux", crearIndice(indItem));
+			crearTerceto("CMP", "@Aux", "@Val");
+			char textoIndAux[10];
+			itoa(indAux+4,textoIndAux,10);
+			crearTerceto(compEqu, textoIndAux, "");
+			crearTerceto(":=", "@Val","@Aux"); ;}
     break;
 
   case 34:
 
-    {strcpy(info_p.text, yytext); apilar(&pilaVar, &info_p);;}
+    { 
+			indItem = crearTerceto((yyvsp[(1) - (1)].str_val),"","");
+		;}
     break;
 
   case 35:
 
-    {strcpy(info_p.text, yytext); apilar(&pilaType, &info_p);;}
+    {
+			char auxI[30];
+			itoa((yyvsp[(1) - (1)].int_val),auxI,10);
+			indItem = crearTerceto(auxI,"","");
+			;}
     break;
 
   case 36:
+
+    {
+			char auxF[30];
+			ftoa((yyvsp[(1) - (1)].float_val),auxF,2);
+			indItem = crearTerceto(auxF,"","");
+			;}
+    break;
+
+  case 37:
+
+    {strcpy(info_p.text, yytext); apilar(&pilaVar, &info_p);;}
+    break;
+
+  case 38:
+
+    {strcpy(info_p.text, yytext); apilar(&pilaVar, &info_p);;}
+    break;
+
+  case 39:
 
     {strcpy(info_p.text, yytext); apilar(&pilaType, &info_p);;}
     break;
 
   case 40:
 
-    {Eind = Tind;;}
-    break;
-
-  case 41:
-
-    {Eind = crearTerceto("+",crearIndice(Eind), crearIndice(Tind));;}
-    break;
-
-  case 42:
-
-    {Eind=crearTerceto("-", crearIndice(Eind), crearIndice(Tind));}
-    break;
-
-  case 43:
-
-    {Tind=Find;;}
+    {strcpy(info_p.text, yytext); apilar(&pilaType, &info_p);;}
     break;
 
   case 44:
 
-    {Tind=crearTerceto("*", crearIndice(Tind), crearIndice(Find));}
+    {Eind = Tind;;}
     break;
 
   case 45:
 
-    {Tind=crearTerceto("/", crearIndice(Tind), crearIndice(Find));}
+    {Eind = crearTerceto("+",crearIndice(Eind), crearIndice(Tind));;}
     break;
 
   case 46:
 
-    {Find=Eind;;}
+    {Eind=crearTerceto("-", crearIndice(Eind), crearIndice(Tind));}
     break;
 
   case 47:
+
+    {Tind=Find;;}
+    break;
+
+  case 48:
+
+    {Tind=crearTerceto("*", crearIndice(Tind), crearIndice(Find));}
+    break;
+
+  case 49:
+
+    {Tind=crearTerceto("/", crearIndice(Tind), crearIndice(Find));}
+    break;
+
+  case 50:
+
+    {Find=Eind;;}
+    break;
+
+  case 51:
 
     { 
 			Find = crearTerceto((yyvsp[(1) - (1)].str_val),"","");
 		;}
     break;
 
-  case 48:
+  case 52:
 
     {
 			char auxI[30];
@@ -1887,97 +1986,107 @@ yyreduce:
 			;}
     break;
 
-  case 49:
+  case 53:
 
     {
-			char* auxF;
+			char auxF[30];
 			ftoa((yyvsp[(1) - (1)].float_val),auxF,2);
 			Find = crearTerceto(auxF,"","");
 			;}
     break;
 
-  case 50:
-
-    { printf( "Regla condicion simple \n");
-			t_info_p ifCmp;
-			crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
-			ifCmp.posicion = crearTerceto(comp,"","");
-			apilar(&pilaIF,&ifCmp);
-;}
-    break;
-
-  case 51:
-
-    { printf("Regla condicion simple NOT\n"); ;}
-    break;
-
-  case 52:
-
-    { printf("Regla condicion compuesta And\n"); ;}
-    break;
-
-  case 53:
-
-    { printf("Regla condicion compuesta Or\n"); ;}
-    break;
-
   case 54:
 
-    {EindAux1=Eind;;}
+    { printf( "Regla condicion simple \n");
+			t_info_p SaltoComp;
+			crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
+			SaltoComp.posicion = crearTerceto(comp,"","");
+			apilar(&pilaComp,&SaltoComp);
+;}
     break;
 
   case 55:
 
-    {EindAux2=Eind;;}
+    { printf("Regla condicion simple NOT\n"); ;}
+    break;
+
+  case 56:
+
+    { printf("Regla condicion compuesta And\n"); ;}
+    break;
+
+  case 57:
+
+    { printf("Regla condicion compuesta Or\n"); ;}
     break;
 
   case 58:
 
-    {strcpy(comp, "BGT");;}
+    {EindAux1=Eind;;}
     break;
 
   case 59:
 
-    {strcpy(comp,"BLT");;}
+    {EindAux2=Eind;;}
     break;
 
   case 60:
 
-    {strcpy(comp, "BGE");;}
+    {EindAux1=indVal; EindAux2=indMax; strcpy(comp, "BNE");;}
     break;
 
   case 61:
 
-    {strcpy(comp, "BLE");;}
+    {EindAux1=indVal; EindAux2=indMin; strcpy(comp, "BNE");;}
     break;
 
   case 62:
 
-    {strcpy(comp, "BNE");;}
+    {strcpy(comp, "BGT");;}
     break;
 
   case 63:
 
-    {strcpy(comp, "BEQ");;}
+    {strcpy(comp,"BLT");;}
     break;
 
   case 64:
 
-    {EindAux1 = Eind;;}
+    {strcpy(comp, "BGE");;}
     break;
 
   case 65:
 
-    {EindAux2 = Eind;;}
+    {strcpy(comp, "BLE");;}
     break;
 
   case 66:
+
+    {strcpy(comp, "BEQ");;}
+    break;
+
+  case 67:
+
+    {strcpy(comp, "BNE");;}
+    break;
+
+  case 68:
+
+    {EindAux1 = Eind;;}
+    break;
+
+  case 69:
+
+    {EindAux2 = Eind;;}
+    break;
+
+  case 70:
 
     {
 	t_info_p forCmp;
 	crearTerceto("=",(yyvsp[(2) - (9)].str_val),crearIndice(EindAux1));
 
-	forCmp.posicion = crearTerceto("cmp",(yyvsp[(2) - (9)].str_val),crearIndice(EindAux2));
+	forCmp.posicion = crearTerceto("CMP",(yyvsp[(2) - (9)].str_val),crearIndice(EindAux2));
 	apilar(&pilaForsCmp,&forCmp);
 	forCmp.posicion = crearTerceto("BGT","","");
 	apilar(&pilaForsFalse,&forCmp);
@@ -1985,7 +2094,7 @@ yyreduce:
 	;}
     break;
 
-  case 67:
+  case 71:
 
     {
 		t_info_p forCmpAux;
@@ -2002,12 +2111,12 @@ yyreduce:
 	;}
     break;
 
-  case 68:
+  case 72:
 
     { saltoConst = 1; ;}
     break;
 
-  case 69:
+  case 73:
 
     { saltoConst = (yyvsp[(2) - (3)].int_val); ;}
     break;
@@ -2246,6 +2355,7 @@ int main(int argc,char *argv[]){
 	printf("cantidad de tercetos\t:\t%d",contadorTercetos);
 	mostrarListaTerceto();
 	grabar_lista(&lista_ts);
+	guardarTercetosEnArchivo(&lista_terceto);
 	
 
   	fclose(yyin);
@@ -2369,6 +2479,15 @@ int BuscarEnLista(t_lista *pl, char* cadena){
 	}
 	printf("\nVariable sin declarar: %s \n",cadena);
     exit(1);
+}
+char* BuscarEnListaYDevolverTipo(t_lista *pl, char* cadena){
+    int cmp;
+    while(*pl && (cmp=strcmp(cadena,(*pl)->info.nombre))!=0)
+        pl=&(*pl)->pSig;
+	if ( cmp == 0)
+    	return (*pl)->info.tipodato;
+	else
+		return "";
 }
 
 void crear_ts(t_lista *l_ts){
@@ -2538,10 +2657,10 @@ int mostrarListaTerceto(){
         return 0;
     while(aux->pSig!=NULL)
     {	
-        printf("\n[%d], (%s, %s, %s)\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento);
+	printf("\n[%d], (%s, %s, %s, %s)\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento,aux->info.tipodato);
 		aux = aux->pSig;
     }
-	printf("\n[%d], (%s, %s, %s)\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento);
+	printf("\n[%d], (%s, %s, %s, %s)\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento,aux->info.tipodato);
 }
 
 void guardarTercetosEnArchivo(t_lista_terceto *pl){
@@ -2583,6 +2702,23 @@ int modificarIndiceTercetoSalto(t_lista_terceto *pl, int indiceTerceto, int indi
     {
         // Modifico terceto
         strcpy((*pl)->info.segundoElemento, crearIndice(indiceAColocar));
+        return 1;
+    }
+
+    return 0;
+}
+
+int modificarIndiceTercetoTipo(t_lista_terceto *pl, int indiceTerceto, char* tipoAColocar)
+{
+    int cmp;
+    char segundoElem[TAM];
+	//itero hasta encontrar terceto a modificar
+	while(pl && (cmp = indiceTerceto - (*pl)->info.numeroTerceto) >0)
+        pl=&(*pl)->pSig;
+    if(pl && cmp==0)
+    {
+        // Modifico terceto
+        strcpy((*pl)->info.tipodato, tipoAColocar);
         return 1;
     }
 
@@ -2650,4 +2786,399 @@ int intToStr(int x, char str[], int d)
     reverse(str, i);
     str[i] = '\0';
     return i;
+}
+
+
+
+
+
+
+/************************************************************************************************************/
+void genera_asm()
+{
+	char* file_asm = "Final.asm";
+	FILE* pf_asm;
+	
+	int lista_etiquetas[1000];
+	char etiqueta_aux[10];
+
+	if((pf_asm = fopen(file_asm, "w")) == NULL)
+	{
+		printf("Error al generar el asembler \n");
+		exit(1);
+	}
+	
+	 /* generamos el principio del assembler, que siempre es igual */
+
+	fprintf(pf_asm, "include macros2.asm\n");
+	fprintf(pf_asm, "include number.asm\n");
+	fprintf(pf_asm, ".MODEL	LARGE \n");
+	fprintf(pf_asm, ".386\n");
+	fprintf(pf_asm, ".STACK 200h \n");
+	//  generamos bloque data
+	generaSegmDatosAsm(pf_asm,&lista_ts);
+	fprintf(pf_asm, ".CODE \n");
+	fprintf(pf_asm, "MAIN:\n");
+	fprintf(pf_asm, "\n");
+
+    fprintf(pf_asm, "\n");
+    fprintf(pf_asm, "\t MOV AX,@DATA 	;inicializa el segmento de datos\n");
+    fprintf(pf_asm, "\t MOV DS,AX \n");
+    fprintf(pf_asm, "\t MOV ES,AX \n");
+    fprintf(pf_asm, "\t FNINIT \n");;
+    fprintf(pf_asm, "\n");
+
+	// int cant_etiquetas = generarListaEtiquetas(lista_etiquetas);
+	int agregar_etiqueta_final_nro = -1;
+	// // Armo el assembler
+	t_nodo_terceto *auxNodo;
+    auxNodo = lista_terceto;
+    if(auxNodo==NULL)
+    	exit(1);
+    while(auxNodo->pSig!=NULL)
+	{
+		agregar_etiqueta_final_nro = escribirTercetoEnAsm(pf_asm, lista_etiquetas, auxNodo, etiqueta_aux);
+		auxNodo = auxNodo->pSig;
+	}
+	agregar_etiqueta_final_nro = escribirTercetoEnAsm(pf_asm, lista_etiquetas, auxNodo, etiqueta_aux);
+
+	// if(agregar_etiqueta_final_nro != -1) {
+	// 	sprintf(etiqueta_aux, "ETIQ_%d", agregar_etiqueta_final_nro);
+	// 	fprintf(pf_asm, "%s: \n", etiqueta_aux);
+	// }
+
+	/*generamos el final */
+	fprintf(pf_asm, "\t mov AX, 4C00h \t ; Genera la interrupcion 21h\n");
+	fprintf(pf_asm, "\t int 21h \t ; Genera la interrupcion 21h\n");
+	fprintf(pf_asm, "END MAIN\n");
+	fclose(pf_asm);
+}
+
+// char * buscaDatoEnTerceto(int datoUNODOSTRES, int i){
+// 	/*char  auxilia1[5]={'\0','\0','\0','\0','\0'};
+// 	char * parentecisCierra;
+// 	char * parentecisHabre;
+// 	int num;
+// 	int num2;
+// 	if(datoUNODOSTRES==1){
+// 		if(strstr(tercetos[i].uno,"]")){
+// 			parentecisHabre  = (strstr(tercetos[i].uno,"[")+1);
+// 			parentecisCierra = strstr(tercetos[i].uno,"]");
+// 			num = (int) &(*parentecisCierra);
+// 			num2 = (int) &(*parentecisHabre);
+// 			//*(auxilia1) = '\0';
+// 			strncpy(auxilia1,parentecisHabre,(num-num2));
+// 			return tercetos[(atoi(auxilia1))].uno;
+// 		}
+// 		else return tercetos[i].uno;
+// 	}*/
+// }
+
+// sirve para agregar @ como variable assembler
+char* getNombreAsm(char *cte_o_id) {
+	char* nombreAsm = (char*) malloc(sizeof(char)*200);
+	nombreAsm[0] = '\0';
+	strcat(nombreAsm, "@"); // prefijo agregado
+	strcat(nombreAsm, cte_o_id); // agrego nombre
+	return nombreAsm;
+}
+
+// char* getCodOp(char* token)
+// {
+// 	if(!strcmp(token, "+"))
+// 	{
+// 		return "FADD";
+// 	}
+// 	else if(!strcmp(token, "="))
+// 	{
+// 		return "MOV";
+// 	}
+// 	else if(!strcmp(token, "-"))
+// 	{
+// 		return "FSUB";
+// 	}
+// 	else if(!strcmp(token, "*"))
+// 	{
+// 		return "FMUL";
+// 	}
+// 	else if(!strcmp(token, "/"))
+// 	{
+// 		return "FDIV";
+// 	}
+// 	else if(!strcmp(token, "BNE"))
+// 	{
+// 		return "JNE";
+// 	}
+// 	else if(!strcmp(token, "BEQ"))
+// 	{
+// 		return "JE";
+// 	}
+// 	else if(!strcmp(token, "BGE"))
+// 	{
+// 		return "JNA";
+// 	}
+// 	else if(!strcmp(token, "BGT"))
+// 	{
+// 		return "JNAE";
+// 	}
+// 	else if(!strcmp(token, "BLE"))
+// 	{
+// 		return "JNB";
+// 	}
+// 	else if(!strcmp(token, "BLT"))
+// 	{
+// 		return "JNBE";
+// 	}
+// 	else if (!strcmp(token, "BI")) {
+// 		return "JMP";
+// 	}
+// }
+
+
+/*
+	Generacion segmento datos a partir de la ts
+*/
+void generaSegmDatosAsm(FILE* pf_asm,t_lista *pl)
+{
+	FILE *pf;
+	
+	pf = fopen("ts.txt", "wt");
+	fprintf(pf_asm, "\n.DATA \n");
+
+	while(*pl) {
+		char* tipoDato = (*pl)->info.tipodato;
+
+		if(strcmpi(tipoDato, "integer") == 0 || strcmpi(tipoDato, "real") == 0)
+		{
+			fprintf(pf_asm, "\t%s dd ?\t ; Declaracion de Variable Numerica\n", getNombreAsm((*pl)->info.nombre));
+		}
+		else if(strcmpi(tipoDato, "string") == 0)
+		{
+			fprintf(pf_asm, "\t%s db 30 dup (?),\"$\"\t;Declaracion de Variable String\n", getNombreAsm((*pl)->info.nombre));
+		}
+		else if(strcmpi(tipoDato, "CTE_S") == 0)
+		{
+			fprintf(pf_asm, "\t%s db %s, \"$\", 30 dup (?)\t;Declaracion de Constant String\n", getNombreAsm((*pl)->info.nombre), (*pl)->info.valor);
+		}
+		else if(strcmpi(tipoDato, "CTE_E") == 0 || strcmpi(tipoDato, "CTE_R") == 0)
+		{
+			if(strstr((*pl)->info.valor,".")){
+				fprintf(pf_asm, "\t%s dd %s\t;Declaracion de Constant Number\n", getNombreAsm((*pl)->info.nombre), (*pl)->info.valor);
+			}else{
+				fprintf(pf_asm, "\t%s dd %s.0\t;Declaracion de Constant Number\n", getNombreAsm((*pl)->info.nombre), (*pl)->info.valor);
+			}
+		}
+		else{
+			printf("tipo sin identificar");
+		}
+		pl=&(*pl)->pSig;
+	}
+
+	fclose(pf);
+}
+
+int generarListaEtiquetas(int lista_etiquetas[])
+{
+	// Guardo todos los tercetos donde tendria que poner etiquetas
+	int cant_etiquetas = 0;
+	t_nodo_terceto *auxNodoTerceto;
+    auxNodoTerceto = lista_terceto;
+    if(auxNodoTerceto==NULL)
+        return;
+    while(auxNodoTerceto->pSig!=NULL)
+    {	
+		if (strcmp(auxNodoTerceto->info.segundoElemento, "") != 0 && strcmp(auxNodoTerceto->info.tercerElemento, "") == 0)
+		{
+			if (strcmp(auxNodoTerceto->info.primerElemento, "GET") != 0 && strcmp(auxNodoTerceto->info.primerElemento, "DISPLAY") != 0)
+			{
+				int found = -1;
+				int j;
+				for (j = 1; j<=cant_etiquetas; j++)
+				{
+					if (lista_etiquetas[j] == atoi(auxNodoTerceto->info.segundoElemento))
+					{
+						found = 1;
+					}
+				}
+				if (found == -1) 
+				{
+					cant_etiquetas++;
+					lista_etiquetas[cant_etiquetas] = sacarValorDeEtiqueta(auxNodoTerceto->info.segundoElemento);
+				}
+			}
+		}
+		auxNodoTerceto = auxNodoTerceto->pSig;
+    }
+	return cant_etiquetas;
+}
+
+int sacarValorDeEtiqueta(char *etiqueta) {
+	char dest[12];
+	memset(dest, '\0', sizeof(dest));
+	return atoi(strncpy(dest, etiqueta+1, strlen(etiqueta)-2));
+}
+
+int escribirTercetoEnAsm(FILE* pf_asm, int lista_etiquetas[], t_nodo_terceto *auxNodo, char etiqueta_aux[]) 
+{
+	int cont=0;
+	char aux[10];
+	char ult_op1_cmp[30];
+	strcpy(ult_op1_cmp, "");
+	char op1_guardado[30];
+	int i, j;
+
+	int agregar_etiqueta_final_nro = -1;
+
+	for (j=1;j<=cant_etiquetas;j++) {
+		if (i == lista_etiquetas[j])
+		{
+			sprintf(etiqueta_aux, "ETIQ_%d", lista_etiquetas[j]);
+			fprintf(pf_asm, "%s: \n", etiqueta_aux);
+		}
+	}
+
+
+	// Formato terceto Unario (x,  ,  ) | Ids, constantes
+
+	if (strcmp("", auxNodo->info.segundoElemento) == 0) { 
+		printf("cantop %d\n",cant_op);
+		cant_op++;
+		strcpy(lista_operandos_assembler[cant_op], auxNodo->info.primerElemento);
+		return -1;
+	}
+
+	
+	// Formato terceto Binario (x, x,  ) | Saltos, write, read
+
+	if (strcmp("", auxNodo->info.tercerElemento) == 0) { 
+		
+		
+		if (strcmp("DISPLAY", auxNodo->info.primerElemento) == 0) 
+		{	
+			char* tipoDato = auxNodo->info.tipodato;
+			if (strcmpi(tipoDato, "real") == 0) 
+			{	
+				fprintf(pf_asm, "\t DisplayFloat %s,2 \n", getNombreAsm(auxNodo->info.segundoElemento));
+			}
+			else if (strcmpi(tipoDato, "integer") == 0) 
+			{
+				fprintf(pf_asm, "\t DisplayFloat %s,2 \n", getNombreAsm(auxNodo->info.segundoElemento));
+			} else 
+			{
+				fprintf(pf_asm, "\t DisplayString %s \n", getNombreAsm(auxNodo->info.segundoElemento));
+			}
+			// Siempre inserto nueva linea despues de mostrar msj
+			fprintf(pf_asm, "\t newLine \n");
+		}
+		else if (strcmp("GET", auxNodo->info.primerElemento) == 0) 
+		{
+			// char* tipoDato = auxNodo->info.tipodato;
+			// if (strcmpi(tipoDato, "real") == 0) 
+			// {
+			// 	fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.nombre));
+			// } 
+			// else if (strcmpi(tipoDato, "integer") == 0) 
+			// {
+			// 	// pongo getfloat para manejar todo con fld en las operaciones
+			// 	fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.nombre));
+			// }	
+			// else 
+			// {
+			// 	fprintf(pf_asm, "\t GetString %s\n", getNombreAsm(auxNodo->info.nombre));
+			// }
+		}
+		else // saltos
+		{
+			// char *codigo = getCodOp(auxNodo->info.primerElemento);
+			// sprintf(etiqueta_aux, "ETIQ_%d", sacarValorDeEtiqueta(auxNodo->info.segundoElemento));
+			// if (atoi(tercetos[i].dos) >= terceto_index) 
+			// {
+			// 	agregar_etiqueta_final_nro = sacarValorDeEtiqueta(auxNodo->info.segundoElemento);
+			// }
+			// fflush(pf_asm); 
+			// fprintf(pf_asm, "\t %s %s \t;Si cumple la condicion salto a la etiqueta\n", codigo, etiqueta_aux);
+		}
+		return agregar_etiqueta_final_nro;
+	}
+
+
+	/*
+	Formato terceto Ternario (x, x, x) | Expresiones ; Comparaciones ; Asignacion
+
+	char *op2 = (char*) malloc(100*sizeof(char));
+	strcpy(op2, lista_operandos_assembler[cant_op]);
+	cant_op--;
+	char *op1 = (char*) malloc(100*sizeof(char));
+	if (strcmp(tercetos[i].uno, "CMP" ) == 0 && strcmp(ult_op1_cmp, tercetos[i].dos) == 0 )
+	{
+		strcpy(op1, op1_guardado);
+	}
+	else 
+	{
+		strcpy(op1, lista_operandos_assembler[cant_op]); 
+		cant_op--;
+		strcpy(op1_guardado, op1);
+	}
+	if (strcmp(tercetos[i].uno, "=" ) == 0)
+	{
+		int tipo = buscarTipoTS(tercetos[atoi(tercetos[i].dos)].uno);
+		if (tipo == Float | tipo == Integer) // Si se quiere separar integer hay que ver tambien las expresiones
+		{
+			fprintf(pf_asm, "\t FLD %s \t;Cargo valor \n", getNombreAsm(op1));
+			fprintf(pf_asm, "\t FSTP %s \t; Se lo asigno a la variable que va a guardar el resultado \n", getNombreAsm(op2));
+		}
+		else
+		{
+			fprintf(pf_asm, "\t mov si,OFFSET %s \t;Cargo en si el origen\n", getNombreAsm(op1));
+			fprintf(pf_asm, "\t mov di,OFFSET %s \t; cargo en di el destino \n", getNombreAsm(op2));
+			fprintf(pf_asm, "\t STRCPY\t; llamo a la macro para copiar \n");
+		}	
+	}
+	else if (strcmp(tercetos[i].uno, "CMP" ) == 0)
+	{
+		int tipo = buscarTipoTS(op1);
+		if (tipo == Float | tipo == Integer) 
+		{
+			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando1 \n", getNombreAsm(op1));
+			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando2 \n", getNombreAsm(op2));
+			fprintf(pf_asm, "\t FCOMP\t\t;Comparo \n");
+			fprintf(pf_asm, "\t FFREE ST(0) \t; Vacio ST0\n");
+			fprintf(pf_asm, "\t FSTSW AX \t\t; mueve los bits C a FLAGS\n");
+			fprintf(pf_asm, "\t SAHF \t\t\t;Almacena el registro AH en el registro FLAGS \n");
+		}
+		else
+		{
+			fprintf(pf_asm, "\t mov si,OFFSET %s \t;Cargo operando1\n", getNombreAsm(op1));
+			fprintf(pf_asm, "\t mov di,OFFSET %s \t; cargo operando2 \n", getNombreAsm(op2));
+			fprintf(pf_asm, "\t STRCMP\t; llamo a la macro para comparar \n");	
+		}
+
+		strcpy(ult_op1_cmp, tercetos[i].dos);
+	}
+	else
+	{
+		int tipo = buscarTipoTS(op1);
+		char* auxx;
+		if (tipo == String)
+		{
+			yyerror("Ops! No estan soportadas las operaciones entre cadenas\n");
+		}
+		sprintf(aux, "_aux%d", i); // auxiliar relacionado al terceto
+		insertar_ts_si_no_existe(aux, "FLOAT", "", "");
+		fflush(pf_asm);
+		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 1\n", getNombreAsm(op1));
+		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 2\n", getNombreAsm(op2));
+		fflush(pf_asm);
+	
+		auxx=buscaDatoEnTerceto(1,i);
+
+
+		fprintf(pf_asm, "\t %s \t\t;Opero\n", getCodOp(auxx));
+		fprintf(pf_asm, "\t FSTP %s \t;Almaceno el resultado en una var auxiliar\n", getNombreAsm(aux));
+		cant_op++;
+		strcpy(lista_operandos_assembler[cant_op], aux);
+	}
+		
+	*/
+	return -1;
 }

@@ -41,6 +41,7 @@
 	void crear_lista(t_lista *p);
 	int insertarEnListaEnOrdenSinDuplicados(t_lista *l_ts, t_info *d, t_cmp);
 	int BuscarEnLista(t_lista *pl, char* cadena);
+	char* BuscarEnListaYDevolverTipo(t_lista *pl, char* cadena);
 
 	void crear_ts(t_lista *l_ts);
 	int insertar_en_ts(t_lista *l_ts, t_info *d);
@@ -98,7 +99,7 @@
 	t_pila pilaForsCmp;
 	t_pila pilaForsFalse;
 
-	t_pila pilaIF;
+	t_pila pilaComp;
 	t_pila pilaElse;
 
 
@@ -111,6 +112,7 @@
     char primerElemento[TAM];
     char segundoElemento[TAM];
     char tercerElemento[TAM];
+	char tipodato[TAM];
 } t_info_terceto;
 
 typedef struct s_nodo_terceto
@@ -123,6 +125,24 @@ typedef t_nodo_terceto *t_lista_terceto;
 t_lista_terceto lista_terceto;
 t_info_terceto dato_terceto;
 int contadorTercetos = 0;
+
+
+/**** Inicio assembler ****/
+char lista_operandos_assembler[100][100];
+int cant_op = 0;
+
+void genera_asm();
+char* getNombreAsm(char *cte_o_id);
+char* getCodOp(char*);
+char * buscaDatoEnTerceto(int datoUNODOSTRES, int i);
+void generaSegmDatosAsm(FILE* pf_asm,t_lista *pl);
+int sacarValorDeEtiqueta(char *etiqueta);
+
+
+int generarListaEtiquetas(int lista_etiquetas[]);
+int escribirTercetoEnAsm(FILE* pf_asm, int lista_etiquetas[], t_nodo_terceto *auxNodo, char etiqueta_aux[]);
+int cant_etiquetas = 0;
+/**** Fin assembler ****/
 
 
 
@@ -138,6 +158,8 @@ char* negarBranch(char*);	//Recibe el tipo de BRANCH y lo invierte
 int verCompatible(char *,int, int);
 int buscarEnListaDeTercetosOrdenada(t_lista_terceto *, int);
 int modificarIndiceTercetoSalto(t_lista_terceto *, int, int);
+int modificarIndiceTercetoTipo(t_lista_terceto *, int, char*);
+
 
 void ftoa(float n, char* res, int afterpoint);
 void reverse(char* str, int len);
@@ -166,6 +188,11 @@ int* PosReservada;
 char comp[3];
 int saltoConst;
 
+int indVal;
+int indItem;
+int indMax;
+int indMin;
+char compEqu[3];
 %}
 
 %union {
@@ -231,7 +258,10 @@ int saltoConst;
 %token REAL
 
 %%
-inicio: programa {printf("\nEnd programa.\n");}
+inicio: programa {
+	genera_asm();
+	printf("\nEnd programa.\n");	
+	}
 		;
 
 programa: sentencia 
@@ -240,7 +270,7 @@ programa: sentencia
 
 sentencia: asignacion { printf("Regla asignacion\n"); }
         | iteracion
-        | seleccion { printf("Regla seleccion\n"); }
+        | seleccion
 		| declaracion { printf("Regla declaracion\n"); }
 		| display { printf("Regla display\n"); }
 		| get { printf("Regla get\n"); }
@@ -266,36 +296,37 @@ iteracion: while { printf("Regla while\n"); }
 while: WHILE condicion
 		{ 	
 			t_info_p whileCmp;
-			InitWhileInd = crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
-			whileCmp.posicion = InitWhileInd;
+			verTope(&pilaComp,&whileCmp);
+			whileCmp.posicion--;
 			apilar(&pilaWhilesCmp,&whileCmp);
-			whileFalseInd = crearTerceto("BGE","","");
-			whileCmp.posicion = whileFalseInd;
-			apilar(&pilaWhilesFalse,&whileCmp);
 		} 
 BEGINW programa 
 		{	t_info_p whileCmpAux;
 			desapilar(&pilaWhilesCmp,&whileCmpAux);
 			IndiceActual =  crearTerceto("BI",crearIndice(whileCmpAux.posicion),"");
 			t_info_p whileFalseAux;
-			desapilar(&pilaWhilesFalse,&whileFalseAux);
+			desapilar(&pilaComp,&whileFalseAux);
 			modificarIndiceTercetoSalto(&lista_terceto, whileFalseAux.posicion, IndiceActual + 1);
 			//*PosReservada = contadorTercetos;
 		}
 ENDW;
 
-seleccion: IF condicion THEN programa ENDIF	{ printf("Regla IF\n"); 
+seleccion: IF condicion THEN programa ENDIF	{ printf("Regla If\n");
 			t_info_p ifCmpAux;
-			desapilar(&pilaIF,&ifCmpAux);
+			desapilar(&pilaComp,&ifCmpAux);
+			printf("Desapilar primer branch: %d",ifCmpAux.posicion);
 			modificarIndiceTercetoSalto(&lista_terceto, ifCmpAux.posicion, contadorTercetos);
 }
         |  IF condicion THEN programa {			
-				t_info_p elseCmpAux;
-				desapilar(&pilaElse,&elseCmpAux);
-				modificarIndiceTercetoSalto(&lista_terceto, elseCmpAux.posicion  , contadorTercetos +1);
-				t_info_p elseInit;
-				elseInit.posicion = crearTerceto("BI","","");
-				apilar(&pilaElse,&elseInit);
+				//Creo BI y apilo en pila else
+				t_info_p elseBI;
+				elseBI.posicion = crearTerceto("BI","","");
+				apilar(&pilaElse,&elseBI);
+
+				//Modifico el branch del comparador con BI+1
+				t_info_p CmpAux;
+				desapilar(&pilaComp,&CmpAux);
+				modificarIndiceTercetoSalto(&lista_terceto, CmpAux.posicion, contadorTercetos);
 			} ELSE {
 			} programa ENDIF { printf("Regla If con Else\n"); 
 				t_info_p elseBranchAux;
@@ -330,22 +361,46 @@ declaracion: DIM CORCHA listaVarDec CORCHC AS CORCHA listaType CORCHC {
 	}
 };
 
-display: DISPLAY ID { crearTerceto("DISPLAY",$2,"");}
-		| DISPLAY CTE_S { crearTerceto("DISPLAY",$2,"");};
+display: DISPLAY ID { 
+	int indiceTerceto=crearTerceto("DISPLAY",$2,"");
+	char* tipo = BuscarEnListaYDevolverTipo(&lista_ts,$2);
+	modificarIndiceTercetoTipo(&lista_terceto, indiceTerceto, tipo);
+}
+		| DISPLAY CTE_S {
+			int indiceTerceto=crearTerceto("DISPLAY",$2,"");
+			modificarIndiceTercetoTipo(&lista_terceto, indiceTerceto, "string");
+		};
 
 get:GET	ID { crearTerceto("GET",$2,"");};
 
-equmax: EQUMAX PARA expresion PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmax\n"); };
+equmax: EQUMAX {strcpy(compEqu, "BLE");} PARA expresion {indVal=Eind;} PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmax\n"); indMax=crearTerceto("@Val","","");};
 
-equmin: EQUMIN PARA expresion PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmin\n"); };
+equmin: EQUMIN {strcpy(compEqu, "BGE");} PARA expresion {indVal=Eind;} PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmin\n"); indMin=crearTerceto("@Val","","");};
 
-listaEqu: itemEqu
-		| listaEqu COMA itemEqu
+listaEqu: itemEqu {crearTerceto(":=", "@Val", crearIndice(indItem));}
+		| listaEqu COMA itemEqu { 
+			int indAux;
+			indAux = crearTerceto(":=", "@Aux", crearIndice(indItem));
+			crearTerceto("CMP", "@Aux", "@Val");
+			char textoIndAux[10];
+			itoa(indAux+4,textoIndAux,10);
+			crearTerceto(compEqu, textoIndAux, "");
+			crearTerceto(":=", "@Val","@Aux"); }
 		;
 
-itemEqu: ID
-		| CTE_E
-		| CTE_R
+itemEqu: ID 							 { 
+			indItem = crearTerceto($1,"","");
+		} 
+		| CTE_E							 {
+			char auxI[30];
+			itoa($1,auxI,10);
+			indItem = crearTerceto(auxI,"","");
+			} 
+		| CTE_R							 {
+			char auxF[30];
+			ftoa($1,auxF,2);
+			indItem = crearTerceto(auxF,"","");
+			} 
 		;
 
 listaVarDec: ID {strcpy(info_p.text, yytext); apilar(&pilaVar, &info_p);}
@@ -378,17 +433,17 @@ factor: PARA expresion PARC             {Find=Eind;}
 			Find = crearTerceto(auxI,"","");
 			} 
 		| CTE_R							 {
-			char* auxF;
+			char auxF[30];
 			ftoa($1,auxF,2);
 			Find = crearTerceto(auxF,"","");
 			} 
 		;
 
 condicion: comparacion	{ printf( "Regla condicion simple \n");
-			t_info_p ifCmp;
+			t_info_p SaltoComp;
 			crearTerceto("CMP",crearIndice(EindAux1),crearIndice(EindAux2));
-			ifCmp.posicion = crearTerceto(comp,"","");
-			apilar(&pilaIF,&ifCmp);
+			SaltoComp.posicion = crearTerceto(comp,"","");
+			apilar(&pilaComp,&SaltoComp);
 }
 		| NOT comparacion	{ printf("Regla condicion simple NOT\n"); }
         |  comparacion AND comparacion { printf("Regla condicion compuesta And\n"); }
@@ -396,23 +451,23 @@ condicion: comparacion	{ printf( "Regla condicion simple \n");
 		;	
 
 comparacion: expresion {EindAux1=Eind;} comparador expresion {EindAux2=Eind;}
-		|  equmax
-		|  equmin
+		|  equmax {EindAux1=indVal; EindAux2=indMax; strcpy(comp, "BNE");}
+		|  equmin {EindAux1=indVal; EindAux2=indMin; strcpy(comp, "BNE");}
 		;
 
 comparador: MENOR_IGUAL		{strcpy(comp, "BGT");}		
 			| MAYOR_IGUAL	 {strcpy(comp,"BLT");}		
 			| MENOR			{strcpy(comp, "BGE");}	
 			| MAYOR 		{strcpy(comp, "BLE");}	
- 			| DIFF			{strcpy(comp, "BNE");}
-			| IGUAL			{strcpy(comp, "BEQ");}
+ 			| DIFF			{strcpy(comp, "BEQ");}
+			| IGUAL			{strcpy(comp, "BNE");}
 			;
 
 for:FOR ID IGUALFOR expresion {EindAux1 = Eind;} TO expresion {EindAux2 = Eind;} salto {
 	t_info_p forCmp;
 	crearTerceto("=",$2,crearIndice(EindAux1));
 
-	forCmp.posicion = crearTerceto("cmp",$2,crearIndice(EindAux2));
+	forCmp.posicion = crearTerceto("CMP",$2,crearIndice(EindAux2));
 	apilar(&pilaForsCmp,&forCmp);
 	forCmp.posicion = crearTerceto("BGT","","");
 	apilar(&pilaForsFalse,&forCmp);
@@ -461,6 +516,7 @@ int main(int argc,char *argv[]){
 	printf("cantidad de tercetos\t:\t%d",contadorTercetos);
 	mostrarListaTerceto();
 	grabar_lista(&lista_ts);
+	guardarTercetosEnArchivo(&lista_terceto);
 	
 
   	fclose(yyin);
@@ -584,6 +640,15 @@ int BuscarEnLista(t_lista *pl, char* cadena){
 	}
 	printf("\nVariable sin declarar: %s \n",cadena);
     exit(1);
+}
+char* BuscarEnListaYDevolverTipo(t_lista *pl, char* cadena){
+    int cmp;
+    while(*pl && (cmp=strcmp(cadena,(*pl)->info.nombre))!=0)
+        pl=&(*pl)->pSig;
+	if ( cmp == 0)
+    	return (*pl)->info.tipodato;
+	else
+		return "";
 }
 
 void crear_ts(t_lista *l_ts){
@@ -753,10 +818,10 @@ int mostrarListaTerceto(){
         return 0;
     while(aux->pSig!=NULL)
     {	
-        printf("\n[%d], (%s, %s, %s)\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento);
+	printf("\n[%d], (%s, %s, %s, %s)\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento,aux->info.tipodato);
 		aux = aux->pSig;
     }
-	printf("\n[%d], (%s, %s, %s)\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento);
+	printf("\n[%d], (%s, %s, %s, %s)\n",aux->info.numeroTerceto,aux->info.primerElemento, aux->info.segundoElemento,aux->info.tercerElemento,aux->info.tipodato);
 }
 
 void guardarTercetosEnArchivo(t_lista_terceto *pl){
@@ -798,6 +863,23 @@ int modificarIndiceTercetoSalto(t_lista_terceto *pl, int indiceTerceto, int indi
     {
         // Modifico terceto
         strcpy((*pl)->info.segundoElemento, crearIndice(indiceAColocar));
+        return 1;
+    }
+
+    return 0;
+}
+
+int modificarIndiceTercetoTipo(t_lista_terceto *pl, int indiceTerceto, char* tipoAColocar)
+{
+    int cmp;
+    char segundoElem[TAM];
+	//itero hasta encontrar terceto a modificar
+	while(pl && (cmp = indiceTerceto - (*pl)->info.numeroTerceto) >0)
+        pl=&(*pl)->pSig;
+    if(pl && cmp==0)
+    {
+        // Modifico terceto
+        strcpy((*pl)->info.tipodato, tipoAColocar);
         return 1;
     }
 
@@ -865,4 +947,399 @@ int intToStr(int x, char str[], int d)
     reverse(str, i);
     str[i] = '\0';
     return i;
+}
+
+
+
+
+
+
+/************************************************************************************************************/
+void genera_asm()
+{
+	char* file_asm = "Final.asm";
+	FILE* pf_asm;
+	
+	int lista_etiquetas[1000];
+	char etiqueta_aux[10];
+
+	if((pf_asm = fopen(file_asm, "w")) == NULL)
+	{
+		printf("Error al generar el asembler \n");
+		exit(1);
+	}
+	
+	 /* generamos el principio del assembler, que siempre es igual */
+
+	fprintf(pf_asm, "include macros2.asm\n");
+	fprintf(pf_asm, "include number.asm\n");
+	fprintf(pf_asm, ".MODEL	LARGE \n");
+	fprintf(pf_asm, ".386\n");
+	fprintf(pf_asm, ".STACK 200h \n");
+	//  generamos bloque data
+	generaSegmDatosAsm(pf_asm,&lista_ts);
+	fprintf(pf_asm, ".CODE \n");
+	fprintf(pf_asm, "MAIN:\n");
+	fprintf(pf_asm, "\n");
+
+    fprintf(pf_asm, "\n");
+    fprintf(pf_asm, "\t MOV AX,@DATA 	;inicializa el segmento de datos\n");
+    fprintf(pf_asm, "\t MOV DS,AX \n");
+    fprintf(pf_asm, "\t MOV ES,AX \n");
+    fprintf(pf_asm, "\t FNINIT \n");;
+    fprintf(pf_asm, "\n");
+
+	// int cant_etiquetas = generarListaEtiquetas(lista_etiquetas);
+	int agregar_etiqueta_final_nro = -1;
+	// // Armo el assembler
+	t_nodo_terceto *auxNodo;
+    auxNodo = lista_terceto;
+    if(auxNodo==NULL)
+    	exit(1);
+    while(auxNodo->pSig!=NULL)
+	{
+		agregar_etiqueta_final_nro = escribirTercetoEnAsm(pf_asm, lista_etiquetas, auxNodo, etiqueta_aux);
+		auxNodo = auxNodo->pSig;
+	}
+	agregar_etiqueta_final_nro = escribirTercetoEnAsm(pf_asm, lista_etiquetas, auxNodo, etiqueta_aux);
+
+	// if(agregar_etiqueta_final_nro != -1) {
+	// 	sprintf(etiqueta_aux, "ETIQ_%d", agregar_etiqueta_final_nro);
+	// 	fprintf(pf_asm, "%s: \n", etiqueta_aux);
+	// }
+
+	/*generamos el final */
+	fprintf(pf_asm, "\t mov AX, 4C00h \t ; Genera la interrupcion 21h\n");
+	fprintf(pf_asm, "\t int 21h \t ; Genera la interrupcion 21h\n");
+	fprintf(pf_asm, "END MAIN\n");
+	fclose(pf_asm);
+}
+
+// char * buscaDatoEnTerceto(int datoUNODOSTRES, int i){
+// 	/*char  auxilia1[5]={'\0','\0','\0','\0','\0'};
+// 	char * parentecisCierra;
+// 	char * parentecisHabre;
+// 	int num;
+// 	int num2;
+// 	if(datoUNODOSTRES==1){
+// 		if(strstr(tercetos[i].uno,"]")){
+// 			parentecisHabre  = (strstr(tercetos[i].uno,"[")+1);
+// 			parentecisCierra = strstr(tercetos[i].uno,"]");
+// 			num = (int) &(*parentecisCierra);
+// 			num2 = (int) &(*parentecisHabre);
+// 			//*(auxilia1) = '\0';
+// 			strncpy(auxilia1,parentecisHabre,(num-num2));
+// 			return tercetos[(atoi(auxilia1))].uno;
+// 		}
+// 		else return tercetos[i].uno;
+// 	}*/
+// }
+
+// sirve para agregar @ como variable assembler
+char* getNombreAsm(char *cte_o_id) {
+	char* nombreAsm = (char*) malloc(sizeof(char)*200);
+	nombreAsm[0] = '\0';
+	strcat(nombreAsm, "@"); // prefijo agregado
+	strcat(nombreAsm, cte_o_id); // agrego nombre
+	return nombreAsm;
+}
+
+// char* getCodOp(char* token)
+// {
+// 	if(!strcmp(token, "+"))
+// 	{
+// 		return "FADD";
+// 	}
+// 	else if(!strcmp(token, "="))
+// 	{
+// 		return "MOV";
+// 	}
+// 	else if(!strcmp(token, "-"))
+// 	{
+// 		return "FSUB";
+// 	}
+// 	else if(!strcmp(token, "*"))
+// 	{
+// 		return "FMUL";
+// 	}
+// 	else if(!strcmp(token, "/"))
+// 	{
+// 		return "FDIV";
+// 	}
+// 	else if(!strcmp(token, "BNE"))
+// 	{
+// 		return "JNE";
+// 	}
+// 	else if(!strcmp(token, "BEQ"))
+// 	{
+// 		return "JE";
+// 	}
+// 	else if(!strcmp(token, "BGE"))
+// 	{
+// 		return "JNA";
+// 	}
+// 	else if(!strcmp(token, "BGT"))
+// 	{
+// 		return "JNAE";
+// 	}
+// 	else if(!strcmp(token, "BLE"))
+// 	{
+// 		return "JNB";
+// 	}
+// 	else if(!strcmp(token, "BLT"))
+// 	{
+// 		return "JNBE";
+// 	}
+// 	else if (!strcmp(token, "BI")) {
+// 		return "JMP";
+// 	}
+// }
+
+
+/*
+	Generacion segmento datos a partir de la ts
+*/
+void generaSegmDatosAsm(FILE* pf_asm,t_lista *pl)
+{
+	FILE *pf;
+	
+	pf = fopen("ts.txt", "wt");
+	fprintf(pf_asm, "\n.DATA \n");
+
+	while(*pl) {
+		char* tipoDato = (*pl)->info.tipodato;
+
+		if(strcmpi(tipoDato, "integer") == 0 || strcmpi(tipoDato, "real") == 0)
+		{
+			fprintf(pf_asm, "\t%s dd ?\t ; Declaracion de Variable Numerica\n", getNombreAsm((*pl)->info.nombre));
+		}
+		else if(strcmpi(tipoDato, "string") == 0)
+		{
+			fprintf(pf_asm, "\t%s db 30 dup (?),\"$\"\t;Declaracion de Variable String\n", getNombreAsm((*pl)->info.nombre));
+		}
+		else if(strcmpi(tipoDato, "CTE_S") == 0)
+		{
+			fprintf(pf_asm, "\t%s db %s, \"$\", 30 dup (?)\t;Declaracion de Constant String\n", getNombreAsm((*pl)->info.nombre), (*pl)->info.valor);
+		}
+		else if(strcmpi(tipoDato, "CTE_E") == 0 || strcmpi(tipoDato, "CTE_R") == 0)
+		{
+			if(strstr((*pl)->info.valor,".")){
+				fprintf(pf_asm, "\t%s dd %s\t;Declaracion de Constant Number\n", getNombreAsm((*pl)->info.nombre), (*pl)->info.valor);
+			}else{
+				fprintf(pf_asm, "\t%s dd %s.0\t;Declaracion de Constant Number\n", getNombreAsm((*pl)->info.nombre), (*pl)->info.valor);
+			}
+		}
+		else{
+			printf("tipo sin identificar");
+		}
+		pl=&(*pl)->pSig;
+	}
+
+	fclose(pf);
+}
+
+int generarListaEtiquetas(int lista_etiquetas[])
+{
+	// Guardo todos los tercetos donde tendria que poner etiquetas
+	int cant_etiquetas = 0;
+	t_nodo_terceto *auxNodoTerceto;
+    auxNodoTerceto = lista_terceto;
+    if(auxNodoTerceto==NULL)
+        return;
+    while(auxNodoTerceto->pSig!=NULL)
+    {	
+		if (strcmp(auxNodoTerceto->info.segundoElemento, "") != 0 && strcmp(auxNodoTerceto->info.tercerElemento, "") == 0)
+		{
+			if (strcmp(auxNodoTerceto->info.primerElemento, "GET") != 0 && strcmp(auxNodoTerceto->info.primerElemento, "DISPLAY") != 0)
+			{
+				int found = -1;
+				int j;
+				for (j = 1; j<=cant_etiquetas; j++)
+				{
+					if (lista_etiquetas[j] == atoi(auxNodoTerceto->info.segundoElemento))
+					{
+						found = 1;
+					}
+				}
+				if (found == -1) 
+				{
+					cant_etiquetas++;
+					lista_etiquetas[cant_etiquetas] = sacarValorDeEtiqueta(auxNodoTerceto->info.segundoElemento);
+				}
+			}
+		}
+		auxNodoTerceto = auxNodoTerceto->pSig;
+    }
+	return cant_etiquetas;
+}
+
+int sacarValorDeEtiqueta(char *etiqueta) {
+	char dest[12];
+	memset(dest, '\0', sizeof(dest));
+	return atoi(strncpy(dest, etiqueta+1, strlen(etiqueta)-2));
+}
+
+int escribirTercetoEnAsm(FILE* pf_asm, int lista_etiquetas[], t_nodo_terceto *auxNodo, char etiqueta_aux[]) 
+{
+	int cont=0;
+	char aux[10];
+	char ult_op1_cmp[30];
+	strcpy(ult_op1_cmp, "");
+	char op1_guardado[30];
+	int i, j;
+
+	int agregar_etiqueta_final_nro = -1;
+
+	for (j=1;j<=cant_etiquetas;j++) {
+		if (i == lista_etiquetas[j])
+		{
+			sprintf(etiqueta_aux, "ETIQ_%d", lista_etiquetas[j]);
+			fprintf(pf_asm, "%s: \n", etiqueta_aux);
+		}
+	}
+
+
+	// Formato terceto Unario (x,  ,  ) | Ids, constantes
+
+	if (strcmp("", auxNodo->info.segundoElemento) == 0) { 
+		printf("cantop %d\n",cant_op);
+		cant_op++;
+		strcpy(lista_operandos_assembler[cant_op], auxNodo->info.primerElemento);
+		return -1;
+	}
+
+	
+	// Formato terceto Binario (x, x,  ) | Saltos, write, read
+
+	if (strcmp("", auxNodo->info.tercerElemento) == 0) { 
+		
+		
+		if (strcmp("DISPLAY", auxNodo->info.primerElemento) == 0) 
+		{	
+			char* tipoDato = auxNodo->info.tipodato;
+			if (strcmpi(tipoDato, "real") == 0) 
+			{	
+				fprintf(pf_asm, "\t DisplayFloat %s,2 \n", getNombreAsm(auxNodo->info.segundoElemento));
+			}
+			else if (strcmpi(tipoDato, "integer") == 0) 
+			{
+				fprintf(pf_asm, "\t DisplayFloat %s,2 \n", getNombreAsm(auxNodo->info.segundoElemento));
+			} else 
+			{
+				fprintf(pf_asm, "\t DisplayString %s \n", getNombreAsm(auxNodo->info.segundoElemento));
+			}
+			// Siempre inserto nueva linea despues de mostrar msj
+			fprintf(pf_asm, "\t newLine \n");
+		}
+		else if (strcmp("GET", auxNodo->info.primerElemento) == 0) 
+		{
+			// char* tipoDato = auxNodo->info.tipodato;
+			// if (strcmpi(tipoDato, "real") == 0) 
+			// {
+			// 	fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.nombre));
+			// } 
+			// else if (strcmpi(tipoDato, "integer") == 0) 
+			// {
+			// 	// pongo getfloat para manejar todo con fld en las operaciones
+			// 	fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.nombre));
+			// }	
+			// else 
+			// {
+			// 	fprintf(pf_asm, "\t GetString %s\n", getNombreAsm(auxNodo->info.nombre));
+			// }
+		}
+		else // saltos
+		{
+			// char *codigo = getCodOp(auxNodo->info.primerElemento);
+			// sprintf(etiqueta_aux, "ETIQ_%d", sacarValorDeEtiqueta(auxNodo->info.segundoElemento));
+			// if (atoi(tercetos[i].dos) >= terceto_index) 
+			// {
+			// 	agregar_etiqueta_final_nro = sacarValorDeEtiqueta(auxNodo->info.segundoElemento);
+			// }
+			// fflush(pf_asm); 
+			// fprintf(pf_asm, "\t %s %s \t;Si cumple la condicion salto a la etiqueta\n", codigo, etiqueta_aux);
+		}
+		return agregar_etiqueta_final_nro;
+	}
+
+
+	/*
+	Formato terceto Ternario (x, x, x) | Expresiones ; Comparaciones ; Asignacion
+
+	char *op2 = (char*) malloc(100*sizeof(char));
+	strcpy(op2, lista_operandos_assembler[cant_op]);
+	cant_op--;
+	char *op1 = (char*) malloc(100*sizeof(char));
+	if (strcmp(tercetos[i].uno, "CMP" ) == 0 && strcmp(ult_op1_cmp, tercetos[i].dos) == 0 )
+	{
+		strcpy(op1, op1_guardado);
+	}
+	else 
+	{
+		strcpy(op1, lista_operandos_assembler[cant_op]); 
+		cant_op--;
+		strcpy(op1_guardado, op1);
+	}
+	if (strcmp(tercetos[i].uno, "=" ) == 0)
+	{
+		int tipo = buscarTipoTS(tercetos[atoi(tercetos[i].dos)].uno);
+		if (tipo == Float | tipo == Integer) // Si se quiere separar integer hay que ver tambien las expresiones
+		{
+			fprintf(pf_asm, "\t FLD %s \t;Cargo valor \n", getNombreAsm(op1));
+			fprintf(pf_asm, "\t FSTP %s \t; Se lo asigno a la variable que va a guardar el resultado \n", getNombreAsm(op2));
+		}
+		else
+		{
+			fprintf(pf_asm, "\t mov si,OFFSET %s \t;Cargo en si el origen\n", getNombreAsm(op1));
+			fprintf(pf_asm, "\t mov di,OFFSET %s \t; cargo en di el destino \n", getNombreAsm(op2));
+			fprintf(pf_asm, "\t STRCPY\t; llamo a la macro para copiar \n");
+		}	
+	}
+	else if (strcmp(tercetos[i].uno, "CMP" ) == 0)
+	{
+		int tipo = buscarTipoTS(op1);
+		if (tipo == Float | tipo == Integer) 
+		{
+			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando1 \n", getNombreAsm(op1));
+			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando2 \n", getNombreAsm(op2));
+			fprintf(pf_asm, "\t FCOMP\t\t;Comparo \n");
+			fprintf(pf_asm, "\t FFREE ST(0) \t; Vacio ST0\n");
+			fprintf(pf_asm, "\t FSTSW AX \t\t; mueve los bits C a FLAGS\n");
+			fprintf(pf_asm, "\t SAHF \t\t\t;Almacena el registro AH en el registro FLAGS \n");
+		}
+		else
+		{
+			fprintf(pf_asm, "\t mov si,OFFSET %s \t;Cargo operando1\n", getNombreAsm(op1));
+			fprintf(pf_asm, "\t mov di,OFFSET %s \t; cargo operando2 \n", getNombreAsm(op2));
+			fprintf(pf_asm, "\t STRCMP\t; llamo a la macro para comparar \n");	
+		}
+
+		strcpy(ult_op1_cmp, tercetos[i].dos);
+	}
+	else
+	{
+		int tipo = buscarTipoTS(op1);
+		char* auxx;
+		if (tipo == String)
+		{
+			yyerror("Ops! No estan soportadas las operaciones entre cadenas\n");
+		}
+		sprintf(aux, "_aux%d", i); // auxiliar relacionado al terceto
+		insertar_ts_si_no_existe(aux, "FLOAT", "", "");
+		fflush(pf_asm);
+		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 1\n", getNombreAsm(op1));
+		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 2\n", getNombreAsm(op2));
+		fflush(pf_asm);
+	
+		auxx=buscaDatoEnTerceto(1,i);
+
+
+		fprintf(pf_asm, "\t %s \t\t;Opero\n", getCodOp(auxx));
+		fprintf(pf_asm, "\t FSTP %s \t;Almaceno el resultado en una var auxiliar\n", getNombreAsm(aux));
+		cant_op++;
+		strcpy(lista_operandos_assembler[cant_op], aux);
+	}
+		
+	*/
+	return -1;
 }

@@ -1,3 +1,4 @@
-DIM [ a ] AS [ integer]
+DIM [ a, b, c, d ] AS [ integer, integer, string, real]
 
-IF a > 2 THEN DISPLAY B ELSE DISPLAY B ENDIF
+DISPLAY a
+DISPLAY "cadena"

@@ -46,6 +46,8 @@
 	void crear_ts(t_lista *l_ts);
 	int insertar_en_ts(t_lista *l_ts, t_info *d);
 	int nuevoSimbolo(char* nombre,char* valor,char* tipoDato, int longitud);
+	void insertar_ts_si_no_existe(char *nombre, char *tipo, char *valor, char *longitud);
+
 
 	void grabar_lista(t_lista *);
 
@@ -993,7 +995,7 @@ void genera_asm()
     fprintf(pf_asm, "\t FNINIT \n");;
     fprintf(pf_asm, "\n");
 
-	// int cant_etiquetas = generarListaEtiquetas(lista_etiquetas);
+	 int cant_etiquetas = generarListaEtiquetas(lista_etiquetas);
 	int agregar_etiqueta_final_nro = -1;
 	// // Armo el assembler
 	t_nodo_terceto *auxNodo;
@@ -1007,10 +1009,10 @@ void genera_asm()
 	}
 	agregar_etiqueta_final_nro = escribirTercetoEnAsm(pf_asm, lista_etiquetas, auxNodo, etiqueta_aux);
 
-	// if(agregar_etiqueta_final_nro != -1) {
-	// 	sprintf(etiqueta_aux, "ETIQ_%d", agregar_etiqueta_final_nro);
-	// 	fprintf(pf_asm, "%s: \n", etiqueta_aux);
-	// }
+	if(agregar_etiqueta_final_nro != -1) {
+		sprintf(etiqueta_aux, "ETIQ_%d", agregar_etiqueta_final_nro);
+		fprintf(pf_asm, "%s: \n", etiqueta_aux);
+	}
 
 	/*generamos el final */
 	fprintf(pf_asm, "\t mov AX, 4C00h \t ; Genera la interrupcion 21h\n");
@@ -1019,26 +1021,28 @@ void genera_asm()
 	fclose(pf_asm);
 }
 
-// char * buscaDatoEnTerceto(int datoUNODOSTRES, int i){
-// 	/*char  auxilia1[5]={'\0','\0','\0','\0','\0'};
-// 	char * parentecisCierra;
-// 	char * parentecisHabre;
-// 	int num;
-// 	int num2;
-// 	if(datoUNODOSTRES==1){
-// 		if(strstr(tercetos[i].uno,"]")){
-// 			parentecisHabre  = (strstr(tercetos[i].uno,"[")+1);
-// 			parentecisCierra = strstr(tercetos[i].uno,"]");
-// 			num = (int) &(*parentecisCierra);
-// 			num2 = (int) &(*parentecisHabre);
-// 			//*(auxilia1) = '\0';
-// 			strncpy(auxilia1,parentecisHabre,(num-num2));
-// 			return tercetos[(atoi(auxilia1))].uno;
-// 		}
-// 		else return tercetos[i].uno;
-// 	}*/
-// }
 
+/*
+char * buscaDatoEnTerceto(int datoUNODOSTRES, int i){
+	char  auxilia1[5]={'\0','\0','\0','\0','\0'};
+	char *parentecisCierra;
+	char *parentecisHabre;
+	int num;
+	int num2;
+	if(datoUNODOSTRES==1){		
+		if(strstr(tercetos[i].uno,"]")){ //TODO: revisar q onda tercetos[i]
+			parentecisHabre  = (strstr(tercetos[i].uno,"[")+1);
+			parentecisCierra = strstr(tercetos[i].uno,"]");
+			num = (int) &(*parentecisCierra);
+			num2 = (int) &(*parentecisHabre);
+			//*(auxilia1) = '\0';
+			strncpy(auxilia1,parentecisHabre,(num-num2));
+			return tercetos[(atoi(auxilia1))].uno;
+		}
+		else return tercetos[i].uno;
+	}
+}
+*/
 // sirve para agregar @ como variable assembler
 char* getNombreAsm(char *cte_o_id) {
 	char* nombreAsm = (char*) malloc(sizeof(char)*200);
@@ -1048,56 +1052,56 @@ char* getNombreAsm(char *cte_o_id) {
 	return nombreAsm;
 }
 
-// char* getCodOp(char* token)
-// {
-// 	if(!strcmp(token, "+"))
-// 	{
-// 		return "FADD";
-// 	}
-// 	else if(!strcmp(token, "="))
-// 	{
-// 		return "MOV";
-// 	}
-// 	else if(!strcmp(token, "-"))
-// 	{
-// 		return "FSUB";
-// 	}
-// 	else if(!strcmp(token, "*"))
-// 	{
-// 		return "FMUL";
-// 	}
-// 	else if(!strcmp(token, "/"))
-// 	{
-// 		return "FDIV";
-// 	}
-// 	else if(!strcmp(token, "BNE"))
-// 	{
-// 		return "JNE";
-// 	}
-// 	else if(!strcmp(token, "BEQ"))
-// 	{
-// 		return "JE";
-// 	}
-// 	else if(!strcmp(token, "BGE"))
-// 	{
-// 		return "JNA";
-// 	}
-// 	else if(!strcmp(token, "BGT"))
-// 	{
-// 		return "JNAE";
-// 	}
-// 	else if(!strcmp(token, "BLE"))
-// 	{
-// 		return "JNB";
-// 	}
-// 	else if(!strcmp(token, "BLT"))
-// 	{
-// 		return "JNBE";
-// 	}
-// 	else if (!strcmp(token, "BI")) {
-// 		return "JMP";
-// 	}
-// }
+char* getCodOp(char* token)
+{
+	if(!strcmp(token, "+"))
+	{
+		return "FADD";
+	}
+	else if(!strcmp(token, "="))
+	{
+		return "MOV";
+	}
+	else if(!strcmp(token, "-"))
+	{
+		return "FSUB";
+	}
+	else if(!strcmp(token, "*"))
+	{
+		return "FMUL";
+	}
+	else if(!strcmp(token, "/"))
+	{
+		return "FDIV";
+	}
+	else if(!strcmp(token, "BNE"))
+	{
+		return "JNE";
+	}
+	else if(!strcmp(token, "BEQ"))
+	{
+		return "JE";
+	}
+	else if(!strcmp(token, "BGE"))
+	{
+		return "JNA";
+	}
+	else if(!strcmp(token, "BGT"))
+	{
+		return "JNAE";
+	}
+	else if(!strcmp(token, "BLE"))
+	{
+		return "JNB";
+	}
+	else if(!strcmp(token, "BLT"))
+	{
+		return "JNBE";
+	}
+	else if (!strcmp(token, "BI")) {
+		return "JMP";
+	}
+}
 
 
 /*
@@ -1239,7 +1243,6 @@ int escribirTercetoEnAsm(FILE* pf_asm, int lista_etiquetas[], t_nodo_terceto *au
 		{
 			char* tipoDato = auxNodo->info.tipodato;
 
-			printf("entro!!: %s\n", tipoDato);
 
 			if (strcmpi(tipoDato, "real") == 0) 
 			{
@@ -1257,27 +1260,29 @@ int escribirTercetoEnAsm(FILE* pf_asm, int lista_etiquetas[], t_nodo_terceto *au
 		}
 		else // saltos
 		{
-			// char *codigo = getCodOp(auxNodo->info.primerElemento);
-			// sprintf(etiqueta_aux, "ETIQ_%d", sacarValorDeEtiqueta(auxNodo->info.segundoElemento));
-			// if (atoi(tercetos[i].dos) >= terceto_index) 
-			// {
-			// 	agregar_etiqueta_final_nro = sacarValorDeEtiqueta(auxNodo->info.segundoElemento);
-			// }
-			// fflush(pf_asm); 
-			// fprintf(pf_asm, "\t %s %s \t;Si cumple la condicion salto a la etiqueta\n", codigo, etiqueta_aux);
+			/*char *codigo = getCodOp(auxNodo->info.primerElemento);
+
+			sprintf(etiqueta_aux, "ETIQ_%d", sacarValorDeEtiqueta(auxNodo->info.segundoElemento));
+			//printf(":%s\n", i);
+			if (atoi(tercetos[i].dos) >= terceto_index) //de donde sale tercetos[]??? 
+			{
+				agregar_etiqueta_final_nro = sacarValorDeEtiqueta(auxNodo->info.segundoElemento);
+			}
+			fflush(pf_asm); 
+			fprintf(pf_asm, "\t %s %s \t;Si cumple la condicion salto a la etiqueta\n", codigo, etiqueta_aux);*/
 		}
 		return agregar_etiqueta_final_nro;
 	}
 
 
-	/*
-	Formato terceto Ternario (x, x, x) | Expresiones ; Comparaciones ; Asignacion
-
+	
+	//Formato terceto Ternario (x, x, x) | Expresiones ; Comparaciones ; Asignacion
 	char *op2 = (char*) malloc(100*sizeof(char));
 	strcpy(op2, lista_operandos_assembler[cant_op]);
 	cant_op--;
 	char *op1 = (char*) malloc(100*sizeof(char));
-	if (strcmp(tercetos[i].uno, "CMP" ) == 0 && strcmp(ult_op1_cmp, tercetos[i].dos) == 0 )
+
+	if (strcmp(auxNodo->info.primerElemento, "CMP" ) == 0 && strcmp(ult_op1_cmp, auxNodo->info.segundoElemento) == 0 )
 	{
 		strcpy(op1, op1_guardado);
 	}
@@ -1287,10 +1292,12 @@ int escribirTercetoEnAsm(FILE* pf_asm, int lista_etiquetas[], t_nodo_terceto *au
 		cant_op--;
 		strcpy(op1_guardado, op1);
 	}
-	if (strcmp(tercetos[i].uno, "=" ) == 0)
+
+	if (strcmp(auxNodo->info.primerElemento, "=" ) == 0)
 	{
-		int tipo = buscarTipoTS(tercetos[atoi(tercetos[i].dos)].uno);
-		if (tipo == Float | tipo == Integer) // Si se quiere separar integer hay que ver tambien las expresiones
+		printf("entro!!");
+		char* tipo = BuscarEnListaYDevolverTipo(&lista_ts,auxNodo->info.primerElemento);
+		if (tipo == "float" | tipo == "integer") 
 		{
 			fprintf(pf_asm, "\t FLD %s \t;Cargo valor \n", getNombreAsm(op1));
 			fprintf(pf_asm, "\t FSTP %s \t; Se lo asigno a la variable que va a guardar el resultado \n", getNombreAsm(op2));
@@ -1302,10 +1309,12 @@ int escribirTercetoEnAsm(FILE* pf_asm, int lista_etiquetas[], t_nodo_terceto *au
 			fprintf(pf_asm, "\t STRCPY\t; llamo a la macro para copiar \n");
 		}	
 	}
-	else if (strcmp(tercetos[i].uno, "CMP" ) == 0)
+	/*else if (strcmp(auxNodo->info.primerElemento, "CMP" ) == 0)
 	{
-		int tipo = buscarTipoTS(op1);
-		if (tipo == Float | tipo == Integer) 
+		//int tipo = buscarTipoTS(op1);
+		char* tipo = BuscarEnListaYDevolverTipo(&lista_ts,op1);
+		
+		if (tipo == "float" | tipo == "integer") 
 		{
 			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando1 \n", getNombreAsm(op1));
 			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando2 \n", getNombreAsm(op2));
@@ -1325,19 +1334,25 @@ int escribirTercetoEnAsm(FILE* pf_asm, int lista_etiquetas[], t_nodo_terceto *au
 	}
 	else
 	{
-		int tipo = buscarTipoTS(op1);
-		char* auxx;
-		if (tipo == String)
+	
+		
+		
+		char* tipo = BuscarEnListaYDevolverTipo(&lista_ts,op1);
+		char* auxx;		
+		if (tipo == "string") 
 		{
 			yyerror("Ops! No estan soportadas las operaciones entre cadenas\n");
 		}
 		sprintf(aux, "_aux%d", i); // auxiliar relacionado al terceto
-		insertar_ts_si_no_existe(aux, "FLOAT", "", "");
+		//insertar_ts_si_no_existe(aux, "FLOAT", "", ""); 
 		fflush(pf_asm);
 		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 1\n", getNombreAsm(op1));
 		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 2\n", getNombreAsm(op2));
 		fflush(pf_asm);
-	
+		
+		////lista_terceto
+		
+		
 		auxx=buscaDatoEnTerceto(1,i);
 
 
@@ -1345,8 +1360,18 @@ int escribirTercetoEnAsm(FILE* pf_asm, int lista_etiquetas[], t_nodo_terceto *au
 		fprintf(pf_asm, "\t FSTP %s \t;Almaceno el resultado en una var auxiliar\n", getNombreAsm(aux));
 		cant_op++;
 		strcpy(lista_operandos_assembler[cant_op], aux);
+	
 	}
-		
 	*/
 	return -1;
 }
+/*
+void insertar_ts_si_no_existe(char *nombre, char *tipo, char *valor, char *longitud) {
+	char* aux = (char*) malloc(10*sizeof(char));
+	*aux='\0';
+	strcpy(aux, nombre);
+	if(nombre_existe_en_ts(aux)==-1) {
+		insertar_tabla_simbolos(aux,tipo,valor,longitud);
+	}
+}
+*/

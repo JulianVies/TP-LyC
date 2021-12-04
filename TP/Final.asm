@@ -9,6 +9,7 @@ include number.asm
 	@c db 30 dup (?),"$"	;Declaracion de Variable String
 	@b dd ?	 ; Declaracion de Variable Numerica
 	@a dd ?	 ; Declaracion de Variable Numerica
+	@_1 dd 1.0	;Declaracion de Constant Number
 .CODE 
 MAIN:
 
@@ -18,7 +19,6 @@ MAIN:
 	 MOV ES,AX 
 	 FNINIT 
 
-	 GetFloat @a
 	 mov AX, 4C00h 	 ; Genera la interrupcion 21h
 	 int 21h 	 ; Genera la interrupcion 21h
 END MAIN

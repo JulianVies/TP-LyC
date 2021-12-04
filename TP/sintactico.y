@@ -279,7 +279,8 @@ sentencia: asignacion { printf("Regla asignacion\n"); }
 asignacion: ID  OP_ASIG expresion 
 			{	
 				BuscarEnLista(&lista_ts, $1);
-				crearTerceto(":=", $1, crearIndice(Eind));
+				int auxPos = crearTerceto($1, "", "");
+				crearTerceto(":=", crearIndice(auxPos), crearIndice(Eind));
 			}
 			|
 			ID  OP_ASIG CTE_S 

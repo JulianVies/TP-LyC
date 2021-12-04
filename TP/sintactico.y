@@ -371,7 +371,10 @@ display: DISPLAY ID {
 			modificarIndiceTercetoTipo(&lista_terceto, indiceTerceto, "string");
 		};
 
-get:GET	ID { crearTerceto("GET",$2,"");};
+get:GET	ID { int indiceTercetoGet=crearTerceto("GET",$2,"");
+			char* tipoGet = BuscarEnListaYDevolverTipo(&lista_ts,$2);
+			modificarIndiceTercetoTipo(&lista_terceto, indiceTercetoGet, tipoGet);
+			};
 
 equmax: EQUMAX {strcpy(compEqu, "BLE");} PARA expresion {indVal=Eind;} PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmax\n"); indMax=crearTerceto("@Val","","");};
 
@@ -1233,20 +1236,23 @@ int escribirTercetoEnAsm(FILE* pf_asm, int lista_etiquetas[], t_nodo_terceto *au
 		}
 		else if (strcmp("GET", auxNodo->info.primerElemento) == 0) 
 		{
-			// char* tipoDato = auxNodo->info.tipodato;
-			// if (strcmpi(tipoDato, "real") == 0) 
-			// {
-			// 	fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.nombre));
-			// } 
-			// else if (strcmpi(tipoDato, "integer") == 0) 
-			// {
-			// 	// pongo getfloat para manejar todo con fld en las operaciones
-			// 	fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.nombre));
-			// }	
-			// else 
-			// {
-			// 	fprintf(pf_asm, "\t GetString %s\n", getNombreAsm(auxNodo->info.nombre));
-			// }
+			char* tipoDato = auxNodo->info.tipodato;
+
+			printf("entro!!: %s\n", tipoDato);
+
+			if (strcmpi(tipoDato, "real") == 0) 
+			{
+				fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.segundoElemento));
+			} 
+			else if (strcmpi(tipoDato, "integer") == 0) 
+			{
+				// pongo getfloat para manejar todo con fld en las operaciones
+				fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.segundoElemento));
+			}	
+			else 
+			{
+				fprintf(pf_asm, "\t GetString %s\n", getNombreAsm(auxNodo->info.segundoElemento));
+			}
 		}
 		else // saltos
 		{

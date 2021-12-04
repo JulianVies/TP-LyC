@@ -678,12 +678,12 @@ static const yytype_uint16 yyrline[] =
 {
        0,   261,   261,   267,   268,   271,   272,   273,   274,   275,
      276,   279,   285,   292,   293,   297,   304,   296,   314,   320,
-     330,   320,   338,   364,   369,   374,   376,   376,   376,   378,
-     378,   378,   380,   381,   391,   394,   399,   406,   407,   410,
-     411,   414,   414,   414,   416,   417,   418,   421,   422,   423,
-     426,   427,   430,   435,   442,   448,   449,   450,   453,   453,
-     454,   455,   458,   459,   460,   461,   462,   463,   466,   466,
-     466,   466,   491,   492
+     330,   320,   338,   364,   369,   374,   379,   379,   379,   381,
+     381,   381,   383,   384,   394,   397,   402,   409,   410,   413,
+     414,   417,   417,   417,   419,   420,   421,   424,   425,   426,
+     429,   430,   433,   438,   445,   451,   452,   453,   456,   456,
+     457,   458,   461,   462,   463,   464,   465,   466,   469,   469,
+     469,   469,   494,   495
 };
 #endif
 
@@ -1840,7 +1840,10 @@ yyreduce:
 
   case 25:
 
-    { crearTerceto("GET",(yyvsp[(2) - (2)].str_val),"");;}
+    { int indiceTercetoGet=crearTerceto("GET",(yyvsp[(2) - (2)].str_val),"");
+			char* tipoGet = BuscarEnListaYDevolverTipo(&lista_ts,(yyvsp[(2) - (2)].str_val));
+			modificarIndiceTercetoTipo(&lista_terceto, indiceTercetoGet, tipoGet);
+			;}
     break;
 
   case 26:
@@ -3072,20 +3075,23 @@ int escribirTercetoEnAsm(FILE* pf_asm, int lista_etiquetas[], t_nodo_terceto *au
 		}
 		else if (strcmp("GET", auxNodo->info.primerElemento) == 0) 
 		{
-			// char* tipoDato = auxNodo->info.tipodato;
-			// if (strcmpi(tipoDato, "real") == 0) 
-			// {
-			// 	fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.nombre));
-			// } 
-			// else if (strcmpi(tipoDato, "integer") == 0) 
-			// {
-			// 	// pongo getfloat para manejar todo con fld en las operaciones
-			// 	fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.nombre));
-			// }	
-			// else 
-			// {
-			// 	fprintf(pf_asm, "\t GetString %s\n", getNombreAsm(auxNodo->info.nombre));
-			// }
+			char* tipoDato = auxNodo->info.tipodato;
+
+			printf("entro!!: %s\n", tipoDato);
+
+			if (strcmpi(tipoDato, "real") == 0) 
+			{
+				fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.segundoElemento));
+			} 
+			else if (strcmpi(tipoDato, "integer") == 0) 
+			{
+				// pongo getfloat para manejar todo con fld en las operaciones
+				fprintf(pf_asm, "\t GetFloat %s\n", getNombreAsm(auxNodo->info.segundoElemento));
+			}	
+			else 
+			{
+				fprintf(pf_asm, "\t GetString %s\n", getNombreAsm(auxNodo->info.segundoElemento));
+			}
 		}
 		else // saltos
 		{

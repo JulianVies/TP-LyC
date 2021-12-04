@@ -9,7 +9,6 @@ include number.asm
 	@c db 30 dup (?),"$"	;Declaracion de Variable String
 	@b dd ?	 ; Declaracion de Variable Numerica
 	@a dd ?	 ; Declaracion de Variable Numerica
-	@_cadena db cadena, "$", 30 dup (?)	;Declaracion de Constant String
 .CODE 
 MAIN:
 
@@ -19,10 +18,7 @@ MAIN:
 	 MOV ES,AX 
 	 FNINIT 
 
-	 DisplayFloat @a,2 
-	 newLine 
-	 DisplayString @cadena 
-	 newLine 
+	 GetFloat @a
 	 mov AX, 4C00h 	 ; Genera la interrupcion 21h
 	 int 21h 	 ; Genera la interrupcion 21h
 END MAIN

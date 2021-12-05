@@ -113,25 +113,27 @@ Gramática
 
    69 $@12: /* vacío */
 
-   70 for: FOR ID IGUALFOR expresion $@10 TO expresion $@11 salto $@12 programa NEXT ID
+   70 $@13: /* vacío */
 
-   71 salto: CORCHA CORCHC
-   72      | CORCHA CTE_E CORCHC
+   71 for: FOR ID IGUALFOR expresion $@10 $@11 TO expresion $@12 salto $@13 programa NEXT ID
+
+   72 salto: CORCHA CORCHC
+   73      | CORCHA CTE_E CORCHC
 
 
 Terminales con las reglas donde aparecen
 
 $end (0) 0
 error (256)
-ID (258) 10 11 22 24 33 36 37 50 70
+ID (258) 10 11 22 24 33 36 37 50 71
 CTE_S (259) 11 23
-CTE_E (260) 34 51 72
+CTE_E (260) 34 51 73
 CTE_R (261) 35 52
 GET (262) 24
 DISPLAY (263) 22 23
 EQUMAX (264) 27
 EQUMIN (265) 30
-FOR (266) 70
+FOR (266) 71
 WHILE (267) 16
 BEGINW (268) 16
 ENDW (269) 16
@@ -149,8 +151,8 @@ OP_SUM (280) 44
 OP_RESTA (281) 45
 OP_MULT (282) 47
 OP_DIV (283) 48
-CORCHA (284) 21 27 30 71 72
-CORCHC (285) 21 27 30 71 72
+CORCHA (284) 21 27 30 72 73
+CORCHC (285) 21 27 30 72 73
 PARA (286) 27 30 49
 PARC (287) 27 30 49
 LLAVEA (288)
@@ -161,11 +163,11 @@ MENOR (292) 63
 MAYOR (293) 64
 DIFF (294) 65
 IGUAL (295) 66
-IGUALFOR (296) 70
+IGUALFOR (296) 71
 DIM (297) 21
 AS (298) 21
-TO (299) 70
-NEXT (300) 70
+TO (299) 71
+NEXT (300) 71
 INTEGER (301) 40
 STRING (302) 41
 REAL (303) 42
@@ -178,7 +180,7 @@ $accept (49)
 inicio (50)
     en la izquierda: 1, en la derecha: 0
 programa (51)
-    en la izquierda: 2 3, en la derecha: 1 3 16 17 20 70
+    en la izquierda: 2 3, en la derecha: 1 3 16 17 20 71
 sentencia (52)
     en la izquierda: 4 5 6 7 8 9, en la derecha: 2 3
 asignacion (53)
@@ -227,7 +229,7 @@ TYPE (74)
     en la izquierda: 40 41 42, en la derecha: 38 39
 expresion (75)
     en la izquierda: 43 44 45, en la derecha: 10 27 30 44 45 49 58
-    70
+    71
 termino (76)
     en la izquierda: 46 47 48, en la derecha: 43 44 45 47 48
 factor (77)
@@ -241,15 +243,17 @@ $@9 (80)
 comparador (81)
     en la izquierda: 61 62 63 64 65 66, en la derecha: 58
 for (82)
-    en la izquierda: 70, en la derecha: 13
+    en la izquierda: 71, en la derecha: 13
 $@10 (83)
-    en la izquierda: 67, en la derecha: 70
+    en la izquierda: 67, en la derecha: 71
 $@11 (84)
-    en la izquierda: 68, en la derecha: 70
+    en la izquierda: 68, en la derecha: 71
 $@12 (85)
-    en la izquierda: 69, en la derecha: 70
-salto (86)
-    en la izquierda: 71 72, en la derecha: 70
+    en la izquierda: 69, en la derecha: 71
+$@13 (86)
+    en la izquierda: 70, en la derecha: 71
+salto (87)
+    en la izquierda: 72 73, en la derecha: 71
 
 
 estado 0
@@ -303,7 +307,7 @@ estado 3
 
 estado 4
 
-   70 for: FOR . ID IGUALFOR expresion $@10 TO expresion $@11 salto $@12 programa NEXT ID
+   71 for: FOR . ID IGUALFOR expresion $@10 $@11 TO expresion $@12 salto $@13 programa NEXT ID
 
     ID  desplazar e ir al estado 23
 
@@ -493,7 +497,7 @@ estado 22
 
 estado 23
 
-   70 for: FOR ID . IGUALFOR expresion $@10 TO expresion $@11 salto $@12 programa NEXT ID
+   71 for: FOR ID . IGUALFOR expresion $@10 $@11 TO expresion $@12 salto $@13 programa NEXT ID
 
     IGUALFOR  desplazar e ir al estado 44
 
@@ -690,7 +694,7 @@ estado 43
 
 estado 44
 
-   70 for: FOR ID IGUALFOR . expresion $@10 TO expresion $@11 salto $@12 programa NEXT ID
+   71 for: FOR ID IGUALFOR . expresion $@10 $@11 TO expresion $@12 salto $@13 programa NEXT ID
 
     ID     desplazar e ir al estado 24
     CTE_E  desplazar e ir al estado 25
@@ -888,7 +892,7 @@ estado 60
 
    44 expresion: expresion . OP_SUM termino
    45          | expresion . OP_RESTA termino
-   70 for: FOR ID IGUALFOR expresion . $@10 TO expresion $@11 salto $@12 programa NEXT ID
+   71 for: FOR ID IGUALFOR expresion . $@10 $@11 TO expresion $@12 salto $@13 programa NEXT ID
 
     OP_SUM    desplazar e ir al estado 49
     OP_RESTA  desplazar e ir al estado 50
@@ -1110,9 +1114,11 @@ estado 80
 
 estado 81
 
-   70 for: FOR ID IGUALFOR expresion $@10 . TO expresion $@11 salto $@12 programa NEXT ID
+   71 for: FOR ID IGUALFOR expresion $@10 . $@11 TO expresion $@12 salto $@13 programa NEXT ID
 
-    TO  desplazar e ir al estado 90
+    $default  reduce usando la regla 68 ($@11)
+
+    $@11  ir al estado 90
 
 
 estado 82
@@ -1212,16 +1218,9 @@ estado 89
 
 estado 90
 
-   70 for: FOR ID IGUALFOR expresion $@10 TO . expresion $@11 salto $@12 programa NEXT ID
+   71 for: FOR ID IGUALFOR expresion $@10 $@11 . TO expresion $@12 salto $@13 programa NEXT ID
 
-    ID     desplazar e ir al estado 24
-    CTE_E  desplazar e ir al estado 25
-    CTE_R  desplazar e ir al estado 26
-    PARA   desplazar e ir al estado 30
-
-    expresion  ir al estado 96
-    termino    ir al estado 34
-    factor     ir al estado 35
+    TO  desplazar e ir al estado 96
 
 
 estado 91
@@ -1268,16 +1267,16 @@ estado 95
 
 estado 96
 
-   44 expresion: expresion . OP_SUM termino
-   45          | expresion . OP_RESTA termino
-   70 for: FOR ID IGUALFOR expresion $@10 TO expresion . $@11 salto $@12 programa NEXT ID
+   71 for: FOR ID IGUALFOR expresion $@10 $@11 TO . expresion $@12 salto $@13 programa NEXT ID
 
-    OP_SUM    desplazar e ir al estado 49
-    OP_RESTA  desplazar e ir al estado 50
+    ID     desplazar e ir al estado 24
+    CTE_E  desplazar e ir al estado 25
+    CTE_R  desplazar e ir al estado 26
+    PARA   desplazar e ir al estado 30
 
-    $default  reduce usando la regla 68 ($@11)
-
-    $@11  ir al estado 106
+    expresion  ir al estado 106
+    termino    ir al estado 34
+    factor     ir al estado 35
 
 
 estado 97
@@ -1364,35 +1363,40 @@ estado 105
 
 estado 106
 
-   70 for: FOR ID IGUALFOR expresion $@10 TO expresion $@11 . salto $@12 programa NEXT ID
+   44 expresion: expresion . OP_SUM termino
+   45          | expresion . OP_RESTA termino
+   71 for: FOR ID IGUALFOR expresion $@10 $@11 TO expresion . $@12 salto $@13 programa NEXT ID
 
-    CORCHA  desplazar e ir al estado 112
+    OP_SUM    desplazar e ir al estado 49
+    OP_RESTA  desplazar e ir al estado 50
 
-    salto  ir al estado 113
+    $default  reduce usando la regla 69 ($@12)
+
+    $@12  ir al estado 112
 
 
 estado 107
 
    27 equmax: EQUMAX $@5 PARA expresion $@6 PYC CORCHA . listaEqu CORCHC PARC
 
-    ID     desplazar e ir al estado 114
-    CTE_E  desplazar e ir al estado 115
-    CTE_R  desplazar e ir al estado 116
+    ID     desplazar e ir al estado 113
+    CTE_E  desplazar e ir al estado 114
+    CTE_R  desplazar e ir al estado 115
 
-    listaEqu  ir al estado 117
-    itemEqu   ir al estado 118
+    listaEqu  ir al estado 116
+    itemEqu   ir al estado 117
 
 
 estado 108
 
    30 equmin: EQUMIN $@7 PARA expresion $@8 PYC CORCHA . listaEqu CORCHC PARC
 
-    ID     desplazar e ir al estado 114
-    CTE_E  desplazar e ir al estado 115
-    CTE_R  desplazar e ir al estado 116
+    ID     desplazar e ir al estado 113
+    CTE_E  desplazar e ir al estado 114
+    CTE_R  desplazar e ir al estado 115
 
-    listaEqu  ir al estado 119
-    itemEqu   ir al estado 118
+    listaEqu  ir al estado 118
+    itemEqu   ir al estado 117
 
 
 estado 109
@@ -1406,7 +1410,7 @@ estado 109
     FOR      desplazar e ir al estado 4
     WHILE    desplazar e ir al estado 5
     IF       desplazar e ir al estado 6
-    ENDIF    desplazar e ir al estado 120
+    ENDIF    desplazar e ir al estado 119
     DIM      desplazar e ir al estado 7
 
     sentencia    ir al estado 41
@@ -1428,7 +1432,7 @@ estado 110
     STRING   desplazar e ir al estado 102
     REAL     desplazar e ir al estado 103
 
-    TYPE  ir al estado 121
+    TYPE  ir al estado 120
 
 
 estado 111
@@ -1440,99 +1444,133 @@ estado 111
 
 estado 112
 
-   71 salto: CORCHA . CORCHC
-   72      | CORCHA . CTE_E CORCHC
+   71 for: FOR ID IGUALFOR expresion $@10 $@11 TO expresion $@12 . salto $@13 programa NEXT ID
 
-    CTE_E   desplazar e ir al estado 122
-    CORCHC  desplazar e ir al estado 123
+    CORCHA  desplazar e ir al estado 121
+
+    salto  ir al estado 122
 
 
 estado 113
-
-   70 for: FOR ID IGUALFOR expresion $@10 TO expresion $@11 salto . $@12 programa NEXT ID
-
-    $default  reduce usando la regla 69 ($@12)
-
-    $@12  ir al estado 124
-
-
-estado 114
 
    33 itemEqu: ID .
 
     $default  reduce usando la regla 33 (itemEqu)
 
 
-estado 115
+estado 114
 
    34 itemEqu: CTE_E .
 
     $default  reduce usando la regla 34 (itemEqu)
 
 
-estado 116
+estado 115
 
    35 itemEqu: CTE_R .
 
     $default  reduce usando la regla 35 (itemEqu)
 
 
-estado 117
+estado 116
 
    27 equmax: EQUMAX $@5 PARA expresion $@6 PYC CORCHA listaEqu . CORCHC PARC
    32 listaEqu: listaEqu . COMA itemEqu
 
-    COMA    desplazar e ir al estado 125
-    CORCHC  desplazar e ir al estado 126
+    COMA    desplazar e ir al estado 123
+    CORCHC  desplazar e ir al estado 124
 
 
-estado 118
+estado 117
 
    31 listaEqu: itemEqu .
 
     $default  reduce usando la regla 31 (listaEqu)
 
 
-estado 119
+estado 118
 
    30 equmin: EQUMIN $@7 PARA expresion $@8 PYC CORCHA listaEqu . CORCHC PARC
    32 listaEqu: listaEqu . COMA itemEqu
 
-    COMA    desplazar e ir al estado 125
-    CORCHC  desplazar e ir al estado 127
+    COMA    desplazar e ir al estado 123
+    CORCHC  desplazar e ir al estado 125
 
 
-estado 120
+estado 119
 
    20 seleccion: IF condicion THEN programa $@3 ELSE $@4 programa ENDIF .
 
     $default  reduce usando la regla 20 (seleccion)
 
 
-estado 121
+estado 120
 
    39 listaType: listaType COMA TYPE .
 
     $default  reduce usando la regla 39 (listaType)
 
 
+estado 121
+
+   72 salto: CORCHA . CORCHC
+   73      | CORCHA . CTE_E CORCHC
+
+    CTE_E   desplazar e ir al estado 126
+    CORCHC  desplazar e ir al estado 127
+
+
 estado 122
 
-   72 salto: CORCHA CTE_E . CORCHC
+   71 for: FOR ID IGUALFOR expresion $@10 $@11 TO expresion $@12 salto . $@13 programa NEXT ID
 
-    CORCHC  desplazar e ir al estado 128
+    $default  reduce usando la regla 70 ($@13)
+
+    $@13  ir al estado 128
 
 
 estado 123
 
-   71 salto: CORCHA CORCHC .
+   32 listaEqu: listaEqu COMA . itemEqu
 
-    $default  reduce usando la regla 71 (salto)
+    ID     desplazar e ir al estado 113
+    CTE_E  desplazar e ir al estado 114
+    CTE_R  desplazar e ir al estado 115
+
+    itemEqu  ir al estado 129
 
 
 estado 124
 
-   70 for: FOR ID IGUALFOR expresion $@10 TO expresion $@11 salto $@12 . programa NEXT ID
+   27 equmax: EQUMAX $@5 PARA expresion $@6 PYC CORCHA listaEqu CORCHC . PARC
+
+    PARC  desplazar e ir al estado 130
+
+
+estado 125
+
+   30 equmin: EQUMIN $@7 PARA expresion $@8 PYC CORCHA listaEqu CORCHC . PARC
+
+    PARC  desplazar e ir al estado 131
+
+
+estado 126
+
+   73 salto: CORCHA CTE_E . CORCHC
+
+    CORCHC  desplazar e ir al estado 132
+
+
+estado 127
+
+   72 salto: CORCHA CORCHC .
+
+    $default  reduce usando la regla 72 (salto)
+
+
+estado 128
+
+   71 for: FOR ID IGUALFOR expresion $@10 $@11 TO expresion $@12 salto $@13 . programa NEXT ID
 
     ID       desplazar e ir al estado 1
     GET      desplazar e ir al estado 2
@@ -1542,7 +1580,7 @@ estado 124
     IF       desplazar e ir al estado 6
     DIM      desplazar e ir al estado 7
 
-    programa     ir al estado 129
+    programa     ir al estado 133
     sentencia    ir al estado 10
     asignacion   ir al estado 11
     iteracion    ir al estado 12
@@ -1554,42 +1592,38 @@ estado 124
     for          ir al estado 18
 
 
-estado 125
-
-   32 listaEqu: listaEqu COMA . itemEqu
-
-    ID     desplazar e ir al estado 114
-    CTE_E  desplazar e ir al estado 115
-    CTE_R  desplazar e ir al estado 116
-
-    itemEqu  ir al estado 130
-
-
-estado 126
-
-   27 equmax: EQUMAX $@5 PARA expresion $@6 PYC CORCHA listaEqu CORCHC . PARC
-
-    PARC  desplazar e ir al estado 131
-
-
-estado 127
-
-   30 equmin: EQUMIN $@7 PARA expresion $@8 PYC CORCHA listaEqu CORCHC . PARC
-
-    PARC  desplazar e ir al estado 132
-
-
-estado 128
-
-   72 salto: CORCHA CTE_E CORCHC .
-
-    $default  reduce usando la regla 72 (salto)
-
-
 estado 129
 
+   32 listaEqu: listaEqu COMA itemEqu .
+
+    $default  reduce usando la regla 32 (listaEqu)
+
+
+estado 130
+
+   27 equmax: EQUMAX $@5 PARA expresion $@6 PYC CORCHA listaEqu CORCHC PARC .
+
+    $default  reduce usando la regla 27 (equmax)
+
+
+estado 131
+
+   30 equmin: EQUMIN $@7 PARA expresion $@8 PYC CORCHA listaEqu CORCHC PARC .
+
+    $default  reduce usando la regla 30 (equmin)
+
+
+estado 132
+
+   73 salto: CORCHA CTE_E CORCHC .
+
+    $default  reduce usando la regla 73 (salto)
+
+
+estado 133
+
     3 programa: programa . sentencia
-   70 for: FOR ID IGUALFOR expresion $@10 TO expresion $@11 salto $@12 programa . NEXT ID
+   71 for: FOR ID IGUALFOR expresion $@10 $@11 TO expresion $@12 salto $@13 programa . NEXT ID
 
     ID       desplazar e ir al estado 1
     GET      desplazar e ir al estado 2
@@ -1598,7 +1632,7 @@ estado 129
     WHILE    desplazar e ir al estado 5
     IF       desplazar e ir al estado 6
     DIM      desplazar e ir al estado 7
-    NEXT     desplazar e ir al estado 133
+    NEXT     desplazar e ir al estado 134
 
     sentencia    ir al estado 41
     asignacion   ir al estado 11
@@ -1611,36 +1645,15 @@ estado 129
     for          ir al estado 18
 
 
-estado 130
-
-   32 listaEqu: listaEqu COMA itemEqu .
-
-    $default  reduce usando la regla 32 (listaEqu)
-
-
-estado 131
-
-   27 equmax: EQUMAX $@5 PARA expresion $@6 PYC CORCHA listaEqu CORCHC PARC .
-
-    $default  reduce usando la regla 27 (equmax)
-
-
-estado 132
-
-   30 equmin: EQUMIN $@7 PARA expresion $@8 PYC CORCHA listaEqu CORCHC PARC .
-
-    $default  reduce usando la regla 30 (equmin)
-
-
-estado 133
-
-   70 for: FOR ID IGUALFOR expresion $@10 TO expresion $@11 salto $@12 programa NEXT . ID
-
-    ID  desplazar e ir al estado 134
-
-
 estado 134
 
-   70 for: FOR ID IGUALFOR expresion $@10 TO expresion $@11 salto $@12 programa NEXT ID .
+   71 for: FOR ID IGUALFOR expresion $@10 $@11 TO expresion $@12 salto $@13 programa NEXT . ID
 
-    $default  reduce usando la regla 70 (for)
+    ID  desplazar e ir al estado 135
+
+
+estado 135
+
+   71 for: FOR ID IGUALFOR expresion $@10 $@11 TO expresion $@12 salto $@13 programa NEXT ID .
+
+    $default  reduce usando la regla 71 (for)

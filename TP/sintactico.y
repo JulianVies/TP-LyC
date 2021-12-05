@@ -104,6 +104,7 @@
 	t_pila pilaComp;
 	t_pila pilaElse;
 
+	t_pila pilaIndicesFor;
 
 
 //TERCETOS
@@ -184,6 +185,8 @@ int Salto1;
 int IndiceActual;
 
 int* PosReservada;
+
+char varAuxFor[1000];
 
 /////////
 
@@ -317,7 +320,6 @@ ENDW;
 seleccion: IF condicion THEN programa ENDIF	{ printf("Regla If\n");
 			t_info_p ifCmpAux;
 			desapilar(&pilaComp,&ifCmpAux);
-			printf("Desapilar primer branch: %d",ifCmpAux.posicion);
 			modificarIndiceTercetoSalto(&lista_terceto, ifCmpAux.posicion, contadorTercetos);
 }
         |  IF condicion THEN programa {			
@@ -469,23 +471,37 @@ comparador: MENOR_IGUAL		{strcpy(comp, "BGT");}
 			| IGUAL			{strcpy(comp, "BNE");}
 			;
 
-for:FOR ID IGUALFOR expresion {EindAux1 = Eind;} TO expresion {EindAux2 = Eind;} salto {
-	t_info_p forCmp;
-	nuevoSimbolo($2,"-","integer",-1);
-	crearTerceto("=",$2,crearIndice(EindAux1));
+for:FOR ID IGUALFOR expresion {EindAux1 = Eind;}
+	{
+		t_info_p forIndice;
+		nuevoSimbolo($2,"-","integer",-1);
+		
+		forIndice.posicion = crearTerceto($2,"","");
+		apilar(&pilaIndicesFor,&forIndice);
 
-	forCmp.posicion = crearTerceto("CMP",$2,crearIndice(EindAux2));
+		crearTerceto("=",crearIndice(forIndice.posicion),crearIndice(EindAux1));
+
+	}
+ TO expresion {EindAux2 = Eind;} salto {
+	t_info_p forCmp;
+	t_info_p forIndiceAux;
+	verTope(&pilaIndicesFor,&forIndiceAux);
+	forCmp.posicion = crearTerceto("CMP",crearIndice(forIndiceAux.posicion),crearIndice(EindAux2));
 	apilar(&pilaForsCmp,&forCmp);
 	forCmp.posicion = crearTerceto("BGT","","");
 	apilar(&pilaForsFalse,&forCmp);
 	
 	} programa NEXT ID {
 		t_info_p forCmpAux;
+		t_info_p indiceForAux;
 		int indiceAuxSalto;
+		int indiceNumero;
 		char numeroTexto [4];
 		itoa(saltoConst,numeroTexto,10);
-		indiceAuxSalto = crearTerceto("+",$2,numeroTexto);
-		crearTerceto("=",$2,crearIndice(indiceAuxSalto));
+		desapilar(&pilaIndicesFor,&indiceForAux);
+		indiceNumero = crearTerceto(numeroTexto,"","");
+		indiceAuxSalto = crearTerceto("+",crearIndice(indiceForAux.posicion),crearIndice(indiceNumero));
+		crearTerceto("=",crearIndice(indiceForAux.posicion),crearIndice(indiceAuxSalto));
 		desapilar(&pilaForsCmp,&forCmpAux);
 		IndiceActual =  crearTerceto("BI",crearIndice(forCmpAux.posicion),"");
 		t_info_p forFalseAux;
@@ -1034,6 +1050,7 @@ void genera_asm()
 		{
 			sprintf(etiqueta_aux, "ETIQ_%d", lista_etiquetas[j]);
 			fprintf(pf_asm, "%s: \n", etiqueta_aux);
+			break;
 		}
 	}
 	escribirTercetoEnAsm(pf_asm, auxNodo, etiqueta_aux);
@@ -1041,6 +1058,7 @@ void genera_asm()
 		if(lista_etiquetas[j] == contadorTercetos) {
 			sprintf(etiqueta_aux, "ETIQ_%d", lista_etiquetas[j]);
 			fprintf(pf_asm, "%s: \n", etiqueta_aux);
+			break;
 		}
 	}
 	/*generamos el final */
@@ -1233,7 +1251,8 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 
 	// Formato terceto Unario (x,  ,  ) | Ids, constantes
 
-	if (strcmp("", auxNodo->info.segundoElemento) == 0) { 
+	if (strcmp("", auxNodo->info.segundoElemento) == 0) {
+		printf("elemento %s\n",auxNodo->info.primerElemento);
 		cant_op++;
 		strcpy(lista_operandos_assembler[cant_op], auxNodo->info.primerElemento);
 		return;
@@ -1321,14 +1340,44 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 
 		//se compara ese tipo
 		if (strcmp(tipo, "float") == 0 || strcmp(tipo,"integer") == 0) 
-		{
+		{	
 			fprintf(pf_asm, "\t FLD %s \t;Cargo valor \n", getNombreAsm(op1));
 			fprintf(pf_asm, "\t FSTP %s \t; Se lo asigno a la variable que va a guardar el resultado \n", getNombreAsm(op2));
+
 		}
 		else
-		{
+		{	
 			fprintf(pf_asm, "\t mov si,OFFSET %s \t;Cargo en si el origen\n", getNombreAsm(op1));
-			fprintf(pf_asm, "\t mov di,OFFSET %s \t; cargo en di el destino \n", getNombreAsm(op2));
+			fprintf(pf_asm, "\t mov di,OFFSET %s \t;Cargo en di el destino\n", getNombreAsm(op2));
+			fprintf(pf_asm, "\t STRCPY\t; llamo a la macro para copiar \n");
+		}	
+	}
+	else if (strcmp(auxNodo->info.primerElemento, "=" ) == 0)
+		{
+		//se busca el tipo de dato del ID a la izq de la asignacion
+		t_info_terceto *idInfo = (t_info_terceto *)malloc(sizeof(t_info_terceto));
+	    if(!idInfo) {
+    	    printf("Error: SIN_MEMORIA");
+			exit(1);
+		}
+		int indiceId = sacarValorDeIndice(auxNodo->info.segundoElemento);
+		buscarEnListaDeTercetosOrdenada(&lista_terceto,indiceId,idInfo);
+		char* tipo = BuscarEnListaYDevolverTipo(&lista_ts,idInfo->primerElemento);
+
+		//se compara ese tipo
+		if (strcmp(tipo, "float") == 0 || strcmp(tipo,"integer") == 0) 
+		{	
+			fprintf(pf_asm, "\t FLD %s \t;Cargo valor \n", getNombreAsm(op1));
+			fprintf(pf_asm, "\t FSTP %s \t; Se lo asigno a la variable que va a guardar el resultado \n", getNombreAsm(op2));
+			cant_op++;
+			strcpy(lista_operandos_assembler[cant_op], op2);
+			printf("%s\n",op2);
+			strcpy(varAuxFor,op2);
+		}
+		else
+		{	
+			fprintf(pf_asm, "\t mov si,OFFSET %s \t;Cargo en si el origen\n", getNombreAsm(op1));
+			fprintf(pf_asm, "\t mov di,OFFSET %s \t;Cargo en di el destino\n", getNombreAsm(op2));
 			fprintf(pf_asm, "\t STRCPY\t; llamo a la macro para copiar \n");
 		}	
 	}
@@ -1340,6 +1389,10 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 		if ( strcmp(tipo,"float") | strcmp(tipo,"integer")) 
 		{
 			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando1 \n", getNombreAsm(op1));
+			if ( strcmp(varAuxFor, op1) == 0){
+				cant_op++;
+				strcpy(lista_operandos_assembler[cant_op], op1);
+			}
 			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando2 \n", getNombreAsm(op2));
 			fprintf(pf_asm, "\t FCOMP\t\t;Comparo \n");
 			fprintf(pf_asm, "\t FFREE ST(0) \t; Vacio ST0\n");
@@ -1369,17 +1422,17 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 1\n", getNombreAsm(op1));
 		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 2\n", getNombreAsm(op2));
 		fflush(pf_asm);
-		
+		if ( strcmp(varAuxFor, op1) == 0 ){
+			cant_op++;
+			strcpy(lista_operandos_assembler[cant_op], op1);
+		}
 		// lista_terceto
 		
-		printf("no se para que es esto %s\n",aux);
 		fprintf(pf_asm, "\t %s \t\t;Opero\n", getCodOp(auxNodo->info.primerElemento));
 		fprintf(pf_asm, "\t FSTP %s \t;Almaceno el resultado en una var auxiliar\n", getNombreAsm(aux));
 		cant_op++;
 		strcpy(lista_operandos_assembler[cant_op], aux);
-	
 	}
-	
 }
 /*
 void insertar_ts_si_no_existe(char *nombre, char *tipo, char *valor, char *longitud) {

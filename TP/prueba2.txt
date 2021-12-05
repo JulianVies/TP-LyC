@@ -65,3 +65,4 @@ IF a > b THEN IF a == b THEN a:=1 ELSE a:=2 ENDIF ELSE a:=3 ENDIF
 IF a > b THEN IF a == b THEN a:=2 ENDIF ENDIF
 WHILE a > b BEGINW a:=1 WHILE a == b BEGINW a:=2 ENDW a:=2 ENDW
 FOR varB = 1 TO 21 + 2 [3] a :=b NEXT varB
+z := a + b * c - d / (e + f) + 20

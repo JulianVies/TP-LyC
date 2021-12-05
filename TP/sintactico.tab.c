@@ -173,6 +173,7 @@
 	t_pila pilaComp;
 	t_pila pilaElse;
 
+	t_pila pilaIndicesFor;
 
 
 //TERCETOS
@@ -253,6 +254,8 @@ int Salto1;
 int IndiceActual;
 
 int* PosReservada;
+
+char varAuxFor[1000];
 
 /////////
 
@@ -583,11 +586,11 @@ union yyalloc
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  49
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  38
+#define YYNNTS  39
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  73
+#define YYNRULES  74
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  135
+#define YYNSTATES  136
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -644,7 +647,7 @@ static const yytype_uint8 yyprhs[] =
      126,   130,   132,   134,   136,   138,   142,   146,   148,   152,
      156,   160,   162,   164,   166,   168,   171,   175,   179,   180,
      185,   187,   189,   191,   193,   195,   197,   199,   201,   202,
-     203,   204,   218,   221
+     203,   204,   205,   220,   223
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -670,22 +673,22 @@ static const yytype_int8 yyrhs[] =
       -1,    79,    20,    79,    -1,    79,    21,    79,    -1,    -1,
       75,    80,    81,    75,    -1,    64,    -1,    67,    -1,    35,
       -1,    36,    -1,    37,    -1,    38,    -1,    39,    -1,    40,
-      -1,    -1,    -1,    -1,    11,     3,    41,    75,    83,    44,
-      75,    84,    86,    85,    51,    45,     3,    -1,    29,    30,
-      -1,    29,     5,    30,    -1
+      -1,    -1,    -1,    -1,    -1,    11,     3,    41,    75,    83,
+      84,    44,    75,    85,    87,    86,    51,    45,     3,    -1,
+      29,    30,    -1,    29,     5,    30,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   263,   263,   269,   270,   273,   274,   275,   276,   277,
-     278,   281,   288,   295,   296,   300,   307,   299,   317,   323,
-     333,   323,   341,   367,   372,   377,   382,   382,   382,   384,
-     384,   384,   386,   387,   397,   400,   405,   412,   413,   416,
-     417,   420,   420,   420,   422,   423,   424,   427,   428,   429,
-     432,   433,   436,   441,   448,   454,   455,   456,   459,   459,
-     460,   461,   464,   465,   466,   467,   468,   469,   472,   472,
-     472,   472,   498,   499
+       0,   266,   266,   272,   273,   276,   277,   278,   279,   280,
+     281,   284,   291,   298,   299,   303,   310,   302,   320,   325,
+     335,   325,   343,   369,   374,   379,   384,   384,   384,   386,
+     386,   386,   388,   389,   399,   402,   407,   414,   415,   418,
+     419,   422,   422,   422,   424,   425,   426,   429,   430,   431,
+     434,   435,   438,   443,   450,   456,   457,   458,   461,   461,
+     462,   463,   466,   467,   468,   469,   470,   471,   474,   475,
+     485,   485,   474,   514,   515
 };
 #endif
 
@@ -706,7 +709,7 @@ static const char *const yytname[] =
   "$@5", "$@6", "equmin", "$@7", "$@8", "listaEqu", "itemEqu",
   "listaVarDec", "listaType", "TYPE", "expresion", "termino", "factor",
   "condicion", "comparacion", "$@9", "comparador", "for", "$@10", "$@11",
-  "$@12", "salto", 0
+  "$@12", "$@13", "salto", 0
 };
 #endif
 
@@ -733,7 +736,7 @@ static const yytype_uint8 yyr1[] =
       73,    74,    74,    74,    75,    75,    75,    76,    76,    76,
       77,    77,    77,    77,    78,    78,    78,    78,    80,    79,
       79,    79,    81,    81,    81,    81,    81,    81,    83,    84,
-      85,    82,    86,    86
+      85,    86,    82,    87,    87
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -746,7 +749,7 @@ static const yytype_uint8 yyr2[] =
        3,     1,     1,     1,     1,     3,     3,     1,     3,     3,
        3,     1,     1,     1,     1,     2,     3,     3,     0,     4,
        1,     1,     1,     1,     1,     1,     1,     1,     0,     0,
-       0,    13,     2,     3
+       0,     0,    14,     2,     3
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -762,51 +765,51 @@ static const yytype_uint8 yydefact[] =
        0,     0,     0,     0,     0,     0,     0,     0,    37,     0,
       68,     0,     0,    50,    45,    46,    62,    63,    64,    65,
       66,    67,     0,    48,    49,     0,    56,    57,    19,     0,
-       0,     0,    27,    30,    59,    16,    18,     0,    38,     0,
-       0,     0,     0,     0,    20,     0,    69,     0,     0,    17,
-       0,    41,    42,    43,     0,    39,     0,     0,     0,     0,
-       0,    22,     0,    70,    34,    35,    36,     0,    32,     0,
-      21,    40,     0,    72,     0,     0,     0,     0,    73,     0,
-      33,    28,    31,     0,    71
+       0,    69,    27,    30,    59,    16,    18,     0,    38,     0,
+       0,     0,     0,     0,    20,     0,     0,     0,     0,    17,
+       0,    41,    42,    43,     0,    39,    70,     0,     0,     0,
+       0,    22,     0,    34,    35,    36,     0,    32,     0,    21,
+      40,     0,    71,     0,     0,     0,     0,    73,     0,    33,
+      28,    31,    74,     0,     0,    72
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
-static const yytype_int8 yydefgoto[] =
+static const yytype_int16 yydefgoto[] =
 {
       -1,     8,     9,    10,    11,    12,    13,    54,    93,    14,
       87,   100,    15,    16,    17,    31,    45,    91,    32,    46,
-      92,   117,   118,    59,   104,   105,    33,    34,    35,    36,
-      37,    51,    72,    18,    81,   106,   124,   113
+      92,   116,   117,    59,   104,   105,    33,    34,    35,    36,
+      37,    51,    72,    18,    81,    90,   112,   128,   122
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -55
+#define YYPACT_NINF -56
 static const yytype_int16 yypact[] =
 {
-      71,     0,    10,    13,    28,    -1,    -1,     7,    53,    71,
-     -55,   -55,   -55,   -55,   -55,   -55,   -55,   -55,   -55,    34,
-     -55,   -55,   -55,    57,   -55,   -55,   -55,   -55,   -55,    58,
-      85,   -55,   -55,    16,    30,   -55,   -55,    60,    56,    82,
-     -55,   -55,   -55,    16,    85,    70,    81,   -55,    67,    85,
-      85,    68,    85,    85,    62,    58,    58,    71,   -55,     4,
-      16,    85,    85,   -55,    30,    30,   -55,   -55,   -55,   -55,
-     -55,   -55,    85,   -55,   -55,    71,   -55,   -55,    17,   114,
-      78,    79,    16,    16,    16,    71,   -55,   105,   -55,    95,
-      85,   101,   102,   113,   -55,    63,    16,    99,   100,   -55,
-      71,   -55,   -55,   -55,    43,   -55,   103,    91,    91,    44,
-      63,   -55,     2,   -55,   -55,   -55,   -55,    54,   -55,    72,
-     -55,   -55,   104,   -55,    71,    91,    98,   106,   -55,     3,
-     -55,   -55,   -55,   128,   -55
+      30,   -15,    13,    26,    18,    65,    65,    -4,    35,    30,
+     -56,   -56,   -56,   -56,   -56,   -56,   -56,   -56,   -56,     0,
+     -56,   -56,   -56,    -2,   -56,   -56,   -56,   -56,   -56,    76,
+       5,   -56,   -56,    38,    70,   -56,   -56,    85,    40,    50,
+     -56,   -56,   -56,    38,     5,    46,    64,   -56,    67,     5,
+       5,    73,     5,     5,   101,    76,    76,    30,   -56,    36,
+      38,     5,     5,   -56,    70,    70,   -56,   -56,   -56,   -56,
+     -56,   -56,     5,   -56,   -56,    30,   -56,   -56,    16,   114,
+      75,   -56,    38,    38,    38,    30,   -56,   102,   -56,    93,
+      79,   103,   104,   111,   -56,    56,     5,    97,   100,   -56,
+      30,   -56,   -56,   -56,    57,   -56,    38,    44,    44,    49,
+      56,   -56,   105,   -56,   -56,   -56,    60,   -56,    71,   -56,
+     -56,    10,   -56,    44,    98,    99,   106,   -56,    30,   -56,
+     -56,   -56,   -56,     6,   129,   -56
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-     -55,   -55,   -54,    -9,   -55,   -55,   -55,   -55,   -55,   -55,
-     -55,   -55,   -55,   -55,   -55,   -55,   -55,   -55,   -55,   -55,
-     -55,    25,    11,   -55,   -55,    27,   -18,    65,    66,   129,
-      -6,   -55,   -55,   -55,   -55,   -55,   -55,   -55
+     -56,   -56,   -55,    -9,   -56,   -56,   -56,   -56,   -56,   -56,
+     -56,   -56,   -56,   -56,   -56,   -56,   -56,   -56,   -56,   -56,
+     -56,    25,    12,   -56,   -56,    27,   -18,    66,    68,   132,
+      33,   -56,   -56,   -56,   -56,   -56,   -56,   -56,   -56
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -816,38 +819,38 @@ static const yytype_int16 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-      41,    43,    24,    78,    25,    26,     1,   122,    27,    28,
-       2,     3,    48,    20,     4,     5,    21,    22,    29,     6,
-       1,    85,    19,    47,     2,     3,    60,    79,     4,     5,
-      30,    23,   123,     6,    80,    86,    39,    24,    42,    25,
-      26,    49,    50,    82,    83,     7,   109,     1,   133,    76,
-      77,     2,     3,    40,    84,     4,     5,    52,    53,     7,
-       6,    24,   120,    25,    26,    30,   110,    27,    28,    41,
-     129,    57,    96,   111,     1,    75,    41,   125,     2,     3,
-      55,    56,     4,     5,   126,    58,     7,     6,    24,    30,
-      25,    26,    49,    50,   114,   125,   115,   116,    44,    63,
-      41,    61,   127,    66,    67,    68,    69,    70,    71,   101,
-     102,   103,    62,     7,    64,    65,    30,    88,    73,    74,
-      41,    89,    94,    90,    95,    97,    98,    99,   107,   108,
-     131,   134,   112,   119,   128,    38,   130,   121,   132
+      41,    43,    78,    24,    42,    25,    26,    19,    24,     1,
+      25,    26,    48,     2,     3,   126,    20,     4,     5,     1,
+      85,    23,     6,     2,     3,    39,    60,     4,     5,    21,
+      22,    30,     6,     1,    86,    40,    30,     2,     3,    44,
+     127,     4,     5,    82,    83,   109,     6,   113,     7,   114,
+     115,   134,     1,    58,    84,    57,     2,     3,     7,    79,
+       4,     5,    47,    49,    50,     6,    80,   119,    24,    41,
+      25,    26,     7,   133,    27,    28,    41,    61,   106,    24,
+     110,    25,    26,   123,    29,    27,    28,   111,    76,    77,
+     124,     7,    49,    50,   123,    62,    30,    52,    53,    63,
+      41,   125,   101,   102,   103,    55,    56,    30,    66,    67,
+      68,    69,    70,    71,    75,    64,    65,    88,    89,    94,
+      73,    74,    95,    96,    41,    99,   107,    97,    98,   108,
+     130,   131,   135,   118,   121,   129,   132,   120,    38
 };
 
 static const yytype_uint8 yycheck[] =
 {
-       9,    19,     3,    57,     5,     6,     3,     5,     9,    10,
-       7,     8,    30,     3,    11,    12,     3,     4,    19,    16,
-       3,    75,    22,    29,     7,     8,    44,    23,    11,    12,
-      31,     3,    30,    16,    30,    18,    29,     3,     4,     5,
-       6,    25,    26,    61,    62,    42,   100,     3,    45,    55,
-      56,     7,     8,     0,    72,    11,    12,    27,    28,    42,
-      16,     3,    18,     5,     6,    31,    23,     9,    10,    78,
-     124,    15,    90,    30,     3,    13,    85,    23,     7,     8,
-      20,    21,    11,    12,    30,     3,    42,    16,     3,    31,
-       5,     6,    25,    26,     3,    23,     5,     6,    41,    32,
-     109,    31,    30,    35,    36,    37,    38,    39,    40,    46,
-      47,    48,    31,    42,    49,    50,    31,     3,    52,    53,
-     129,    43,    17,    44,    29,    24,    24,    14,    29,    29,
-      32,     3,    29,   108,    30,     6,   125,   110,    32
+       9,    19,    57,     3,     4,     5,     6,    22,     3,     3,
+       5,     6,    30,     7,     8,     5,     3,    11,    12,     3,
+      75,     3,    16,     7,     8,    29,    44,    11,    12,     3,
+       4,    31,    16,     3,    18,     0,    31,     7,     8,    41,
+      30,    11,    12,    61,    62,   100,    16,     3,    42,     5,
+       6,    45,     3,     3,    72,    15,     7,     8,    42,    23,
+      11,    12,    29,    25,    26,    16,    30,    18,     3,    78,
+       5,     6,    42,   128,     9,    10,    85,    31,    96,     3,
+      23,     5,     6,    23,    19,     9,    10,    30,    55,    56,
+      30,    42,    25,    26,    23,    31,    31,    27,    28,    32,
+     109,    30,    46,    47,    48,    20,    21,    31,    35,    36,
+      37,    38,    39,    40,    13,    49,    50,     3,    43,    17,
+      52,    53,    29,    44,   133,    14,    29,    24,    24,    29,
+      32,    32,     3,   108,    29,   123,    30,   110,     6
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -863,11 +866,11 @@ static const yytype_uint8 yystos[] =
       75,    31,    31,    32,    76,    76,    35,    36,    37,    38,
       39,    40,    81,    77,    77,    13,    79,    79,    51,    23,
       30,    83,    75,    75,    75,    51,    18,    59,     3,    43,
-      44,    66,    69,    57,    17,    29,    75,    24,    24,    14,
-      60,    46,    47,    48,    73,    74,    84,    29,    29,    51,
-      23,    30,    29,    86,     3,     5,     6,    70,    71,    70,
-      18,    74,     5,    30,    85,    23,    30,    30,    30,    51,
-      71,    32,    32,    45,     3
+      84,    66,    69,    57,    17,    29,    44,    24,    24,    14,
+      60,    46,    47,    48,    73,    74,    75,    29,    29,    51,
+      23,    30,    85,     3,     5,     6,    70,    71,    70,    18,
+      74,    29,    87,    23,    30,    30,     5,    30,    86,    71,
+      32,    32,    30,    51,    45,     3
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1760,7 +1763,6 @@ yyreduce:
     { printf("Regla If\n");
 			t_info_p ifCmpAux;
 			desapilar(&pilaComp,&ifCmpAux);
-			printf("Desapilar primer branch: %d",ifCmpAux.posicion);
 			modificarIndiceTercetoSalto(&lista_terceto, ifCmpAux.posicion, contadorTercetos);
 ;}
     break;
@@ -2083,17 +2085,30 @@ yyreduce:
 
   case 69:
 
-    {EindAux2 = Eind;;}
+    {
+		t_info_p forIndice;
+		nuevoSimbolo((yyvsp[(2) - (5)].str_val),"-","integer",-1);
+		
+		forIndice.posicion = crearTerceto((yyvsp[(2) - (5)].str_val),"","");
+		apilar(&pilaIndicesFor,&forIndice);
+
+		crearTerceto("=",crearIndice(forIndice.posicion),crearIndice(EindAux1));
+
+	;}
     break;
 
   case 70:
 
+    {EindAux2 = Eind;;}
+    break;
+
+  case 71:
+
     {
 	t_info_p forCmp;
-	nuevoSimbolo((yyvsp[(2) - (9)].str_val),"-","integer",-1);
-	crearTerceto("=",(yyvsp[(2) - (9)].str_val),crearIndice(EindAux1));
-
-	forCmp.posicion = crearTerceto("CMP",(yyvsp[(2) - (9)].str_val),crearIndice(EindAux2));
+	t_info_p forIndiceAux;
+	verTope(&pilaIndicesFor,&forIndiceAux);
+	forCmp.posicion = crearTerceto("CMP",crearIndice(forIndiceAux.posicion),crearIndice(EindAux2));
 	apilar(&pilaForsCmp,&forCmp);
 	forCmp.posicion = crearTerceto("BGT","","");
 	apilar(&pilaForsFalse,&forCmp);
@@ -2101,15 +2116,19 @@ yyreduce:
 	;}
     break;
 
-  case 71:
+  case 72:
 
     {
 		t_info_p forCmpAux;
+		t_info_p indiceForAux;
 		int indiceAuxSalto;
+		int indiceNumero;
 		char numeroTexto [4];
 		itoa(saltoConst,numeroTexto,10);
-		indiceAuxSalto = crearTerceto("+",(yyvsp[(2) - (13)].str_val),numeroTexto);
-		crearTerceto("=",(yyvsp[(2) - (13)].str_val),crearIndice(indiceAuxSalto));
+		desapilar(&pilaIndicesFor,&indiceForAux);
+		indiceNumero = crearTerceto(numeroTexto,"","");
+		indiceAuxSalto = crearTerceto("+",crearIndice(indiceForAux.posicion),crearIndice(indiceNumero));
+		crearTerceto("=",crearIndice(indiceForAux.posicion),crearIndice(indiceAuxSalto));
 		desapilar(&pilaForsCmp,&forCmpAux);
 		IndiceActual =  crearTerceto("BI",crearIndice(forCmpAux.posicion),"");
 		t_info_p forFalseAux;
@@ -2118,12 +2137,12 @@ yyreduce:
 	;}
     break;
 
-  case 72:
+  case 73:
 
     { saltoConst = 1; ;}
     break;
 
-  case 73:
+  case 74:
 
     { saltoConst = (yyvsp[(2) - (3)].int_val); ;}
     break;
@@ -2873,6 +2892,7 @@ void genera_asm()
 		{
 			sprintf(etiqueta_aux, "ETIQ_%d", lista_etiquetas[j]);
 			fprintf(pf_asm, "%s: \n", etiqueta_aux);
+			break;
 		}
 	}
 	escribirTercetoEnAsm(pf_asm, auxNodo, etiqueta_aux);
@@ -2880,6 +2900,7 @@ void genera_asm()
 		if(lista_etiquetas[j] == contadorTercetos) {
 			sprintf(etiqueta_aux, "ETIQ_%d", lista_etiquetas[j]);
 			fprintf(pf_asm, "%s: \n", etiqueta_aux);
+			break;
 		}
 	}
 	/*generamos el final */
@@ -3072,7 +3093,8 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 
 	// Formato terceto Unario (x,  ,  ) | Ids, constantes
 
-	if (strcmp("", auxNodo->info.segundoElemento) == 0) { 
+	if (strcmp("", auxNodo->info.segundoElemento) == 0) {
+		printf("elemento %s\n",auxNodo->info.primerElemento);
 		cant_op++;
 		strcpy(lista_operandos_assembler[cant_op], auxNodo->info.primerElemento);
 		return;
@@ -3160,14 +3182,44 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 
 		//se compara ese tipo
 		if (strcmp(tipo, "float") == 0 || strcmp(tipo,"integer") == 0) 
-		{
+		{	
 			fprintf(pf_asm, "\t FLD %s \t;Cargo valor \n", getNombreAsm(op1));
 			fprintf(pf_asm, "\t FSTP %s \t; Se lo asigno a la variable que va a guardar el resultado \n", getNombreAsm(op2));
+
 		}
 		else
-		{
+		{	
 			fprintf(pf_asm, "\t mov si,OFFSET %s \t;Cargo en si el origen\n", getNombreAsm(op1));
-			fprintf(pf_asm, "\t mov di,OFFSET %s \t; cargo en di el destino \n", getNombreAsm(op2));
+			fprintf(pf_asm, "\t mov di,OFFSET %s \t;Cargo en di el destino\n", getNombreAsm(op2));
+			fprintf(pf_asm, "\t STRCPY\t; llamo a la macro para copiar \n");
+		}	
+	}
+	else if (strcmp(auxNodo->info.primerElemento, "=" ) == 0)
+		{
+		//se busca el tipo de dato del ID a la izq de la asignacion
+		t_info_terceto *idInfo = (t_info_terceto *)malloc(sizeof(t_info_terceto));
+	    if(!idInfo) {
+    	    printf("Error: SIN_MEMORIA");
+			exit(1);
+		}
+		int indiceId = sacarValorDeIndice(auxNodo->info.segundoElemento);
+		buscarEnListaDeTercetosOrdenada(&lista_terceto,indiceId,idInfo);
+		char* tipo = BuscarEnListaYDevolverTipo(&lista_ts,idInfo->primerElemento);
+
+		//se compara ese tipo
+		if (strcmp(tipo, "float") == 0 || strcmp(tipo,"integer") == 0) 
+		{	
+			fprintf(pf_asm, "\t FLD %s \t;Cargo valor \n", getNombreAsm(op1));
+			fprintf(pf_asm, "\t FSTP %s \t; Se lo asigno a la variable que va a guardar el resultado \n", getNombreAsm(op2));
+			cant_op++;
+			strcpy(lista_operandos_assembler[cant_op], op2);
+			printf("%s\n",op2);
+			strcpy(varAuxFor,op2);
+		}
+		else
+		{	
+			fprintf(pf_asm, "\t mov si,OFFSET %s \t;Cargo en si el origen\n", getNombreAsm(op1));
+			fprintf(pf_asm, "\t mov di,OFFSET %s \t;Cargo en di el destino\n", getNombreAsm(op2));
 			fprintf(pf_asm, "\t STRCPY\t; llamo a la macro para copiar \n");
 		}	
 	}
@@ -3179,6 +3231,10 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 		if ( strcmp(tipo,"float") | strcmp(tipo,"integer")) 
 		{
 			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando1 \n", getNombreAsm(op1));
+			if ( strcmp(varAuxFor, op1) == 0){
+				cant_op++;
+				strcpy(lista_operandos_assembler[cant_op], op1);
+			}
 			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando2 \n", getNombreAsm(op2));
 			fprintf(pf_asm, "\t FCOMP\t\t;Comparo \n");
 			fprintf(pf_asm, "\t FFREE ST(0) \t; Vacio ST0\n");
@@ -3208,17 +3264,17 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 1\n", getNombreAsm(op1));
 		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 2\n", getNombreAsm(op2));
 		fflush(pf_asm);
-		
+		if ( strcmp(varAuxFor, op1) == 0 ){
+			cant_op++;
+			strcpy(lista_operandos_assembler[cant_op], op1);
+		}
 		// lista_terceto
 		
-		printf("no se para que es esto %s\n",aux);
 		fprintf(pf_asm, "\t %s \t\t;Opero\n", getCodOp(auxNodo->info.primerElemento));
 		fprintf(pf_asm, "\t FSTP %s \t;Almaceno el resultado en una var auxiliar\n", getNombreAsm(aux));
 		cant_op++;
 		strcpy(lista_operandos_assembler[cant_op], aux);
-	
 	}
-	
 }
 /*
 void insertar_ts_si_no_existe(char *nombre, char *tipo, char *valor, char *longitud) {

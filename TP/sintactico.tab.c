@@ -2706,7 +2706,7 @@ int buscarEnListaDeTercetosOrdenada(t_lista_terceto *pl, int indiceTerceto, t_in
 		strcpy(info->primerElemento, (*pl)->info.primerElemento);
 		strcpy(info->segundoElemento, (*pl)->info.segundoElemento);
 		strcpy(info->tercerElemento, (*pl)->info.tercerElemento);
-
+		strcpy(info->tipodato, (*pl)->info.tipodato);
         return 1;
     }
 
@@ -3202,7 +3202,7 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 		{
 			yyerror("Ops! No estan soportadas las operaciones entre cadenas\n");
 		}
-		// sprintf(aux, "_aux%d", i); // auxiliar relacionado al terceto
+		sprintf(aux, "_aux%d", auxNodo->info.numeroTerceto); // auxiliar relacionado al terceto
 		// insertar_ts_si_no_existe(aux, "FLOAT", "", ""); 
 		fflush(pf_asm);
 		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 1\n", getNombreAsm(op1));
@@ -3211,11 +3211,11 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 		
 		// lista_terceto
 		
-		
+		printf("no se para que es esto %s\n",aux);
 		fprintf(pf_asm, "\t %s \t\t;Opero\n", getCodOp(auxNodo->info.primerElemento));
-		// fprintf(pf_asm, "\t FSTP %s \t;Almaceno el resultado en una var auxiliar\n", getNombreAsm(aux));
-		// cant_op++;
-		// strcpy(lista_operandos_assembler[cant_op], aux);
+		fprintf(pf_asm, "\t FSTP %s \t;Almaceno el resultado en una var auxiliar\n", getNombreAsm(aux));
+		cant_op++;
+		strcpy(lista_operandos_assembler[cant_op], aux);
 	
 	}
 	

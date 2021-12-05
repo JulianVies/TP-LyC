@@ -27,6 +27,7 @@ MAIN:
 	 FLD @_2 	;Cargo operando 2
 	 FADD 		;Opero
 	 FSTP @_aux5 	;Almaceno el resultado en una var auxiliar
+ETIQ_6: 
 	 FLD @var		;comparacion, operando1 
 	 FLD @_aux5		;comparacion, operando2 
 	 FCOMP		;Comparo 

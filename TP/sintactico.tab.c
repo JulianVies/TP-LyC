@@ -2875,11 +2875,12 @@ void genera_asm()
     if(auxNodo==NULL)
     	exit(1);
 	
+	printf("cant etiquetas %d",cant_etiquetas);
     while(auxNodo->pSig!=NULL)
-	{
+	{	
 		for (j=0;j<=cant_etiquetas;j++) {
 			if (auxNodo->info.numeroTerceto == lista_etiquetas[j])
-			{
+			{	
 				sprintf(etiqueta_aux, "ETIQ_%d", lista_etiquetas[j]);
 				fprintf(pf_asm, "%s: \n", etiqueta_aux);
 			}
@@ -2889,10 +2890,9 @@ void genera_asm()
 	}
 	for (j=0;j<=cant_etiquetas;j++) {
 		if (auxNodo->info.numeroTerceto == lista_etiquetas[j])
-		{
+		{	
 			sprintf(etiqueta_aux, "ETIQ_%d", lista_etiquetas[j]);
 			fprintf(pf_asm, "%s: \n", etiqueta_aux);
-			break;
 		}
 	}
 	escribirTercetoEnAsm(pf_asm, auxNodo, etiqueta_aux);
@@ -3058,7 +3058,7 @@ int generarListaEtiquetas(int lista_etiquetas[])
 				int found = -1;
 				int j;
 				for (j = 1; j<=cant_etiquetas; j++)
-				{
+				{	
 					if (lista_etiquetas[j] == atoi(auxNodoTerceto->info.segundoElemento))
 					{
 						found = 1;
@@ -3073,6 +3073,27 @@ int generarListaEtiquetas(int lista_etiquetas[])
 		}
 		auxNodoTerceto = auxNodoTerceto->pSig;
     }
+	if (strcmp(auxNodoTerceto->info.segundoElemento, "") != 0 && strcmp(auxNodoTerceto->info.tercerElemento, "") == 0)
+	{
+		if (strcmp(auxNodoTerceto->info.primerElemento, "GET") != 0 && strcmp(auxNodoTerceto->info.primerElemento, "DISPLAY") != 0)
+		{
+			int found = -1;
+			int j;
+			for (j = 1; j<=cant_etiquetas; j++)
+			{	
+				if (lista_etiquetas[j] == atoi(auxNodoTerceto->info.segundoElemento))
+				{
+					found = 1;
+				}
+			}
+			if (found == -1) 
+			{
+				cant_etiquetas++;
+				lista_etiquetas[cant_etiquetas] = sacarValorDeEtiqueta(auxNodoTerceto->info.segundoElemento);
+			}
+		}
+	}
+
 	return cant_etiquetas;
 }
 
@@ -3094,7 +3115,6 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 	// Formato terceto Unario (x,  ,  ) | Ids, constantes
 
 	if (strcmp("", auxNodo->info.segundoElemento) == 0) {
-		printf("elemento %s\n",auxNodo->info.primerElemento);
 		cant_op++;
 		strcpy(lista_operandos_assembler[cant_op], auxNodo->info.primerElemento);
 		return;
@@ -3141,7 +3161,7 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 			}
 		}
 		else // saltos
-		{
+		{	
 			char *codigo = getCodOp(auxNodo->info.primerElemento);
 			sprintf(etiqueta_aux, "ETIQ_%d", sacarValorDeIndice(auxNodo->info.segundoElemento));
 			fprintf(pf_asm, "\t %s %s \t;Si cumple la condicion salto a la etiqueta\n", codigo, etiqueta_aux);
@@ -3213,7 +3233,6 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 			fprintf(pf_asm, "\t FSTP %s \t; Se lo asigno a la variable que va a guardar el resultado \n", getNombreAsm(op2));
 			cant_op++;
 			strcpy(lista_operandos_assembler[cant_op], op2);
-			printf("%s\n",op2);
 			strcpy(varAuxFor,op2);
 		}
 		else

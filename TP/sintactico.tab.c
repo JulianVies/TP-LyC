@@ -257,6 +257,8 @@ int* PosReservada;
 
 char varAuxFor[1000];
 
+int indEquVal;
+
 /////////
 
 char comp[3];
@@ -681,14 +683,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   266,   266,   272,   273,   276,   277,   278,   279,   280,
-     281,   284,   291,   298,   299,   303,   310,   302,   320,   325,
-     335,   325,   343,   369,   374,   379,   384,   384,   384,   386,
-     386,   386,   388,   389,   399,   402,   407,   414,   415,   418,
-     419,   422,   422,   422,   424,   425,   426,   429,   430,   431,
-     434,   435,   438,   443,   450,   456,   457,   458,   461,   461,
-     462,   463,   466,   467,   468,   469,   470,   471,   474,   475,
-     485,   485,   474,   514,   515
+       0,   268,   268,   275,   276,   279,   280,   281,   282,   283,
+     284,   287,   294,   301,   302,   306,   313,   305,   323,   328,
+     338,   328,   346,   372,   377,   382,   387,   387,   387,   389,
+     389,   389,   391,   396,   404,   407,   412,   419,   420,   423,
+     424,   427,   427,   427,   429,   430,   431,   434,   435,   436,
+     439,   440,   443,   448,   455,   461,   462,   463,   466,   466,
+     467,   468,   471,   472,   473,   474,   475,   476,   479,   480,
+     490,   490,   479,   519,   520
 };
 #endif
 
@@ -1684,6 +1686,7 @@ yyreduce:
         case 2:
 
     {
+	printf("llega?");
 	genera_asm();
 	printf("\nEnd programa.\n");	
 	;}
@@ -1863,7 +1866,7 @@ yyreduce:
 
   case 28:
 
-    { printf("Regla equmax\n"); indMax=crearTerceto("@Val","","");;}
+    { printf("Regla equmax\n"); indMax=indEquVal;;}
     break;
 
   case 29:
@@ -1878,24 +1881,26 @@ yyreduce:
 
   case 31:
 
-    { printf("Regla equmin\n"); indMin=crearTerceto("@Val","","");;}
+    { printf("Regla equmin\n"); indMin=indEquVal;;}
     break;
 
   case 32:
 
-    {crearTerceto(":=", "@Val", crearIndice(indItem));;}
+    {
+			indEquVal =crearTerceto("@EquVal", "", "");
+			crearTerceto(":=", crearIndice(indEquVal), crearIndice(indItem));
+			nuevoSimbolo("EquVal","-","integer",-1);
+	;}
     break;
 
   case 33:
 
     { 
-			int indAux;
-			indAux = crearTerceto(":=", "@Aux", crearIndice(indItem));
-			crearTerceto("CMP", "@Aux", "@Val");
-			char textoIndAux[10];
-			itoa(indAux+4,textoIndAux,10);
-			crearTerceto(compEqu, textoIndAux, "");
-			crearTerceto(":=", "@Val","@Aux"); ;}
+			int indAux =crearTerceto("@Aux", "", "");
+			int indAsigAux = crearTerceto(":=", crearIndice(indAux), crearIndice(indItem));
+			crearTerceto("CMP", crearIndice(indAsigAux), crearIndice(indEquVal));
+			crearTerceto(compEqu, crearIndice(indAsigAux+4), "");
+			crearTerceto(":=", crearIndice(indEquVal),crearIndice(indAsigAux)); ;}
     break;
 
   case 34:
@@ -2704,7 +2709,7 @@ int mostrarListaTerceto(){
 
 void guardarTercetosEnArchivo(t_lista_terceto *pl){
   FILE * pf = fopen("intermedia.txt","wt");
-
+	printf("llega?");
   while(*pl) {
 		fprintf(pf,"%d (%s,%s,%s) \n", (*pl)->info.numeroTerceto, (*pl)->info.primerElemento, (*pl)->info.segundoElemento, (*pl)->info.tercerElemento);
 		pl=&(*pl)->pSig;
@@ -2875,7 +2880,6 @@ void genera_asm()
     if(auxNodo==NULL)
     	exit(1);
 	
-	printf("cant etiquetas %d",cant_etiquetas);
     while(auxNodo->pSig!=NULL)
 	{	
 		for (j=0;j<=cant_etiquetas;j++) {

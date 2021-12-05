@@ -5,13 +5,12 @@ include number.asm
 .STACK 200h 
 
 .DATA 
-	@b dd ?	 ; Declaracion de Variable Numerica
 	@a dd ?	 ; Declaracion de Variable Numerica
-	@varB dd ?	 ; Declaracion de Variable Numerica
-	@var dd ?	 ; Declaracion de Variable Numerica
 	@_1 dd 1.0	;Declaracion de Constant Number
-	@_3 dd 3.0	;Declaracion de Constant Number
-	@_FOR2 db FOR2, "$", 30 dup (?)	;Declaracion de Constant String
+	@_100 dd 100.0	;Declaracion de Constant Number
+	@EquVal dd ?	 ; Declaracion de Variable Numerica
+	@_102 dd 102.0	;Declaracion de Constant Number
+	@_28 dd 28.0	;Declaracion de Constant Number
 .CODE 
 MAIN:
 
@@ -21,33 +20,47 @@ MAIN:
 	 MOV ES,AX 
 	 FNINIT 
 
-	 FLD @a		;comparacion, operando1 
-	 FLD @b		;comparacion, operando2 
+	 mov si,OFFSET @_100 	;Cargo en si el origen
+	 mov di,OFFSET @@EquVal 	;Cargo en di el destino
+	 STRCPY	; llamo a la macro para copiar 
+	 mov si,OFFSET @a 	;Cargo en si el origen
+	 mov di,OFFSET @@Aux 	;Cargo en di el destino
+	 STRCPY	; llamo a la macro para copiar 
+	 FLD @		;comparacion, operando1 
+	 FLD @_1		;comparacion, operando2 
 	 FCOMP		;Comparo 
 	 FFREE ST(0) 	; Vacio ST0
 	 FSTSW AX 		; mueve los bits C a FLAGS
 	 SAHF 			;Almacena el registro AH en el registro FLAGS 
-	 JNA ETIQ_15 	;Si cumple la condicion salto a la etiqueta
-	 FLD @_1 	;Cargo valor 
-	 FSTP @varB 	; Se lo asigno a la variable que va a guardar el resultado 
-ETIQ_8: 
-	 FLD @varB		;comparacion, operando1 
-	 FLD @_3		;comparacion, operando2 
+	 JAE ETIQ_10 	;Si cumple la condicion salto a la etiqueta
+	 mov si,OFFSET @ 	;Cargo en si el origen
+	 mov di,OFFSET @ 	;Cargo en di el destino
+	 STRCPY	; llamo a la macro para copiar 
+ETIQ_10: 
+	 mov si,OFFSET @_102 	;Cargo en si el origen
+	 mov di,OFFSET @@Aux 	;Cargo en di el destino
+	 STRCPY	; llamo a la macro para copiar 
+	 FLD @		;comparacion, operando1 
+	 FLD @		;comparacion, operando2 
 	 FCOMP		;Comparo 
 	 FFREE ST(0) 	; Vacio ST0
 	 FSTSW AX 		; mueve los bits C a FLAGS
 	 SAHF 			;Almacena el registro AH en el registro FLAGS 
-	 JA ETIQ_15 	;Si cumple la condicion salto a la etiqueta
-	 DisplayString @_FOR2 
-	 newLine 
-	 FLD @varB 	;Cargo operando 1
-	 FLD @_3 	;Cargo operando 2
-	 FADD 		;Opero
-	 FSTP @_aux12 	;Almaceno el resultado en una var auxiliar
-	 FLD @_aux12 	;Cargo valor 
-	 FSTP @varB 	; Se lo asigno a la variable que va a guardar el resultado 
-	 JMP ETIQ_8 	;Si cumple la condicion salto a la etiqueta
-ETIQ_15: 
+	 JAE ETIQ_16 	;Si cumple la condicion salto a la etiqueta
+	 mov si,OFFSET @ 	;Cargo en si el origen
+	 mov di,OFFSET @ 	;Cargo en di el destino
+	 STRCPY	; llamo a la macro para copiar 
+ETIQ_16: 
+	 FLD @		;comparacion, operando1 
+	 FLD @		;comparacion, operando2 
+	 FCOMP		;Comparo 
+	 FFREE ST(0) 	; Vacio ST0
+	 FSTSW AX 		; mueve los bits C a FLAGS
+	 SAHF 			;Almacena el registro AH en el registro FLAGS 
+	 JNE ETIQ_21 	;Si cumple la condicion salto a la etiqueta
+	 FLD @_28 	;Cargo valor 
+	 FSTP @a 	; Se lo asigno a la variable que va a guardar el resultado 
+ETIQ_21: 
 	 mov AX, 4C00h 	 ; Genera la interrupcion 21h
 	 int 21h 	 ; Genera la interrupcion 21h
 END MAIN

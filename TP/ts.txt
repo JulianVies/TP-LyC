@@ -1,8 +1,7 @@
 NOMBRE                              TIPO DE DATO     VALOR                               LONGITUD                           
-b                                   integer          -                                                                      
 a                                   integer          -                                                                      
-varB                                integer          -                                                                      
-var                                 integer          -                                                                      
 _1                                  CTE_E            1                                   1                                  
-_3                                  CTE_E            3                                   1                                  
-_FOR2                               CTE_S            FOR2                                4                                  
+_100                                CTE_E            100                                 3                                  
+EquVal                              integer          -                                                                      
+_102                                CTE_E            102                                 3                                  
+_28                                 CTE_E            28                                  2                                  

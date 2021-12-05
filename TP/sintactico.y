@@ -188,6 +188,8 @@ int* PosReservada;
 
 char varAuxFor[1000];
 
+int indEquVal;
+
 /////////
 
 char comp[3];
@@ -264,6 +266,7 @@ char compEqu[3];
 
 %%
 inicio: programa {
+	printf("llega?");
 	genera_asm();
 	printf("\nEnd programa.\n");	
 	}
@@ -381,19 +384,21 @@ get:GET	ID { int indiceTercetoGet=crearTerceto("GET",$2,"");
 			modificarIndiceTercetoTipo(&lista_terceto, indiceTercetoGet, tipoGet);
 			};
 
-equmax: EQUMAX {strcpy(compEqu, "BLE");} PARA expresion {indVal=Eind;} PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmax\n"); indMax=crearTerceto("@Val","","");};
+equmax: EQUMAX {strcpy(compEqu, "BLE");} PARA expresion {indVal=Eind;} PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmax\n"); indMax=indEquVal;};
 
-equmin: EQUMIN {strcpy(compEqu, "BGE");} PARA expresion {indVal=Eind;} PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmin\n"); indMin=crearTerceto("@Val","","");};
+equmin: EQUMIN {strcpy(compEqu, "BGE");} PARA expresion {indVal=Eind;} PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmin\n"); indMin=indEquVal;};
 
-listaEqu: itemEqu {crearTerceto(":=", "@Val", crearIndice(indItem));}
+listaEqu: itemEqu {
+			indEquVal =crearTerceto("@EquVal", "", "");
+			crearTerceto(":=", crearIndice(indEquVal), crearIndice(indItem));
+			nuevoSimbolo("EquVal","-","integer",-1);
+	}
 		| listaEqu COMA itemEqu { 
-			int indAux;
-			indAux = crearTerceto(":=", "@Aux", crearIndice(indItem));
-			crearTerceto("CMP", "@Aux", "@Val");
-			char textoIndAux[10];
-			itoa(indAux+4,textoIndAux,10);
-			crearTerceto(compEqu, textoIndAux, "");
-			crearTerceto(":=", "@Val","@Aux"); }
+			int indAux =crearTerceto("@Aux", "", "");
+			int indAsigAux = crearTerceto(":=", crearIndice(indAux), crearIndice(indItem));
+			crearTerceto("CMP", crearIndice(indAsigAux), crearIndice(indEquVal));
+			crearTerceto(compEqu, crearIndice(indAsigAux+4), "");
+			crearTerceto(":=", crearIndice(indEquVal),crearIndice(indAsigAux)); };
 		;
 
 itemEqu: ID 							 { 
@@ -862,7 +867,7 @@ int mostrarListaTerceto(){
 
 void guardarTercetosEnArchivo(t_lista_terceto *pl){
   FILE * pf = fopen("intermedia.txt","wt");
-
+	printf("llega?");
   while(*pl) {
 		fprintf(pf,"%d (%s,%s,%s) \n", (*pl)->info.numeroTerceto, (*pl)->info.primerElemento, (*pl)->info.segundoElemento, (*pl)->info.tercerElemento);
 		pl=&(*pl)->pSig;
@@ -1033,7 +1038,6 @@ void genera_asm()
     if(auxNodo==NULL)
     	exit(1);
 	
-	printf("cant etiquetas %d",cant_etiquetas);
     while(auxNodo->pSig!=NULL)
 	{	
 		for (j=0;j<=cant_etiquetas;j++) {

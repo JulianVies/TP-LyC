@@ -5,11 +5,10 @@ include number.asm
 .STACK 200h 
 
 .DATA 
-	@d dd ?	 ; Declaracion de Variable Numerica
-	@c db 30 dup (?),"$"	;Declaracion de Variable String
 	@b dd ?	 ; Declaracion de Variable Numerica
 	@a dd ?	 ; Declaracion de Variable Numerica
-	@_1 dd 1.0	;Declaracion de Constant Number
+	@_2 dd 2.0	;Declaracion de Constant Number
+	@_3 dd 3.0	;Declaracion de Constant Number
 .CODE 
 MAIN:
 
@@ -19,6 +18,11 @@ MAIN:
 	 MOV ES,AX 
 	 FNINIT 
 
+	 FLD @_2 	;Cargo operando 1
+	 FLD @_3 	;Cargo operando 2
+	 FADD 		;Opero
+	 FLD @ 	;Cargo valor 
+	 FSTP @a 	; Se lo asigno a la variable que va a guardar el resultado 
 	 mov AX, 4C00h 	 ; Genera la interrupcion 21h
 	 int 21h 	 ; Genera la interrupcion 21h
 END MAIN

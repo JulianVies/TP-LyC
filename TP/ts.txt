@@ -1,6 +1,5 @@
 NOMBRE                              TIPO DE DATO     VALOR                               LONGITUD                           
-d                                   real             -                                                                      
-c                                   string           -                                                                      
 b                                   integer          -                                                                      
 a                                   integer          -                                                                      
-_cadena                             CTE_S            cadena                              6                                  
+_2                                  CTE_E            2                                   1                                  
+_3                                  CTE_E            3                                   1                                  

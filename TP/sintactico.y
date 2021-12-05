@@ -471,6 +471,7 @@ comparador: MENOR_IGUAL		{strcpy(comp, "BGT");}
 
 for:FOR ID IGUALFOR expresion {EindAux1 = Eind;} TO expresion {EindAux2 = Eind;} salto {
 	t_info_p forCmp;
+	nuevoSimbolo($2,"-","integer",-1);
 	crearTerceto("=",$2,crearIndice(EindAux1));
 
 	forCmp.posicion = crearTerceto("CMP",$2,crearIndice(EindAux2));
@@ -822,6 +823,7 @@ int crearTerceto(char* primero, char* segundo, char* tercero){
 	strcpy(nuevo.primerElemento,primero);
 	strcpy(nuevo.segundoElemento,segundo);
 	strcpy(nuevo.tercerElemento,tercero);
+	strcpy(nuevo.tipodato,"");
 	nuevo.numeroTerceto = contadorTercetos;
 	//printf("%d %s %s %s\n",nuevo.numeroTerceto,nuevo.primerElemento,nuevo.segundoElemento,nuevo.tercerElemento);
 	insertar_en_lista_terceto(&lista_terceto,&nuevo);
@@ -1027,6 +1029,13 @@ void genera_asm()
 		escribirTercetoEnAsm(pf_asm, auxNodo, etiqueta_aux);
 		auxNodo = auxNodo->pSig;
 	}
+	for (j=0;j<=cant_etiquetas;j++) {
+		if (auxNodo->info.numeroTerceto == lista_etiquetas[j])
+		{
+			sprintf(etiqueta_aux, "ETIQ_%d", lista_etiquetas[j]);
+			fprintf(pf_asm, "%s: \n", etiqueta_aux);
+		}
+	}
 	escribirTercetoEnAsm(pf_asm, auxNodo, etiqueta_aux);
 	for (j=0;j<=cant_etiquetas;j++) {
 		if(lista_etiquetas[j] == contadorTercetos) {
@@ -1110,19 +1119,19 @@ char* getCodOp(char* token)
 	}
 	else if(!strcmp(token, "BGE"))
 	{
-		return "JNA";
+		return "JAE";
 	}
 	else if(!strcmp(token, "BGT"))
 	{
-		return "JNAE";
+		return "JA";
 	}
 	else if(!strcmp(token, "BLE"))
 	{
-		return "JNB";
+		return "JNA";
 	}
 	else if(!strcmp(token, "BLT"))
 	{
-		return "JNBE";
+		return "JB";
 	}
 	else if (!strcmp(token, "BI")) {
 		return "JMP";
@@ -1225,7 +1234,6 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 	// Formato terceto Unario (x,  ,  ) | Ids, constantes
 
 	if (strcmp("", auxNodo->info.segundoElemento) == 0) { 
-		printf("cantop %d\n",cant_op);
 		cant_op++;
 		strcpy(lista_operandos_assembler[cant_op], auxNodo->info.primerElemento);
 		return;
@@ -1324,12 +1332,12 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 			fprintf(pf_asm, "\t STRCPY\t; llamo a la macro para copiar \n");
 		}	
 	}
-	/*else if (strcmp(auxNodo->info.primerElemento, "CMP" ) == 0)
+	else if (strcmp(auxNodo->info.primerElemento, "CMP" ) == 0)
 	{
-		//int tipo = buscarTipoTS(op1);
+		// int tipo = buscarTipoTS(op1);
 		char* tipo = BuscarEnListaYDevolverTipo(&lista_ts,op1);
 		
-		if (tipo == "float" | tipo == "integer") 
+		if ( strcmp(tipo,"float") | strcmp(tipo,"integer")) 
 		{
 			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando1 \n", getNombreAsm(op1));
 			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando2 \n", getNombreAsm(op2));
@@ -1345,39 +1353,33 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 			fprintf(pf_asm, "\t STRCMP\t; llamo a la macro para comparar \n");	
 		}
 
-		strcpy(ult_op1_cmp, tercetos[i].dos);
+		strcpy(ult_op1_cmp, auxNodo->info.segundoElemento);
 	}
 	else
 	{
 	
-		
-		
 		char* tipo = BuscarEnListaYDevolverTipo(&lista_ts,op1);
-		char* auxx;		
 		if (tipo == "string") 
 		{
 			yyerror("Ops! No estan soportadas las operaciones entre cadenas\n");
 		}
-		sprintf(aux, "_aux%d", i); // auxiliar relacionado al terceto
-		//insertar_ts_si_no_existe(aux, "FLOAT", "", ""); 
+		// sprintf(aux, "_aux%d", i); // auxiliar relacionado al terceto
+		// insertar_ts_si_no_existe(aux, "FLOAT", "", ""); 
 		fflush(pf_asm);
 		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 1\n", getNombreAsm(op1));
 		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 2\n", getNombreAsm(op2));
 		fflush(pf_asm);
 		
-		////lista_terceto
+		// lista_terceto
 		
 		
-		auxx=buscaDatoEnTerceto(1,i);
-
-
-		fprintf(pf_asm, "\t %s \t\t;Opero\n", getCodOp(auxx));
+		fprintf(pf_asm, "\t %s \t\t;Opero\n", getCodOp(auxNodo->info.primerElemento));
 		fprintf(pf_asm, "\t FSTP %s \t;Almaceno el resultado en una var auxiliar\n", getNombreAsm(aux));
-		cant_op++;
-		strcpy(lista_operandos_assembler[cant_op], aux);
+		// cant_op++;
+		// strcpy(lista_operandos_assembler[cant_op], aux);
 	
 	}
-	*/
+	
 }
 /*
 void insertar_ts_si_no_existe(char *nombre, char *tipo, char *valor, char *longitud) {

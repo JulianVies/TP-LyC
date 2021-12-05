@@ -1,8 +1,8 @@
 NOMBRE                              TIPO DE DATO     VALOR                               LONGITUD                           
 b                                   integer          -                                                                      
 a                                   integer          -                                                                      
+varB                                integer          -                                                                      
 var                                 integer          -                                                                      
 _1                                  CTE_E            1                                   1                                  
-_21                                 CTE_E            21                                  2                                  
-_2                                  CTE_E            2                                   1                                  
 _3                                  CTE_E            3                                   1                                  
+_FOR2                               CTE_S            FOR2                                4                                  

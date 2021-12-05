@@ -2128,7 +2128,7 @@ yyreduce:
 		desapilar(&pilaIndicesFor,&indiceForAux);
 		indiceNumero = crearTerceto(numeroTexto,"","");
 		indiceAuxSalto = crearTerceto("+",crearIndice(indiceForAux.posicion),crearIndice(indiceNumero));
-		crearTerceto("=",crearIndice(indiceForAux.posicion),crearIndice(indiceAuxSalto));
+		crearTerceto(":=",crearIndice(indiceForAux.posicion),crearIndice(indiceAuxSalto));
 		desapilar(&pilaForsCmp,&forCmpAux);
 		IndiceActual =  crearTerceto("BI",crearIndice(forCmpAux.posicion),"");
 		t_info_p forFalseAux;
@@ -3203,9 +3203,14 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 		//se compara ese tipo
 		if (strcmp(tipo, "float") == 0 || strcmp(tipo,"integer") == 0) 
 		{	
-			fprintf(pf_asm, "\t FLD %s \t;Cargo valor \n", getNombreAsm(op1));
-			fprintf(pf_asm, "\t FSTP %s \t; Se lo asigno a la variable que va a guardar el resultado \n", getNombreAsm(op2));
-
+			if ( strcmp(varAuxFor, op1) == 0){
+				fprintf(pf_asm, "\t FLD %s \t;Cargo valor \n", getNombreAsm(op2));
+				fprintf(pf_asm, "\t FSTP %s \t; Se lo asigno a la variable que va a guardar el resultado \n", getNombreAsm(op1));
+			}
+			else {
+				fprintf(pf_asm, "\t FLD %s \t;Cargo valor \n", getNombreAsm(op1));
+				fprintf(pf_asm, "\t FSTP %s \t; Se lo asigno a la variable que va a guardar el resultado \n", getNombreAsm(op2));
+			}
 		}
 		else
 		{	

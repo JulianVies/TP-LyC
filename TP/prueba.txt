@@ -1,3 +1,2 @@
-DIM [ var, a, b ] AS [ integer, integer, integer ]
+DIM [ var, varB, a, b ] AS [ integer, integer, integer, integer ]
 
-FOR var = 1 TO 21 + 2 [3] a := b NEXT var

@@ -1,3 +1,4 @@
 DIM [ a ] AS [ integer ]
 
-IF EQUMIN(1; [100, a, 102]) THEN a:=28 ENDIF
+IF EQUMAX(10+101; [100, 111, a]) THEN a:=28 ENDIF
+

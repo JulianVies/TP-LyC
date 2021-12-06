@@ -556,7 +556,6 @@ int main(int argc,char *argv[]){
 	mostrarListaTerceto();
 	grabar_lista(&lista_ts);
 	guardarTercetosEnArchivo(&lista_terceto);
-	
 
   	fclose(yyin);
   }
@@ -877,13 +876,19 @@ int mostrarListaTerceto(){
 }
 
 void guardarTercetosEnArchivo(t_lista_terceto *pl){
-  FILE * pf = fopen("intermedia.txt","wt");
+  
+	FILE *file = fopen("intermedia.txt", "wt");
+	if (file == NULL){
+
+		printf("Error al generar el intermedia \n");
+	}
+  
   while(*pl) {
-		fprintf(pf,"%d (%s,%s,%s) \n", (*pl)->info.numeroTerceto, (*pl)->info.primerElemento, (*pl)->info.segundoElemento, (*pl)->info.tercerElemento);
+  		fprintf(file,"%d (%s,%s,%s) \n", (*pl)->info.numeroTerceto, (*pl)->info.primerElemento, (*pl)->info.segundoElemento, (*pl)->info.tercerElemento);
 		pl=&(*pl)->pSig;
   }
   
-  fclose(pf);
+  fclose(file);
 } 
 
 int buscarEnListaDeTercetosOrdenada(t_lista_terceto *pl, int indiceTerceto, t_info_terceto *info)

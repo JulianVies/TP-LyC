@@ -1,7 +1,38 @@
 NOMBRE                              TIPO DE DATO     VALOR                               LONGITUD                           
+x                                   integer          -                                                                      
+u                                   integer          -                                                                      
+z                                   integer          -                                                                      
+b                                   integer          -                                                                      
 a                                   integer          -                                                                      
 _1                                  CTE_E            1                                   1                                  
-_100                                CTE_E            100                                 3                                  
+_2                                  CTE_E            2                                   1                                  
+varB                                integer          -                                                                      
+_21                                 CTE_E            21                                  2                                  
+_3                                  CTE_E            3                                   1                                  
+_0                                  CTE_E            0                                   1                                  
+varc                                integer          -                                                                      
+_9                                  CTE_E            9                                   1                                  
+_Funciona                           CTE_S            Funciona                            8                                  
+_20                                 CTE_E            20                                  2                                  
+_FOR2                               CTE_S            FOR2                                4                                  
+_else                               CTE_S            else                                4                                  
+_Funcion                            CTE_S            Funcion                             7                                  
+_primero                            CTE_S            primero                             7                                  
+_segundo                            CTE_S            segundo                             7                                  
 EquVal                              integer          -                                                                      
-_102                                CTE_E            102                                 3                                  
 _28                                 CTE_E            28                                  2                                  
+_40                                 CTE_E            40                                  2                                  
+_30                                 CTE_E            30                                  2                                  
+_cadena                             CTE_S            cadena                              6                                  
+_aux24                              real             -                                                                      
+_aux35                              real             -                                                                      
+_aux42                              real             -                                                                      
+_aux46                              real             -                                                                      
+_aux57                              real             -                                                                      
+_aux63                              real             -                                                                      
+_aux64                              real             -                                                                      
+_aux68                              real             -                                                                      
+_aux69                              real             -                                                                      
+_aux70                              real             -                                                                      
+_aux72                              real             -                                                                      
+_aux117                             real             -                                                                      

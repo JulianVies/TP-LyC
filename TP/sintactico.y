@@ -183,8 +183,6 @@ int CompInd;
 int whileFalseInd;
 int InitWhileInd;
 int FinWhileInd;
-// int InitForInd;
-// int FinForInd;
 int Salto1;
 int IndiceActual;
 
@@ -324,7 +322,6 @@ BEGINW programa
 			t_info_p whileFalseAux;
 			desapilar(&pilaComp,&whileFalseAux);
 			modificarIndiceTercetoSalto(&lista_terceto, whileFalseAux.posicion, IndiceActual + 1);
-			//*PosReservada = contadorTercetos;
 		}
 ENDW;
 
@@ -405,7 +402,6 @@ listaEqu: itemEqu {
 			strcpy(varAuxEqu, "EquVal");
 	}
 		| listaEqu COMA itemEqu { 
-			//int indAsigAux = crearTerceto(":=", crearIndice(indAux), crearIndice(indItem));
 			int indCmp = crearTerceto("CMP", crearIndice(indEquVal), crearIndice(indItem));
 			crearTerceto(compEqu, crearIndice(indCmp+3), "");
 			crearTerceto(":=", crearIndice(indEquVal),crearIndice(indItem)); 

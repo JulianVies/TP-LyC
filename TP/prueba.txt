@@ -1,6 +1,5 @@
 DIM [ a, b, c ] AS [ integer, integer, integer]
 
-a := 20
-b := 20
-c := 30
-IF EQUMAX(a; [b]) THEN a:=28 ENDIF
+a := 40
+b := 30
+IF EQUMAX(a; [40, b]) THEN DISPLAY "Funciona" ENDIF

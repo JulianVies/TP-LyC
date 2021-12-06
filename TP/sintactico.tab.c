@@ -260,6 +260,9 @@ int IndiceActual;
 int* PosReservada;
 
 char varAuxFor[1000];
+char varAuxEqu[1000];
+char varAuxEqu2[1000];
+
 
 int indEquVal;
 
@@ -689,14 +692,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   274,   274,   281,   282,   285,   286,   287,   288,   289,
-     290,   293,   300,   307,   308,   312,   319,   311,   329,   334,
-     344,   334,   352,   378,   383,   388,   393,   393,   393,   395,
-     395,   395,   397,   406,   413,   417,   422,   429,   430,   433,
-     434,   437,   437,   437,   439,   440,   441,   444,   445,   446,
-     449,   450,   453,   458,   465,   471,   472,   473,   476,   476,
-     477,   478,   481,   482,   483,   484,   485,   486,   489,   490,
-     500,   500,   489,   529,   530
+       0,   277,   277,   283,   284,   287,   288,   289,   290,   291,
+     292,   295,   302,   309,   310,   314,   321,   313,   331,   336,
+     346,   336,   354,   380,   385,   390,   395,   395,   395,   397,
+     397,   397,   399,   407,   418,   422,   427,   434,   435,   438,
+     439,   442,   442,   442,   444,   445,   446,   449,   450,   451,
+     454,   455,   458,   463,   470,   476,   477,   478,   481,   481,
+     482,   483,   486,   487,   488,   489,   490,   491,   494,   495,
+     505,   505,   494,   534,   535
 };
 #endif
 
@@ -1692,7 +1695,6 @@ yyreduce:
         case 2:
 
     {
-	printf("llega?");
 	genera_asm();
 	printf("\nEnd programa.\n");	
 	;}
@@ -1862,7 +1864,7 @@ yyreduce:
 
   case 26:
 
-    {strcpy(compEqu, "BLE");;}
+    {strcpy(compEqu, "BLE"); ;}
     break;
 
   case 27:
@@ -1893,23 +1895,23 @@ yyreduce:
   case 32:
 
     {
+			
 			indEquVal =crearTerceto("EquVal", "", "");
 			crearTerceto(":=", crearIndice(indEquVal), crearIndice(indItem));
 			nuevoSimbolo("EquVal","-","integer",-1);
-			indAux =crearTerceto("Aux", "", "");
-			int indAsigAux2 = crearTerceto(":=", crearIndice(indAux), crearIndice(indItem));
-			crearTerceto(":=", crearIndice(indEquVal),crearIndice(indAsigAux2));
-
+			
+			strcpy(varAuxEqu, "EquVal");
 	;}
     break;
 
   case 33:
 
     { 
-			int indAsigAux = crearTerceto(":=", crearIndice(indAux), crearIndice(indItem));
-			crearTerceto("CMP", crearIndice(indAsigAux), crearIndice(indEquVal));
-			crearTerceto(compEqu, crearIndice(indAsigAux+4), "");
-			crearTerceto(":=", crearIndice(indEquVal),crearIndice(indAsigAux)); ;}
+			//int indAsigAux = crearTerceto(":=", crearIndice(indAux), crearIndice(indItem));
+			int indCmp = crearTerceto("CMP", crearIndice(indEquVal), crearIndice(indItem));
+			crearTerceto(compEqu, crearIndice(indCmp+3), "");
+			crearTerceto(":=", crearIndice(indEquVal),crearIndice(indItem)); 
+			;}
     break;
 
   case 34:
@@ -2478,7 +2480,6 @@ int nuevoSimbolo(char* nombre,char* valor,char* tipoDato, int longitud){
 	}else{itoa(longitud,dato.longitud,10);}
 	
 	insertar_en_ts(&lista_ts, &dato);
-	printf("inserta en tabla??");
 }
 
 int insertar_en_ts(t_lista *l_ts, t_info *d) {
@@ -2720,7 +2721,6 @@ int mostrarListaTerceto(){
 
 void guardarTercetosEnArchivo(t_lista_terceto *pl){
   FILE * pf = fopen("intermedia.txt","wt");
-	printf("llega?");
   while(*pl) {
 		fprintf(pf,"%d (%s,%s,%s) \n", (*pl)->info.numeroTerceto, (*pl)->info.primerElemento, (*pl)->info.segundoElemento, (*pl)->info.tercerElemento);
 		pl=&(*pl)->pSig;
@@ -2874,7 +2874,7 @@ void genera_asm()
 	fprintf(pf_asm, ".STACK 200h \n");
 
 	//crear los auxiliares para los operadores
-	crearAuxParaOpEnTs(&lista_ts, &lista_terceto); //t_lista *pl
+	crearAuxParaOpEnTs(&lista_ts, &lista_terceto);
 
 
 	//  generamos bloque data
@@ -2890,7 +2890,8 @@ void genera_asm()
     fprintf(pf_asm, "\t FNINIT \n");;
     fprintf(pf_asm, "\n");
 	int cant_etiquetas = generarListaEtiquetas(lista_etiquetas);
-	// // Armo el assembler
+	
+	// Armo el assembler
 	t_nodo_terceto *auxNodo;
     auxNodo = lista_terceto;
     if(auxNodo==NULL)
@@ -2931,27 +2932,6 @@ void genera_asm()
 }
 
 
-/*
-char * buscaDatoEnTerceto(int datoUNODOSTRES, int i){
-	char  auxilia1[5]={'\0','\0','\0','\0','\0'};
-	char *parentecisCierra;
-	char *parentecisHabre;
-	int num;
-	int num2;
-	if(datoUNODOSTRES==1){		
-		if(strstr(tercetos[i].uno,"]")){ //TODO: revisar q onda tercetos[i]
-			parentecisHabre  = (strstr(tercetos[i].uno,"[")+1);
-			parentecisCierra = strstr(tercetos[i].uno,"]");
-			num = (int) &(*parentecisCierra);
-			num2 = (int) &(*parentecisHabre);
-			//*(auxilia1) = '\0';
-			strncpy(auxilia1,parentecisHabre,(num-num2));
-			return tercetos[(atoi(auxilia1))].uno;
-		}
-		else return tercetos[i].uno;
-	}
-}
-*/
 // sirve para agregar @ como variable assembler
 char* getNombreAsm(char *cte_o_id) {
 	char* nombreAsm = (char*) malloc(sizeof(char)*200);
@@ -3220,9 +3200,7 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 		buscarEnListaDeTercetosOrdenada(&lista_terceto,indiceId,idInfo);
 		char* tipo = BuscarEnListaYDevolverTipo(&lista_ts,idInfo->primerElemento);
 
-		//se compara ese tipo
-		if (strcmp(tipo, "float") == 0 || strcmp(tipo,"integer") == 0) 
-		{	
+
 			if ( strcmp(varAuxFor, op1) == 0){
 				fprintf(pf_asm, "\t FLD %s \t;Cargo valor \n", getNombreAsm(op2));
 				fprintf(pf_asm, "\t FSTP %s \t; Se lo asigno a la variable que va a guardar el resultado \n", getNombreAsm(op1));
@@ -3230,14 +3208,13 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 			else {
 				fprintf(pf_asm, "\t FLD %s \t;Cargo valor \n", getNombreAsm(op1));
 				fprintf(pf_asm, "\t FSTP %s \t; Se lo asigno a la variable que va a guardar el resultado \n", getNombreAsm(op2));
+
+				if ( strcmp(varAuxEqu, op2) == 0){
+					cant_op++;
+					strcpy(lista_operandos_assembler[cant_op], op2);
+				}
 			}
-		}
-		else
-		{	
-			fprintf(pf_asm, "\t mov si,OFFSET %s \t;Cargo en si el origen\n", getNombreAsm(op1));
-			fprintf(pf_asm, "\t mov di,OFFSET %s \t;Cargo en di el destino\n", getNombreAsm(op2));
-			fprintf(pf_asm, "\t STRCPY\t; llamo a la macro para copiar \n");
-		}	
+	
 	}
 	else if (strcmp(auxNodo->info.primerElemento, "=" ) == 0)
 		{
@@ -3269,7 +3246,6 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 	}
 	else if (strcmp(auxNodo->info.primerElemento, "CMP" ) == 0)
 	{
-		// int tipo = buscarTipoTS(op1);
 		char* tipo = BuscarEnListaYDevolverTipo(&lista_ts,op1);
 		
 		if ( strcmp(tipo,"real") | strcmp(tipo,"integer")) 
@@ -3280,6 +3256,16 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 				strcpy(lista_operandos_assembler[cant_op], op1);
 			}
 			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando2 \n", getNombreAsm(op2));
+
+			if ( strcmp(varAuxEqu, op1) == 0){ //&& strcmp(varAuxEqu2, op2) == 0
+				cant_op++;
+				strcpy(lista_operandos_assembler[cant_op], op2);
+				
+				cant_op++;
+				strcpy(lista_operandos_assembler[cant_op], op1);
+				
+			}
+
 			fprintf(pf_asm, "\t FXCH\t\t;Invierto \n");
 			fprintf(pf_asm, "\t FCOMP\t\t;Comparo \n");
 			fprintf(pf_asm, "\t FFREE ST(0) \t; Vacio ST0\n");
@@ -3304,10 +3290,19 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 			yyerror("Ops! No estan soportadas las operaciones entre cadenas\n");
 		}
 		sprintf(aux, "_aux%d", auxNodo->info.numeroTerceto); // auxiliar relacionado al terceto
-		// insertar_ts_si_no_existe(aux, "FLOAT", "", ""); 
 		fflush(pf_asm);
 		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 1\n", getNombreAsm(op1));
 		fprintf(pf_asm, "\t FLD %s \t;Cargo operando 2\n", getNombreAsm(op2));
+
+		if ( strcmp(varAuxEqu, op1) == 0){ 
+				
+				cant_op++;
+				strcpy(lista_operandos_assembler[cant_op], op2);
+				
+				cant_op++;
+				strcpy(lista_operandos_assembler[cant_op], op1);
+			}
+
 		fflush(pf_asm);
 		if ( strcmp(varAuxFor, op1) == 0 ){
 			cant_op++;
@@ -3321,16 +3316,7 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 		strcpy(lista_operandos_assembler[cant_op], aux);
 	}
 }
-/*
-void insertar_ts_si_no_existe(char *nombre, char *tipo, char *valor, char *longitud) {
-	char* aux = (char*) malloc(10*sizeof(char));
-	*aux='\0';
-	strcpy(aux, nombre);
-	if(nombre_existe_en_ts(aux)==-1) {
-		insertar_tabla_simbolos(aux,tipo,valor,longitud);
-	}
-}
-*/
+
 
 void crearAuxParaOpEnTs(t_lista *pl, t_lista_terceto *lt){
 
@@ -3340,15 +3326,10 @@ void crearAuxParaOpEnTs(t_lista *pl, t_lista_terceto *lt){
 
 	while(*lt){
 	
-		//printf("Entra? %s\n", (*lt)->info.primerElemento);
 		strcpy(aux, (*lt)->info.primerElemento);
-		
-		//printf("Entra while? %s\n", aux );
-		
+				
 		if( strcmp(aux,"+") == 0 || strcmp(aux,"-") == 0 || strcmp(aux,"/") == 0 || strcmp(aux,"*") == 0 ){
 				
-				//printf("Entra if? %s\n", aux );
-
 				char src[50];
 				strcpy(src, "_aux");
 				printf("Entra if? %s\n", src );

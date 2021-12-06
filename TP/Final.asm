@@ -8,10 +8,10 @@ include number.asm
 	@c dd ?	 ; Declaracion de Variable Numerica
 	@b dd ?	 ; Declaracion de Variable Numerica
 	@a dd ?	 ; Declaracion de Variable Numerica
-	@_20 dd 20.0	;Declaracion de Constant Number
+	@_40 dd 40.0	;Declaracion de Constant Number
 	@_30 dd 30.0	;Declaracion de Constant Number
 	@EquVal dd ?	 ; Declaracion de Variable Numerica
-	@_28 dd 28.0	;Declaracion de Constant Number
+	@_Funciona db "Funciona", "$", 30 dup (?)	;Declaracion de Constant String
 .CODE 
 MAIN:
 
@@ -21,30 +21,34 @@ MAIN:
 	 MOV ES,AX 
 	 FNINIT 
 
-	 FLD @_20 	;Cargo valor 
+	 FLD @_40 	;Cargo valor 
 	 FSTP @a 	; Se lo asigno a la variable que va a guardar el resultado 
-	 FLD @_20 	;Cargo valor 
-	 FSTP @b 	; Se lo asigno a la variable que va a guardar el resultado 
 	 FLD @_30 	;Cargo valor 
-	 FSTP @c 	; Se lo asigno a la variable que va a guardar el resultado 
-	 FLD @b 	;Cargo valor 
+	 FSTP @b 	; Se lo asigno a la variable que va a guardar el resultado 
+	 FLD @_40 	;Cargo valor 
 	 FSTP @EquVal 	; Se lo asigno a la variable que va a guardar el resultado 
-	 mov si,OFFSET @a 	;Cargo en si el origen
-	 mov di,OFFSET @Aux 	;Cargo en di el destino
-	 STRCPY	; llamo a la macro para copiar 
-	 FLD @ 	;Cargo valor 
-	 FSTP @ 	; Se lo asigno a la variable que va a guardar el resultado 
-	 FLD @		;comparacion, operando1 
-	 FLD @		;comparacion, operando2 
+	 FLD @EquVal		;comparacion, operando1 
+	 FLD @b		;comparacion, operando2 
 	 FXCH		;Invierto 
 	 FCOMP		;Comparo 
 	 FFREE ST(0) 	; Vacio ST0
 	 FSTSW AX 		; mueve los bits C a FLAGS
 	 SAHF 			;Almacena el registro AH en el registro FLAGS 
-	 JNE ETIQ_21 	;Si cumple la condicion salto a la etiqueta
-	 FLD @_28 	;Cargo valor 
-	 FSTP @a 	; Se lo asigno a la variable que va a guardar el resultado 
-ETIQ_21: 
+	 JNA ETIQ_14 	;Si cumple la condicion salto a la etiqueta
+	 FLD @b 	;Cargo valor 
+	 FSTP @EquVal 	; Se lo asigno a la variable que va a guardar el resultado 
+ETIQ_14: 
+	 FLD @a		;comparacion, operando1 
+	 FLD @EquVal		;comparacion, operando2 
+	 FXCH		;Invierto 
+	 FCOMP		;Comparo 
+	 FFREE ST(0) 	; Vacio ST0
+	 FSTSW AX 		; mueve los bits C a FLAGS
+	 SAHF 			;Almacena el registro AH en el registro FLAGS 
+	 JNE ETIQ_17 	;Si cumple la condicion salto a la etiqueta
+	 displayString @_Funciona 
+	 newLine 
+ETIQ_17: 
 	 mov AX, 4C00h 	 ; Genera la interrupcion 21h
 	 int 21h 	 ; Genera la interrupcion 21h
 END MAIN

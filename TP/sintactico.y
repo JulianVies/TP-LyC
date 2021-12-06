@@ -88,6 +88,7 @@
 	void agregarGuion(char *pc, char* result);
 	void agregarValorAlFinal(char * array, char valor);
 
+
 	t_lista lista_ts;
 	t_info dato;
 
@@ -145,6 +146,9 @@ int sacarValorDeEtiqueta(char *etiqueta);
 int generarListaEtiquetas(int lista_etiquetas[]);
 void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_aux[]);
 int cant_etiquetas = 0;
+	
+	
+void crearAuxParaOpEnTs(t_lista *pl, t_lista_terceto *tl);
 /**** Fin assembler ****/
 
 
@@ -199,6 +203,8 @@ int indVal;
 int indItem;
 int indMax;
 int indMin;
+
+int indAux;
 char compEqu[3];
 %}
 
@@ -389,12 +395,15 @@ equmax: EQUMAX {strcpy(compEqu, "BLE");} PARA expresion {indVal=Eind;} PYC CORCH
 equmin: EQUMIN {strcpy(compEqu, "BGE");} PARA expresion {indVal=Eind;} PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmin\n"); indMin=indEquVal;};
 
 listaEqu: itemEqu {
-			indEquVal =crearTerceto("@EquVal", "", "");
+			indEquVal =crearTerceto("EquVal", "", "");
 			crearTerceto(":=", crearIndice(indEquVal), crearIndice(indItem));
 			nuevoSimbolo("EquVal","-","integer",-1);
+			indAux =crearTerceto("Aux", "", "");
+			int indAsigAux2 = crearTerceto(":=", crearIndice(indAux), crearIndice(indItem));
+			crearTerceto(":=", crearIndice(indEquVal),crearIndice(indAsigAux2));
+
 	}
 		| listaEqu COMA itemEqu { 
-			int indAux =crearTerceto("@Aux", "", "");
 			int indAsigAux = crearTerceto(":=", crearIndice(indAux), crearIndice(indItem));
 			crearTerceto("CMP", crearIndice(indAsigAux), crearIndice(indEquVal));
 			crearTerceto(compEqu, crearIndice(indAsigAux+4), "");
@@ -403,6 +412,7 @@ listaEqu: itemEqu {
 
 itemEqu: ID 							 { 
 			indItem = crearTerceto($1,"","");
+			
 		} 
 		| CTE_E							 {
 			char auxI[30];
@@ -626,6 +636,7 @@ int nuevoSimbolo(char* nombre,char* valor,char* tipoDato, int longitud){
 	}else{itoa(longitud,dato.longitud,10);}
 	
 	insertar_en_ts(&lista_ts, &dato);
+	printf("inserta en tabla??");
 }
 
 int insertar_en_ts(t_lista *l_ts, t_info *d) {
@@ -1019,6 +1030,11 @@ void genera_asm()
 	fprintf(pf_asm, ".MODEL	LARGE \n");
 	fprintf(pf_asm, ".386\n");
 	fprintf(pf_asm, ".STACK 200h \n");
+
+	//crear los auxiliares para los operadores
+	crearAuxParaOpEnTs(&lista_ts, &lista_terceto); //t_lista *pl
+
+
 	//  generamos bloque data
 	generaSegmDatosAsm(pf_asm,&lista_ts);
 	fprintf(pf_asm, ".CODE \n");
@@ -1184,7 +1200,7 @@ void generaSegmDatosAsm(FILE* pf_asm,t_lista *pl)
 		}
 		else if(strcmpi(tipoDato, "CTE_S") == 0)
 		{
-			fprintf(pf_asm, "\t%s db %s, \"$\", 30 dup (?)\t;Declaracion de Constant String\n", getNombreAsm((*pl)->info.nombre), (*pl)->info.valor);
+			fprintf(pf_asm, "\t%s db \"%s\", \"$\", 30 dup (?)\t;Declaracion de Constant String\n", getNombreAsm((*pl)->info.nombre), (*pl)->info.valor);
 		}
 		else if(strcmpi(tipoDato, "CTE_E") == 0 || strcmpi(tipoDato, "CTE_R") == 0)
 		{
@@ -1298,7 +1314,7 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 				fprintf(pf_asm, "\t DisplayFloat %s,2 \n", getNombreAsm(auxNodo->info.segundoElemento));
 			} else 
 			{
-				fprintf(pf_asm, "\t DisplayString %s \n", getNombreAsm(auxNodo->info.segundoElemento));
+				fprintf(pf_asm, "\t displayString %s \n", getNombreAsm(auxNodo->info.segundoElemento));
 			}
 			// Siempre inserto nueva linea despues de mostrar msj
 			fprintf(pf_asm, "\t newLine \n");
@@ -1394,7 +1410,7 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 		char* tipo = BuscarEnListaYDevolverTipo(&lista_ts,idInfo->primerElemento);
 
 		//se compara ese tipo
-		if (strcmp(tipo, "float") == 0 || strcmp(tipo,"integer") == 0) 
+		if (strcmp(tipo, "real") == 0 || strcmp(tipo,"integer") == 0) 
 		{	
 			fprintf(pf_asm, "\t FLD %s \t;Cargo valor \n", getNombreAsm(op1));
 			fprintf(pf_asm, "\t FSTP %s \t; Se lo asigno a la variable que va a guardar el resultado \n", getNombreAsm(op2));
@@ -1414,7 +1430,7 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 		// int tipo = buscarTipoTS(op1);
 		char* tipo = BuscarEnListaYDevolverTipo(&lista_ts,op1);
 		
-		if ( strcmp(tipo,"float") | strcmp(tipo,"integer")) 
+		if ( strcmp(tipo,"real") | strcmp(tipo,"integer")) 
 		{
 			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando1 \n", getNombreAsm(op1));
 			if ( strcmp(varAuxFor, op1) == 0){
@@ -1422,6 +1438,7 @@ void escribirTercetoEnAsm(FILE* pf_asm, t_nodo_terceto *auxNodo, char etiqueta_a
 				strcpy(lista_operandos_assembler[cant_op], op1);
 			}
 			fprintf(pf_asm, "\t FLD %s\t\t;comparacion, operando2 \n", getNombreAsm(op2));
+			fprintf(pf_asm, "\t FXCH\t\t;Invierto \n");
 			fprintf(pf_asm, "\t FCOMP\t\t;Comparo \n");
 			fprintf(pf_asm, "\t FFREE ST(0) \t; Vacio ST0\n");
 			fprintf(pf_asm, "\t FSTSW AX \t\t; mueve los bits C a FLAGS\n");
@@ -1472,3 +1489,35 @@ void insertar_ts_si_no_existe(char *nombre, char *tipo, char *valor, char *longi
 	}
 }
 */
+
+void crearAuxParaOpEnTs(t_lista *pl, t_lista_terceto *lt){
+
+	int cmp;
+
+	char aux[50];
+
+	while(*lt){
+	
+		//printf("Entra? %s\n", (*lt)->info.primerElemento);
+		strcpy(aux, (*lt)->info.primerElemento);
+		
+		//printf("Entra while? %s\n", aux );
+		
+		if( strcmp(aux,"+") == 0 || strcmp(aux,"-") == 0 || strcmp(aux,"/") == 0 || strcmp(aux,"*") == 0 ){
+				
+				//printf("Entra if? %s\n", aux );
+
+				char src[50];
+				strcpy(src, "_aux");
+				printf("Entra if? %s\n", src );
+
+				char auxI[30];
+				itoa((*lt)->info.numeroTerceto,auxI,10);
+				
+				strcat(src, auxI);
+				nuevoSimbolo(src,"-","real",-1);
+
+		}
+        lt=&(*lt)->pSig;
+	}    
+}

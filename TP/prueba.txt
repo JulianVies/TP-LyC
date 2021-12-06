@@ -1,4 +1,6 @@
-DIM [ a ] AS [ integer ]
+DIM [ a, b, c ] AS [ integer, integer, integer]
 
-IF EQUMAX(10+101; [100, 111, a]) THEN a:=28 ENDIF
-
+a := 20
+b := 20
+c := 30
+IF EQUMAX(a; [b]) THEN a:=28 ENDIF

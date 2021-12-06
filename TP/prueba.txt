@@ -1,8 +1,6 @@
-DIM [ a, b, c ] AS [ integer, integer, integer]
-
-a := 2
-b := 1
-
-IF a > b THEN IF a < b THEN DISPLAY "primero" 
-ELSE DISPLAY "segundo"
-ENDIF ELSE a:=3 ENDIF
+GET a
+DISPLAY a
+DIM [ a, b, z, u, x ] AS [ integer, integer, integer, integer, integer]
+a:= 5
+GET a
+DISPLAY a

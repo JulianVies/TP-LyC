@@ -1,0 +1,54 @@
+
+
+*/casos Intermedia y asm/*
+
+DIM [ a, b, z, u, x ] AS [ integer, integer, integer, integer, integer]
+
+*/WHILE/*
+WHILE a > b BEGINW a:=1 WHILE a == b BEGINW a:=2 ENDW a:=2 ENDW
+
+*/FOR/*
+FOR varB = 1 TO 21 + 2 [3] a :=b FOR varB = 1 TO 21 + 2 [3] a :=b NEXT varB NEXT varB
+FOR varc = 0 TO 9 [3] DISPLAY "Funciona" NEXT varc
+
+
+*/SELECCION/*
+z := a + b * c - d / (e + f) + 20
+
+
+*/IF/*
+IF a > b THEN IF a == b THEN a:=2 ENDIF ENDIF
+IF a > b THEN IF a == b THEN a:=1 ELSE a:=2 ENDIF ELSE a:=3 ENDIF
+
+IF a > b THEN FOR varB = 1 TO 3 [3] DISPLAY "FOR2" NEXT varB  ENDIF 
+
+a := 2
+b := 1
+
+IF a > b THEN IF a < b THEN a:=b ELSE DISPLAY "else" ENDIF ELSE a:=3 ENDIF
+
+IF a > b THEN IF a < b THEN a:=b ELSE DISPLAY "Funcion" ENDIF ELSE a:=3 ENDIF
+
+IF a > b THEN IF a < b THEN DISPLAY "primero" 
+ELSE DISPLAY "segundo"
+ENDIF ELSE a:=3 ENDIF
+
+
+
+*/EQUMAX, EQUMIN/*
+
+IF EQUMAX(a; [b]) THEN a:=28 ENDIF
+
+IF EQUMAX(a; [40, 30]) THEN DISPLAY "Funciona" ENDIF
+
+u := 40
+IF EQUMAX(u; [40, 30, 20]) THEN DISPLAY "Funciona" ENDIF
+
+x := 20
+IF EQUMIN(x; [40, 30, 20]) THEN DISPLAY "Funciona" ENDIF
+
+*/DISPLAY, GET/*
+GET a
+DISPLAY a
+DISPLAY "cadena"
+

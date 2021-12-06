@@ -3332,7 +3332,6 @@ void crearAuxParaOpEnTs(t_lista *pl, t_lista_terceto *lt){
 				
 				char src[50];
 				strcpy(src, "_aux");
-				printf("Entra if? %s\n", src );
 
 				char auxI[30];
 				itoa((*lt)->info.numeroTerceto,auxI,10);

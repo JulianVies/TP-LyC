@@ -8,10 +8,11 @@ include number.asm
 	@c dd ?	 ; Declaracion de Variable Numerica
 	@b dd ?	 ; Declaracion de Variable Numerica
 	@a dd ?	 ; Declaracion de Variable Numerica
-	@_40 dd 40.0	;Declaracion de Constant Number
-	@_30 dd 30.0	;Declaracion de Constant Number
-	@EquVal dd ?	 ; Declaracion de Variable Numerica
-	@_Funciona db "Funciona", "$", 30 dup (?)	;Declaracion de Constant String
+	@_2 dd 2.0	;Declaracion de Constant Number
+	@_1 dd 1.0	;Declaracion de Constant Number
+	@_primero db "primero", "$", 30 dup (?)	;Declaracion de Constant String
+	@_segundo db "segundo", "$", 30 dup (?)	;Declaracion de Constant String
+	@_3 dd 3.0	;Declaracion de Constant Number
 .CODE 
 MAIN:
 
@@ -21,34 +22,38 @@ MAIN:
 	 MOV ES,AX 
 	 FNINIT 
 
-	 FLD @_40 	;Cargo valor 
+	 FLD @_2 	;Cargo valor 
 	 FSTP @a 	; Se lo asigno a la variable que va a guardar el resultado 
-	 FLD @_30 	;Cargo valor 
+	 FLD @_1 	;Cargo valor 
 	 FSTP @b 	; Se lo asigno a la variable que va a guardar el resultado 
-	 FLD @_40 	;Cargo valor 
-	 FSTP @EquVal 	; Se lo asigno a la variable que va a guardar el resultado 
-	 FLD @EquVal		;comparacion, operando1 
+	 FLD @a		;comparacion, operando1 
 	 FLD @b		;comparacion, operando2 
 	 FXCH		;Invierto 
 	 FCOMP		;Comparo 
 	 FFREE ST(0) 	; Vacio ST0
 	 FSTSW AX 		; mueve los bits C a FLAGS
 	 SAHF 			;Almacena el registro AH en el registro FLAGS 
-	 JNA ETIQ_14 	;Si cumple la condicion salto a la etiqueta
-	 FLD @b 	;Cargo valor 
-	 FSTP @EquVal 	; Se lo asigno a la variable que va a guardar el resultado 
-ETIQ_14: 
+	 JNA ETIQ_18 	;Si cumple la condicion salto a la etiqueta
 	 FLD @a		;comparacion, operando1 
-	 FLD @EquVal		;comparacion, operando2 
+	 FLD @b		;comparacion, operando2 
 	 FXCH		;Invierto 
 	 FCOMP		;Comparo 
 	 FFREE ST(0) 	; Vacio ST0
 	 FSTSW AX 		; mueve los bits C a FLAGS
 	 SAHF 			;Almacena el registro AH en el registro FLAGS 
-	 JNE ETIQ_17 	;Si cumple la condicion salto a la etiqueta
-	 displayString @_Funciona 
+	 JAE ETIQ_16 	;Si cumple la condicion salto a la etiqueta
+	 displayString @_primero 
+	 newLine 
+	 JMP ETIQ_17 	;Si cumple la condicion salto a la etiqueta
+ETIQ_16: 
+	 displayString @_segundo 
 	 newLine 
 ETIQ_17: 
+	 JMP ETIQ_21 	;Si cumple la condicion salto a la etiqueta
+ETIQ_18: 
+	 FLD @_3 	;Cargo valor 
+	 FSTP @a 	; Se lo asigno a la variable que va a guardar el resultado 
+ETIQ_21: 
 	 mov AX, 4C00h 	 ; Genera la interrupcion 21h
 	 int 21h 	 ; Genera la interrupcion 21h
 END MAIN

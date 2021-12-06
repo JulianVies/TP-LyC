@@ -1,5 +1,8 @@
 DIM [ a, b, c ] AS [ integer, integer, integer]
 
-a := 40
-b := 30
-IF EQUMAX(a; [40, b]) THEN DISPLAY "Funciona" ENDIF
+a := 2
+b := 1
+
+IF a > b THEN IF a < b THEN DISPLAY "primero" 
+ELSE DISPLAY "segundo"
+ENDIF ELSE a:=3 ENDIF

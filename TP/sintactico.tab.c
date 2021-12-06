@@ -1864,7 +1864,7 @@ yyreduce:
 
   case 26:
 
-    {strcpy(compEqu, "BLE"); ;}
+    {strcpy(compEqu, "BGE"); ;}
     break;
 
   case 27:
@@ -1879,7 +1879,7 @@ yyreduce:
 
   case 29:
 
-    {strcpy(compEqu, "BGE");;}
+    {strcpy(compEqu, "BLE");;}
     break;
 
   case 30:

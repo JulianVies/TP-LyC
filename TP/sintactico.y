@@ -392,9 +392,9 @@ get:GET	ID { int indiceTercetoGet=crearTerceto("GET",$2,"");
 			modificarIndiceTercetoTipo(&lista_terceto, indiceTercetoGet, tipoGet);
 			};
 
-equmax: EQUMAX {strcpy(compEqu, "BLE"); } PARA expresion {indVal=Eind;} PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmax\n"); indMax=indEquVal;};
+equmax: EQUMAX {strcpy(compEqu, "BGE"); } PARA expresion {indVal=Eind;} PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmax\n"); indMax=indEquVal;};
 
-equmin: EQUMIN {strcpy(compEqu, "BGE");} PARA expresion {indVal=Eind;} PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmin\n"); indMin=indEquVal;};
+equmin: EQUMIN {strcpy(compEqu, "BLE");} PARA expresion {indVal=Eind;} PYC CORCHA listaEqu CORCHC PARC { printf("Regla equmin\n"); indMin=indEquVal;};
 
 listaEqu: itemEqu {
 			
